@@ -14,8 +14,7 @@ public class Nave4 {
 	
 	private boolean destruida = false;
     private int vidas = 3;
-    private float xVel = 0;
-    private float yVel = 0;
+    float velocidad = 4f;
     private Sprite spr;
     private Sound sonidoHerido;
     private Sound soundBala;
@@ -39,10 +38,10 @@ public class Nave4 {
         float y =  spr.getY();
         if (!herido) {
 	        // que se mueva con teclado
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel--;
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel++;
-        	if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel--;     
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel++;
+        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  x -= velocidad;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) x += velocidad;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP))    y += velocidad;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))  y -= velocidad;
         	
 	     /*   if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) spr.setRotation(++rotacion);
 	        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) spr.setRotation(--rotacion);
@@ -59,12 +58,10 @@ public class Nave4 {
 	        }*/
 	        
 	        // que se mantenga dentro de los bordes de la ventana
-	        if (x+xVel < 0 || x+xVel+spr.getWidth() > Gdx.graphics.getWidth())
-	        	xVel*=-1;
-	        if (y+yVel < 0 || y+yVel+spr.getHeight() > Gdx.graphics.getHeight())
-	        	yVel*=-1;
+            x = MathUtils.clamp(x, 0, Gdx.graphics.getWidth() - spr.getWidth());
+            y = MathUtils.clamp(y, 0, Gdx.graphics.getHeight() - spr.getHeight());
 	        
-	        spr.setPosition(x+xVel, y+yVel);   
+	        spr.setPosition(x, y);
          
  		    spr.draw(batch);
         } else {
@@ -84,34 +81,33 @@ public class Nave4 {
     }
       
     public boolean checkCollision(Ball2 b) {
-        if(!herido && b.getArea().overlaps(spr.getBoundingRectangle())){
-        	// rebote
-            if (xVel ==0) xVel += b.getXSpeed()/2;
-            if (b.getXSpeed() ==0) b.setXSpeed(b.getXSpeed() + (int)xVel/2);
-            xVel = - xVel;
-            b.setXSpeed(-b.getXSpeed());
-            
-            if (yVel ==0) yVel += b.getySpeed()/2;
-            if (b.getySpeed() ==0) b.setySpeed(b.getySpeed() + (int)yVel/2);
-            yVel = - yVel;
-            b.setySpeed(- b.getySpeed());
-            // despegar sprites
-      /*      int cont = 0;
-            while (b.getArea().overlaps(spr.getBoundingRectangle()) && cont<xVel) {
-               spr.setX(spr.getX()+Math.signum(xVel));
-            }   */
-        	//actualizar vidas y herir
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
+            // Rebote simple: invertir la dirección de la bola según dónde chocó
+            if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
+                b.setXSpeed(-Math.abs(b.getXSpeed())); // rebote a la izquierda
+            } else {
+                b.setXSpeed(Math.abs(b.getXSpeed()));  // rebote a la derecha
+            }
+
+            if (b.getY() + b.getHeight()/2 < spr.getY() + spr.getHeight()/2) {
+                b.setySpeed(-Math.abs(b.getySpeed())); // rebote hacia abajo
+            } else {
+                b.setySpeed(Math.abs(b.getySpeed()));  // rebote hacia arriba
+            }
+
+            // Actualizar vidas y herir
             vidas--;
             herido = true;
-  		    tiempoHerido=tiempoHeridoMax;
-  		    sonidoHerido.play();
-            if (vidas<=0) 
-          	    destruida = true; 
+            tiempoHerido = tiempoHeridoMax;
+            sonidoHerido.play();
+
+            if (vidas <= 0)
+                destruida = true;
+
             return true;
         }
         return false;
     }
-    
     public boolean estaDestruido() {
        return !herido && destruida;
     }

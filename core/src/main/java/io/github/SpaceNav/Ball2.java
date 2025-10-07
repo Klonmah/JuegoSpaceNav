@@ -75,6 +75,19 @@ public class Ball2 {
 	public void setySpeed(int ySpeed) {
 		this.ySpeed = ySpeed;
 	}
+	public int getX() {
+		return this.x;
+	}
+	public int getY() {
+		return this.y;
+	}
 	
+	public float getWidth() {
+	    return spr.getWidth();
+	}
+
+	public float getHeight() {
+	    return spr.getHeight();
+	}
     
 }
