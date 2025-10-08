@@ -1,5 +1,7 @@
 package io.github.SpaceNav;
 
+import java.net.NoRouteToHostException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -22,6 +24,9 @@ public class Nave4 {
     private boolean herido = false;
     private int tiempoHeridoMax=50;
     private int tiempoHerido;
+    private float rotacion = 0f; // ángulo 
+    float largoNave;
+    float anguloRad;
     
     public Nave4(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
     	sonidoHerido = soundChoque;
@@ -29,8 +34,9 @@ public class Nave4 {
     	this.txBala = txBala;
     	spr = new Sprite(tx);
     	spr.setPosition(x, y);
-    	//spr.setOriginCenter();
+    	spr.setOriginCenter();
     	spr.setBounds(x, y, 45, 45);
+    	this.largoNave =  spr.getHeight()/2 * 0.9f;
 
     }
     public void draw(SpriteBatch batch, PantallaJuego juego){
@@ -38,32 +44,33 @@ public class Nave4 {
         float y =  spr.getY();
         if (!herido) {
 	        // que se mueva con teclado
-        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  x -= velocidad;
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) x += velocidad;
-            if (Gdx.input.isKeyPressed(Input.Keys.UP))    y += velocidad;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))  y -= velocidad;
-        	
-	     /*   if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) spr.setRotation(++rotacion);
-	        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) spr.setRotation(--rotacion);
-	        
-	        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-	        	xVel -=Math.sin(Math.toRadians(rotacion));
-	        	yVel +=Math.cos(Math.toRadians(rotacion));
-	        	System.out.println(rotacion+" - "+Math.sin(Math.toRadians(rotacion))+" - "+Math.cos(Math.toRadians(rotacion))) ;    
-	        }
-	        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-	        	xVel +=Math.sin(Math.toRadians(rotacion));
-	        	yVel -=Math.cos(Math.toRadians(rotacion));
-	        	     
-	        }*/
-	        
+        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
+        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
+        	// Normalizar
+        	rotacion = (rotacion + 360) % 360;
+
+        	// Convertir a radianes para movimiento según la rotación actual
+        	this.anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+
+        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        	    x -= Math.cos(anguloRad) * velocidad;
+        	    y -= Math.sin(anguloRad) * velocidad;
+        	}
+
+        	if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        	    x += Math.cos(anguloRad) * velocidad;
+        	    y += Math.sin(anguloRad) * velocidad;
+        	}
+ 
 	        // que se mantenga dentro de los bordes de la ventana
             x = MathUtils.clamp(x, 0, Gdx.graphics.getWidth() - spr.getWidth());
             y = MathUtils.clamp(y, 0, Gdx.graphics.getHeight() - spr.getHeight());
 	        
-	        spr.setPosition(x, y);
+            spr.setPosition(x, y);
+            spr.setRotation(rotacion);
+            spr.draw(batch);
          
- 		    spr.draw(batch);
+ 		 
         } else {
            spr.setX(spr.getX()+MathUtils.random(-2,2));
  		   spr.draw(batch); 
@@ -72,8 +79,11 @@ public class Nave4 {
  		   if (tiempoHerido<=0) herido = false;
  		 }
         // disparo
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {         
-          Bullet  bala = new Bullet(spr.getX()+spr.getWidth()/2-5,spr.getY()+ spr.getHeight()-5,0,3,txBala);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {       
+        	float offset = 5; 
+        	float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
+        	float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
+          Bullet  bala = new Bullet(puntaX,puntaY,txBala, rotacion);
 	      juego.agregarBala(bala);
 	      soundBala.play();
         }

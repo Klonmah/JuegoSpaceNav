@@ -4,23 +4,36 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
 
 public class Bullet {
 
-	private int xSpeed;
-	private int ySpeed;
+	private float x;
+	private float y;
+	private int xSpeed = 5;
+	private int ySpeed = 5;
 	private boolean destroyed = false;
 	private Sprite spr;
+	private float rotacion;
+	private float anguloRad; // angulo de rotacion en radianes
+	
 	    
-	    public Bullet(float x, float y, int xSpeed, int ySpeed, Texture tx) {
+	    public Bullet(float x, float y, Texture tx, float rotacion) {
+	    	this.x = x;
+	    	this.y = y;
 	    	spr = new Sprite(tx);
 	    	spr.setPosition(x, y);
-	        this.xSpeed = xSpeed;
-	        this.ySpeed = ySpeed;
+	    	spr.setOriginCenter();
+	    	this.rotacion = rotacion;
+	    	this.anguloRad= (rotacion - 90) * MathUtils.degreesToRadians;
+	     
 	    }
 	    public void update() {
-	        spr.setPosition(spr.getX()+xSpeed, spr.getY()+ySpeed);
+	    	x -= Math.cos(anguloRad) * xSpeed;
+    	    y -= Math.sin(anguloRad) * ySpeed;
+	        spr.setPosition(x, y);
+	        spr.setRotation(rotacion);
 	        if (spr.getX() < 0 || spr.getX()+spr.getWidth() > Gdx.graphics.getWidth()) {
 	            destroyed = true;
 	        }
