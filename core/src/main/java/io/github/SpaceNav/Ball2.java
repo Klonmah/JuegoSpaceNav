@@ -15,22 +15,29 @@ public class Ball2 {
     private Sprite spr;
 
     public Ball2(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-    	spr = new Sprite(tx);
-    	this.x = x; 
- 	
-        //validar que borde de esfera no quede fuera
-    	if (x-size < 0) this.x = x+size;
-    	if (x+size > Gdx.graphics.getWidth())this.x = x-size;
-         
+        spr = new Sprite(tx);
+        spr.setSize(size * 2, size * 2); // el size es el radio
+        spr.setOriginCenter();
+
+        int ancho = (int) spr.getWidth();
+        int alto = (int) spr.getHeight();
+
+        // Corrige si el sprite estaría fuera de pantalla
+        if (x < 0) x = 0;
+        if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
+        if (y < 0) y = 0;
+        if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+
+        // Guardar posición corregida
+        this.x = x;
         this.y = y;
-        //validar que borde de esfera no quede fuera
-    	if (y-size < 0) this.y = y+size;
-    	if (y+size > Gdx.graphics.getHeight())this.y = y-size;
-    	
-        spr.setPosition(x, y);
-        this.setXSpeed(xSpeed);
-        this.setySpeed(ySpeed);
+        spr.setPosition(this.x, this.y);
+
+        // Velocidades
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
     }
+    
     public void update() {
         x += getXSpeed();
         y += getySpeed();
@@ -99,10 +106,10 @@ public class Ball2 {
             float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
 
             // Cambiar solo la componente normal, mantener tangencial igual
-            this.xSpeed += (p1Final - p1) * nx+3;
-            this.ySpeed += (p1Final - p1) * ny+3;
-            b2.xSpeed += (p2Final - p2) * nx+3;
-            b2.ySpeed += (p2Final - p2) * ny+3;
+            this.xSpeed += (p1Final - p1) * nx+2;
+            this.ySpeed += (p1Final - p1) * ny+2;
+            b2.xSpeed += (p2Final - p2) * nx+2;
+            b2.ySpeed += (p2Final - p2) * ny+2;
         }
     }
 	public int getXSpeed() {
@@ -130,6 +137,11 @@ public class Ball2 {
 
 	public float getHeight() {
 	    return spr.getHeight();
+	}
+	public void setPosition(float x, float y) {
+	    this.x = (int) x;
+	    this.y = (int) y;
+	    spr.setPosition(x, y);
 	}
     
 }

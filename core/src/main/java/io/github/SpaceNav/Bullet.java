@@ -11,8 +11,8 @@ public class Bullet {
 
 	private float x;
 	private float y;
-	private int xSpeed = 5;
-	private int ySpeed = 5;
+	private int xSpeed = 7;
+	private int ySpeed = 7;
 	private boolean destroyed = false;
 	private Sprite spr;
 	private float rotacion;

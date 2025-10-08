@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
 
 public class PantallaJuego implements Screen {
@@ -55,14 +56,30 @@ public class PantallaJuego implements Screen {
         nave.setVidas(vidas);
         //crear asteroides
         Random r = new Random();
-	    for (int i = 0; i < cantAsteroides; i++) {
-	        Ball2 bb = new Ball2(r.nextInt((int)Gdx.graphics.getWidth()),
-	  	            50+r.nextInt((int)Gdx.graphics.getHeight()-50),
-	  	            20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4), 
-	  	            new Texture(Gdx.files.internal("aGreyMedium4.png")));	   
-	  	    balls1.add(bb);
-	  	    balls2.add(bb);
-	  	}
+        for (int i = 0; i < cantAsteroides; i++) {
+            int size = 20 + r.nextInt(10); // radio
+            int ancho = size * 2;
+            int alto = size * 2;
+
+            int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
+            int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
+
+            Ball2 bb = new Ball2(x, y, size,
+                    velXAsteroides + r.nextInt(4),
+                    velYAsteroides + r.nextInt(4),
+                    new Texture(Gdx.files.internal("aGreyMedium4.png")));
+
+            balls1.add(bb);
+            balls2.add(bb);
+            for (Ball2 b : balls1) {
+                float bx = MathUtils.clamp(b.getX(), 0, Gdx.graphics.getWidth() - b.getWidth());
+                float by = MathUtils.clamp(b.getY(), 0, Gdx.graphics.getHeight() - b.getHeight());
+                b.setPosition(bx, by);
+            }
+            
+        }
+        
+        
 	}
     
 	public void dibujaEncabezado() {

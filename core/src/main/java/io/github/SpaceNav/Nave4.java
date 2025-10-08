@@ -27,6 +27,12 @@ public class Nave4 {
     private float rotacion = 0f; // ángulo 
     float largoNave;
     float anguloRad;
+    private float velX = 0f;
+    private float velY = 0f;
+    private float aceleracion = 0.15f;
+    private float friccion = 0.99f;
+    private float velocidadMax = 6f;
+    
     
     public Nave4(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
     	sonidoHerido = soundChoque;
@@ -44,38 +50,46 @@ public class Nave4 {
         float x =  spr.getX();
         float y =  spr.getY();
         if (!herido) {
-	        // que se mueva con teclado
-        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
-        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
-        	// Normalizar
-        	rotacion = (rotacion + 360) % 360;
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
+            rotacion = (rotacion + 360) % 360;
 
-        	// Convertir a radianes para movimiento según la rotación actual
-        	this.anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+            this.anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
 
-        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        	    x -= Math.cos(anguloRad) * velocidad;
-        	    y -= Math.sin(anguloRad) * velocidad;
-        	}
+            // Acelerar hacia adelante o atrás
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                velX -= Math.cos(anguloRad) * aceleracion;
+                velY -= Math.sin(anguloRad) * aceleracion;
+            }
+          
 
-        	if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-        	    x += Math.cos(anguloRad) * velocidad;
-        	    y += Math.sin(anguloRad) * velocidad;
-        	}
- 
-	        // que se mantenga dentro de los bordes de la ventana
+            // Aplicar fricción
+            velX *= friccion;
+            velY *= friccion;
+
+            // Limitar la velocidad máxima
+            float velocidadActual = (float)Math.sqrt(velX * velX + velY * velY);
+            if (velocidadActual > velocidadMax) {
+                float factor = velocidadMax / velocidadActual;
+                velX *= factor;
+                velY *= factor;
+            }
+
+            // Mover nave según velocidad acumulada
+            x += velX;
+            y += velY;
+
+            // Limitar dentro de la pantalla
             x = MathUtils.clamp(x, 0, Gdx.graphics.getWidth() - spr.getWidth());
             y = MathUtils.clamp(y, 0, Gdx.graphics.getHeight() - spr.getHeight());
-	        
+
             spr.setPosition(x, y);
             spr.setRotation(rotacion);
             spr.draw(batch);
-         
- 		 
-        } else {
+           } else {
            spr.setX(spr.getX()+MathUtils.random(-2,2));
  		   spr.draw(batch); 
- 		  spr.setX(x);
+ 		   spr.setX(x);
  		   tiempoHerido--;
  		   if (tiempoHerido<=0) herido = false;
  		 }
