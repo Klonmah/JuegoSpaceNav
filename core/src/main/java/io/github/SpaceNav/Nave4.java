@@ -40,6 +40,7 @@ public class Nave4 {
 
     }
     public void draw(SpriteBatch batch, PantallaJuego juego){
+    	long sonidoBalaId;
         float x =  spr.getX();
         float y =  spr.getY();
         if (!herido) {
@@ -85,7 +86,8 @@ public class Nave4 {
         	float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
           Bullet  bala = new Bullet(puntaX,puntaY,txBala, rotacion);
 	      juego.agregarBala(bala);
-	      soundBala.play();
+	      sonidoBalaId = soundBala.play();
+	      soundBala.setVolume(sonidoBalaId, 0.3f);
         }
        
     }

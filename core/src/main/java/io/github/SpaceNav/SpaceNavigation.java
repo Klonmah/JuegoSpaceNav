@@ -1,7 +1,9 @@
 package io.github.SpaceNav;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -13,8 +15,14 @@ public class SpaceNavigation extends Game {
 	private SpriteBatch batch;
 	private BitmapFont font;
 	private int highScore;	
+	private Music gameMusic;
 
 	public void create() {
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("song-loop.wav")); //
+		
+		gameMusic.setLooping(true);
+		gameMusic.setVolume(0.4f);
+		gameMusic.play();
 		highScore = 0;
 		batch = new SpriteBatch();
 		font = new BitmapFont(); // usa Arial font x defecto

@@ -5,7 +5,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,7 +19,6 @@ public class PantallaJuego implements Screen {
 	private OrthographicCamera camera;	
 	private SpriteBatch batch;
 	private Sound explosionSound;
-	private Music gameMusic;
 	private int score;
 	private int ronda;
 	private int velXAsteroides; 
@@ -47,11 +46,6 @@ public class PantallaJuego implements Screen {
 		//inicializar assets; musica de fondo y efectos de sonido
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
 		explosionSound.setVolume(1,0.5f);
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav")); //
-		
-		gameMusic.setLooping(true);
-		gameMusic.setVolume(0.5f);
-		gameMusic.play();
 		
 	    // cargar imagen de la nave, 64x64   
 	    nave = new Nave4(Gdx.graphics.getWidth()/2-50,30,new Texture(Gdx.files.internal("MainShip3.png")),
@@ -82,6 +76,7 @@ public class PantallaJuego implements Screen {
 	public void render(float delta) {
 		  Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
           batch.begin();
+          long explosionId;
 		  dibujaEncabezado();
 	      if (!nave.estaHerido()) {
 		      // colisiones entre balas y asteroides y su destruccion  
@@ -90,7 +85,8 @@ public class PantallaJuego implements Screen {
 		            b.update();
 		            for (int j = 0; j < balls1.size(); j++) {    
 		              if (b.checkCollision(balls1.get(j))) {          
-		            	 explosionSound.play();
+		            	 explosionId = explosionSound.play();
+		            	 explosionSound.setVolume(explosionId,0.3f);
 		            	 balls1.remove(j);
 		            	 balls2.remove(j);
 		            	 j--;
@@ -165,7 +161,7 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		gameMusic.play();
+		
 	}
 
 	@Override
@@ -196,7 +192,7 @@ public class PantallaJuego implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 		this.explosionSound.dispose();
-		this.gameMusic.dispose();
+		
 	}
    
 }
