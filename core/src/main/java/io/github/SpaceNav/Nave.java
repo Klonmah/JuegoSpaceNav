@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 
 
-public class Nave4 {
+public class Nave {
 	
 	private boolean destruida = false;
     private int vidas = 3;
@@ -32,9 +32,22 @@ public class Nave4 {
     private float aceleracion = 0.15f;
     private float friccion = 0.99f;
     private float velocidadMax = 6f;
+    private Weapon weapon; // arma actual
+
+
+    public void setWeapon(Weapon w) {
+        this.weapon = w;
+    }
     
+    public float getRotacion() {
+    	return this.rotacion;
+    }
     
-    public Nave4(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
+    public float getLargoNave() {
+    	return this.largoNave;
+    }
+    
+    public Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
     	sonidoHerido = soundChoque;
     	this.soundBala = soundBala;
     	this.txBala = txBala;
@@ -43,31 +56,37 @@ public class Nave4 {
     	spr.setOriginCenter();
     	spr.setBounds(x, y, 45, 45);
     	this.largoNave =  spr.getHeight()/2 * 0.9f;
-
+    	
+    	this.weapon = new WeaponTriple(txBala, soundBala, 0.3f); // 0.3s entre disparos
     }
-    public void draw(SpriteBatch batch, PantallaJuego juego){
-    	long sonidoBalaId;
-        float x =  spr.getX();
-        float y =  spr.getY();
+    public void draw(SpriteBatch batch, PantallaJuego juego) {
+        float x = spr.getX();
+        float y = spr.getY();
+
         if (!herido) {
+            // --- ROTACIÓN ---
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
             rotacion = (rotacion + 360) % 360;
 
-            this.anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+            // Convertir rotación a radianes
+            anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
 
-            // Acelerar hacia adelante o atrás
+            // --- ACELERACIÓN Y DESPLAZAMIENTO ---
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                velX -= Math.cos(anguloRad) * aceleracion;
-                velY -= Math.sin(anguloRad) * aceleracion;
+                velX -= MathUtils.cos(anguloRad) * aceleracion;
+                velY -= MathUtils.sin(anguloRad) * aceleracion;
             }
-          
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                velX += MathUtils.cos(anguloRad) * aceleracion;
+                velY += MathUtils.sin(anguloRad) * aceleracion;
+            }
 
             // Aplicar fricción
             velX *= friccion;
             velY *= friccion;
 
-            // Limitar la velocidad máxima
+            // Limitar velocidad máxima
             float velocidadActual = (float)Math.sqrt(velX * velX + velY * velY);
             if (velocidadActual > velocidadMax) {
                 float factor = velocidadMax / velocidadActual;
@@ -75,7 +94,7 @@ public class Nave4 {
                 velY *= factor;
             }
 
-            // Mover nave según velocidad acumulada
+            // Mover nave
             x += velX;
             y += velY;
 
@@ -86,24 +105,30 @@ public class Nave4 {
             spr.setPosition(x, y);
             spr.setRotation(rotacion);
             spr.draw(batch);
-           } else {
-           spr.setX(spr.getX()+MathUtils.random(-2,2));
- 		   spr.draw(batch); 
- 		   spr.setX(x);
- 		   tiempoHerido--;
- 		   if (tiempoHerido<=0) herido = false;
- 		 }
-        // disparo
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {       
-        	float offset = 5; 
-        	float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
-        	float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
-          Bullet  bala = new Bullet(puntaX,puntaY,txBala, rotacion);
-	      juego.agregarBala(bala);
-	      sonidoBalaId = soundBala.play();
-	      soundBala.setVolume(sonidoBalaId, 0.3f);
+
+        } else {
+            // Si está herido, movimiento leve random
+            spr.setX(spr.getX() + MathUtils.random(-2, 2));
+            spr.draw(batch);
+            spr.setX(x);
+            tiempoHerido--;
+            if (tiempoHerido <= 0) herido = false;
         }
-       
+
+        // --- DISPARO ---
+        if (weapon != null) {
+            weapon.update(Gdx.graphics.getDeltaTime());
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                // calcular punta de la nave
+                float offset = 5;
+                float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
+                float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
+
+                // disparar usando arma modular (arma se encarga del sonido)
+                weapon.fire(this, juego, puntaX, puntaY);
+            }
+        }
     }
       
     public boolean checkCollision(Ball2 b) {
