@@ -37,7 +37,7 @@ public class Bullet {
 	        if (spr.getX() < 0 || spr.getX()+spr.getWidth() > Gdx.graphics.getWidth()) {
 	            destroyed = true;
 	        }
-	        if (spr.getY() < 0 || spr.getY()+spr.getHeight() > Gdx.graphics.getHeight()) {
+	        if (spr.getY() < -10 || spr.getY()-spr.getHeight() > Gdx.graphics.getHeight()) {
 	        	destroyed = true;
 	        }
 	        

@@ -116,9 +116,9 @@ public class Nave4 {
             }
 
             if (b.getY() + b.getHeight()/2 < spr.getY() + spr.getHeight()/2) {
-                b.setySpeed(-Math.abs(b.getySpeed())); // rebote hacia abajo
+                b.setYSpeed(-Math.abs(b.getYSpeed())); // rebote hacia abajo
             } else {
-                b.setySpeed(Math.abs(b.getySpeed()));  // rebote hacia arriba
+                b.setYSpeed(Math.abs(b.getYSpeed()));  // rebote hacia arriba
             }
 
             // Actualizar vidas y herir

@@ -7,20 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 
-public class Ball2 {
-	private int x;
-    private int y;
-    private int xSpeed;
-    private int ySpeed;
-    private Sprite spr;
+public class Ball2 extends Asteroid {
+
 
     public Ball2(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-        spr = new Sprite(tx);
-        spr.setSize(size * 2, size * 2); // el size es el radio
-        spr.setOriginCenter();
-
-        int ancho = (int) spr.getWidth();
-        int alto = (int) spr.getHeight();
+    	super(x, y, size, xSpeed, ySpeed, tx);
+    	
+        int ancho = (int) getSprite().getWidth();
+        int alto = (int) getSprite().getHeight();
 
         // Corrige si el sprite estaría fuera de pantalla
         if (x < 0) x = 0;
@@ -29,47 +23,43 @@ public class Ball2 {
         if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
         // Guardar posición corregida
-        this.x = x;
-        this.y = y;
-        spr.setPosition(this.x, this.y);
-
-        // Velocidades
-        this.xSpeed = xSpeed;
-        this.ySpeed = ySpeed;
+        setX(x);
+        setY(y);
+        getSprite().setPosition(getX(), getY());
     }
     
     public void update() {
-        x += getXSpeed();
-        y += getySpeed();
+        setX(getX()+getXSpeed());
+        setY(getY()+getYSpeed());
 
-        if (x+getXSpeed() < 0 || x+getXSpeed()+spr.getWidth() > Gdx.graphics.getWidth())
+        if (getX()+getXSpeed() < 0 || getX()+getXSpeed()+getSprite().getWidth() > Gdx.graphics.getWidth())
         	setXSpeed(getXSpeed() * -1);
-        if (y+getySpeed() < 0 || y+getySpeed()+spr.getHeight() > Gdx.graphics.getHeight())
-        	setySpeed(getySpeed() * -1);
-        spr.setPosition(x, y);
+        if (getY()+getYSpeed() < 0 || getY()+getYSpeed() > Gdx.graphics.getHeight())
+        	setYSpeed(getYSpeed() * -1);
+        getSprite().setPosition(getX(), getY());
     }
     
     public Rectangle getArea() {
-    	return spr.getBoundingRectangle();
+    	return getSprite().getBoundingRectangle();
     }
     public void draw(SpriteBatch batch) {
-    	spr.draw(batch);
+    	getSprite().draw(batch);
     }
     
-    public void checkCollision(Ball2 b2) {
+    public void checkCollision(Asteroid another) {
         // Calcular los centros de ambos
-        float cx1 = this.x + spr.getWidth() / 2f;
-        float cy1 = this.y + spr.getHeight() / 2f;
-        float cx2 = b2.x + b2.spr.getWidth() / 2f;
-        float cy2 = b2.y + b2.spr.getHeight() / 2f;
+        float cx1 = getX() + getSprite().getWidth() / 2f;
+        float cy1 = getY() + getSprite().getHeight() / 2f;
+        float cx2 = another.getX() + another.getSprite().getWidth() / 2f;
+        float cy2 = another.getY() + another.getSprite().getHeight() / 2f;
 
         // Diferencia de posición
         float dx = cx2 - cx1;
         float dy = cy2 - cy1;
         float distancia = (float) Math.sqrt(dx * dx + dy * dy);
 
-        float radio1 = spr.getWidth() / 2f;
-        float radio2 = b2.spr.getWidth() / 2f;
+        float radio1 = getSprite().getWidth() / 2f;
+        float radio2 = another.getSprite().getWidth() / 2f;
 
         // ¿Se tocan o superponen?
         if (distancia < radio1 + radio2) {
@@ -79,19 +69,19 @@ public class Ball2 {
 
             // Separarlas un poco para evitar vibración
             float overlap = (radio1 + radio2 - distancia) / 2f;
-            this.x -= nx * overlap;
-            this.y -= ny * overlap;
-            b2.x += nx * overlap;
-            b2.y += ny * overlap;
-            spr.setPosition(this.x, this.y);
-            b2.spr.setPosition(b2.x, b2.y);
+            setX((int) (getX()-(nx * overlap)));
+            setY((int) (getY()-(ny * overlap)));
+            another.setY((int) (another.getY()+(ny*overlap)));
+            another.setX((int) (another.getX()+(nx*overlap)));
+            getSprite().setPosition(getX(), getY());
+            another.getSprite().setPosition(another.getX(), another.getY());
 
             // --- Rebote realista ---
             // Velocidades antes del impacto
-            float vx1 = this.xSpeed;
-            float vy1 = this.ySpeed;
-            float vx2 = b2.xSpeed;
-            float vy2 = b2.ySpeed;
+            float vx1 = getXSpeed();
+            float vy1 = getYSpeed();
+            float vx2 = another.getXSpeed();
+            float vy2 = another.getYSpeed();
 
             // Proyección de las velocidades sobre el eje de colisión
             float p1 = vx1 * nx + vy1 * ny;
@@ -106,42 +96,24 @@ public class Ball2 {
             float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
 
             // Cambiar solo la componente normal, mantener tangencial igual
-            this.xSpeed += (p1Final - p1) * nx+2;
-            this.ySpeed += (p1Final - p1) * ny+2;
-            b2.xSpeed += (p2Final - p2) * nx+2;
-            b2.ySpeed += (p2Final - p2) * ny+2;
+            setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
+            setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
+            another.setXSpeed((int) (another.getXSpeed()+(p2Final - p2) * nx+2));
+            another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
         }
     }
-	public int getXSpeed() {
-		return xSpeed;
-	}
-	public void setXSpeed(int xSpeed) {
-		this.xSpeed = xSpeed;
-	}
-	public int getySpeed() {
-		return ySpeed;
-	}
-	public void setySpeed(int ySpeed) {
-		this.ySpeed = ySpeed;
-	}
-	public int getX() {
-		return this.x;
-	}
-	public int getY() {
-		return this.y;
-	}
 	
 	public float getWidth() {
-	    return spr.getWidth();
+	    return getSprite().getWidth();
 	}
 
 	public float getHeight() {
-	    return spr.getHeight();
+	    return getSprite().getHeight();
 	}
 	public void setPosition(float x, float y) {
-	    this.x = (int) x;
-	    this.y = (int) y;
-	    spr.setPosition(x, y);
+	    setX((int) x);
+	    setY((int) y);
+	    getSprite().setPosition(x, y);
 	}
     
 }
