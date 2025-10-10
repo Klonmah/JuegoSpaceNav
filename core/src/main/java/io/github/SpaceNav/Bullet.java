@@ -47,8 +47,8 @@ public class Bullet {
 	    	spr.draw(batch);
 	    }
 	    
-	    public boolean checkCollision(Ball2 b2) {
-	        if(spr.getBoundingRectangle().overlaps(b2.getArea())){
+	    public boolean checkCollision(Asteroid asteroid) {
+	        if(spr.getBoundingRectangle().overlaps(asteroid.getArea())){
 	        	// Se destruyen ambos
 	            this.destroyed = true;
 	            return true;

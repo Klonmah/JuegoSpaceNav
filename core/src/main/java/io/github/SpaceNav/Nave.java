@@ -135,7 +135,7 @@ public class Nave {
         }
     }
       
-    public boolean checkCollision(Ball2 b) {
+    public boolean checkCollision(Asteroid b) {
         if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
             // Rebote simple: invertir la dirección de la bola según dónde chocó
             if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
