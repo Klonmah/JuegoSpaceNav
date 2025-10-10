@@ -10,13 +10,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+import io.github.SpaceNav.Armas.Weapon;
+import io.github.SpaceNav.Armas.WeaponQuintuple;
+
 
 
 public class Nave {
 	
 	private boolean destruida = false;
-    private int vidas = 3;
-    float velocidad = 4f;
+	private float vidaMax = 20;
+    private int vidas = 20;
+    private float velocidad = 4f;
     private Sprite spr;
     private Sound sonidoHerido;
     private Sound soundBala;
@@ -25,8 +29,8 @@ public class Nave {
     private int tiempoHeridoMax=50;
     private int tiempoHerido;
     private float rotacion = 0f; // ángulo 
-    float largoNave;
-    float anguloRad;
+    private float largoNave;
+    private float anguloRad;
     private float velX = 0f;
     private float velY = 0f;
     private float aceleracion = 0.15f;
@@ -57,7 +61,7 @@ public class Nave {
     	spr.setBounds(x, y, 45, 45);
     	this.largoNave =  spr.getHeight()/2 * 0.9f;
     	
-    	this.weapon = new WeaponTriple(txBala, soundBala, 0.3f); // 0.3s entre disparos
+    	this.weapon = new WeaponQuintuple(txBala, soundBala, 0.3f); // 0.3s entre disparos
     }
     public void draw(SpriteBatch batch, PantallaJuego juego) {
         float x = spr.getX();
