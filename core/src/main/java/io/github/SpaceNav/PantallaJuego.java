@@ -89,7 +89,7 @@ public class PantallaJuego implements Screen {
             BallStrong bb = new BallStrong(x, y, size,
                     velXAsteroides + r.nextInt(4),
                     velYAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("libgdx.png")));
+                    new Texture(Gdx.files.internal("aGreyMedium4Red.png")));
 
             asteroids1.add(bb);
             asteroids2.add(bb);
