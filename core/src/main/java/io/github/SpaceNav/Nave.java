@@ -125,9 +125,11 @@ public class Nave {
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 // calcular punta de la nave
-                float offset = 5;
-                float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
-                float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
+                //float offset = -30;
+                //float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
+                //float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
+            	float puntaX = spr.getX();
+            	float puntaY = spr.getY();
 
                 // disparar usando arma modular (arma se encarga del sonido)
                 weapon.fire(this, juego, puntaX, puntaY);

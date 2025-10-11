@@ -46,7 +46,7 @@ public class PantallaJuego implements Screen {
 		camera.setToOrtho(false, 800, 640);
 		//inicializar assets; musica de fondo y efectos de sonido
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-		explosionSound.setVolume(1,0.5f);
+		explosionSound.setVolume(0,0.05f);
 		
 	    // cargar imagen de la nave, 64x64   
 	    nave = new Nave(Gdx.graphics.getWidth()/2-50,30,new Texture(Gdx.files.internal("MainShip3.png")),
