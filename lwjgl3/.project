@@ -21,10 +21,6 @@
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>assets</name>
-			<type>2</type>
-			<location>C:/Users/hugo/Documents/UUED REVIVAL GITHUB/JuegoSpaceNav/assets</location>
-		</link>
+		<location>C:/Users/diazv/OneDrive/Documents/Javascripts projects/Calculator/JuegoSpaceNav/assets</location>
 	</linkedResources>
 </projectDescription>

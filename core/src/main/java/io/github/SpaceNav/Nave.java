@@ -30,6 +30,7 @@ public class Nave {
     private int tiempoHerido;
     private float rotacion = 0f; // ángulo 
     private float largoNave;
+    private float anchoNave;
     private float anguloRad;
     private float velX = 0f;
     private float velY = 0f;
@@ -37,6 +38,7 @@ public class Nave {
     private float friccion = 0.99f;
     private float velocidadMax = 6f;
     private Weapon weapon; // arma actual
+
 
 
     public void setWeapon(Weapon w) {
@@ -50,6 +52,9 @@ public class Nave {
     public float getLargoNave() {
     	return this.largoNave;
     }
+    public float getAnchoNave() {
+    	return this.anchoNave;
+    }
     
     public Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
     	sonidoHerido = soundChoque;
@@ -59,82 +64,65 @@ public class Nave {
     	spr.setPosition(x, y);
     	spr.setOriginCenter();
     	spr.setBounds(x, y, 45, 45);
-    	this.largoNave =  spr.getHeight()/2 * 0.9f;
+    	this.largoNave =  spr.getHeight();
+    	this.anchoNave= this.spr.getWidth();
     	
     	this.weapon = new WeaponQuintuple(txBala, soundBala, 0.3f); // 0.3s entre disparos
     }
-    public void draw(SpriteBatch batch, PantallaJuego juego) {
-        float x = spr.getX();
-        float y = spr.getY();
-
-        if (!herido) {
-            // --- ROTACIÓN ---
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
-            rotacion = (rotacion + 360) % 360;
-
-            // Convertir rotación a radianes
-            anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
-
-            // --- ACELERACIÓN Y DESPLAZAMIENTO ---
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                velX -= MathUtils.cos(anguloRad) * aceleracion;
-                velY -= MathUtils.sin(anguloRad) * aceleracion;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                velX += MathUtils.cos(anguloRad) * aceleracion;
-                velY += MathUtils.sin(anguloRad) * aceleracion;
-            }
-
-            // Aplicar fricción
-            velX *= friccion;
-            velY *= friccion;
-
-            // Limitar velocidad máxima
-            float velocidadActual = (float)Math.sqrt(velX * velX + velY * velY);
-            if (velocidadActual > velocidadMax) {
-                float factor = velocidadMax / velocidadActual;
-                velX *= factor;
-                velY *= factor;
-            }
-
-            // Mover nave
-            x += velX;
-            y += velY;
-
-            // Limitar dentro de la pantalla
-            x = MathUtils.clamp(x, 0, Gdx.graphics.getWidth() - spr.getWidth());
-            y = MathUtils.clamp(y, 0, Gdx.graphics.getHeight() - spr.getHeight());
-
-            spr.setPosition(x, y);
-            spr.setRotation(rotacion);
-            spr.draw(batch);
-
-        } else {
-            // Si está herido, movimiento leve random
-            spr.setX(spr.getX() + MathUtils.random(-2, 2));
-            spr.draw(batch);
-            spr.setX(x);
+ // Nuevo método update
+    public void update(boolean pausa, PantallaJuego juego) {
+        if (pausa) return;
+        
+        if(herido) {
+        	spr.setX(spr.getX() + MathUtils.random(-2,2));
+            spr.setY(spr.getY() + MathUtils.random(-2,2));
             tiempoHerido--;
             if (tiempoHerido <= 0) herido = false;
+        }else {
+        
+        	// ROTACIÓN
+        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
+        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
+        	rotacion = (rotacion + 360) % 360;
+
+        	anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+
+        	// ACELERACIÓN
+        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        		velX -= MathUtils.cos(anguloRad) * aceleracion;
+        		velY -= MathUtils.sin(anguloRad) * aceleracion;
+        	}
+
+        	// FRICCIÓN
+        	velX *= friccion;
+        	velY *= friccion;
+
+        	// Limitar velocidad
+        	float velocidadActual = (float)Math.sqrt(velX*velX + velY*velY);
+        	if (velocidadActual > velocidadMax) {
+        		float factor = velocidadMax / velocidadActual;
+        		velX *= factor;
+        		velY *= factor;
+        	}
+
+        	// Mover nave
+        	float x = MathUtils.clamp(spr.getX() + velX, 0, Gdx.graphics.getWidth() - spr.getWidth());
+        	float y = MathUtils.clamp(spr.getY() + velY, 0, Gdx.graphics.getHeight() - spr.getHeight());
+        	spr.setPosition(x, y);
+        	spr.setRotation(rotacion);
+
+        	// Disparo
+        	if (weapon != null) {
+        		weapon.update(Gdx.graphics.getDeltaTime());
+        		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        			weapon.fire(this, juego, spr.getX(), spr.getY());
+        		}
+        	}
         }
-
-        // --- DISPARO ---
-        if (weapon != null) {
-            weapon.update(Gdx.graphics.getDeltaTime());
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                // calcular punta de la nave
-                //float offset = -30;
-                //float puntaX = spr.getX() + spr.getWidth()/2 - MathUtils.cos(anguloRad) * (largoNave + offset);
-                //float puntaY = spr.getY() + spr.getHeight()/2 - MathUtils.sin(anguloRad) * (largoNave + offset);
-            	float puntaX = spr.getX();
-            	float puntaY = spr.getY();
-
-                // disparar usando arma modular (arma se encarga del sonido)
-                weapon.fire(this, juego, puntaX, puntaY);
-            }
-        }
+    }
+    // Nuevo draw simplificado
+    public void draw(SpriteBatch batch) {
+        spr.draw(batch);
     }
       
     public boolean checkCollision(Asteroid b) {
@@ -157,7 +145,6 @@ public class Nave {
             herido = true;
             tiempoHerido = tiempoHeridoMax;
             sonidoHerido.play();
-
             if (vidas <= 0)
                 destruida = true;
 
@@ -165,13 +152,16 @@ public class Nave {
         }
         return false;
     }
+    
+    
+    
     public boolean estaDestruido() {
        return !herido && destruida;
     }
     public boolean estaHerido() {
  	   return herido;
     }
-    
+
     public int getVidas() {return vidas;}
     //public boolean isDestruida() {return destruida;}
     public int getX() {return (int) spr.getX();}
