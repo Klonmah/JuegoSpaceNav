@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package asteroides;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,11 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 
-public class BallStrong extends Asteroid {
+public class Ball extends Asteroid {
 
-	int hp=2;
 
-    public BallStrong(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
+    public Ball(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
     	super(x, y, size, xSpeed, ySpeed, tx);
     	
         int ancho = (int) getSprite().getWidth();
@@ -102,12 +101,6 @@ public class BallStrong extends Asteroid {
             another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
         }
     }
-	public int getHp() {
-		return hp;
-	}
-	public void getHit() {
-		hp--;
-	}
 	
 	public float getWidth() {
 	    return getSprite().getWidth();

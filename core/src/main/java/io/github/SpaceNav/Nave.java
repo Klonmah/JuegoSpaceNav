@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+import Pantallas.PantallaJuego;
+import asteroides.Asteroid;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
 

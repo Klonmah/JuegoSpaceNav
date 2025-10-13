@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package Pantallas;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +11,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+
+import asteroides.Asteroid;
+import asteroides.Ball;
+import asteroides.BallStrong;
+import io.github.SpaceNav.Nave;
+import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Armas.Bullet;
+import io.github.SpaceNav.*;
 
 public class PantallaJuego implements Screen {
 
@@ -44,8 +52,9 @@ public class PantallaJuego implements Screen {
         camera.setToOrtho(false, 800, 640);
 
         // Efectos de sonido
+        
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("../assets/explosion.ogg"));
-        explosionSound.setVolume(0, 0.05f);
+        explosionSound.setVolume(1, 0.1f);
 
         // Cargar nave
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
@@ -64,7 +73,7 @@ public class PantallaJuego implements Screen {
             int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
             int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
 
-            Ball2 bb = new Ball2(x, y, size,
+            Ball bb = new Ball(x, y, size,
                     velXAsteroides + r.nextInt(4),
                     velYAsteroides + r.nextInt(4),
                     new Texture(Gdx.files.internal("../assets/aGreyMedium4.png")));
@@ -113,9 +122,9 @@ public class PantallaJuego implements Screen {
                     Asteroid asteroide = asteroids1.get(j);
                     if (b.checkCollision(asteroide)) {
                         long explosionId = explosionSound.play();
-                        explosionSound.setVolume(explosionId, 0.2f);
+                        explosionSound.setVolume(explosionId, 0.1f);
 
-                        if (asteroide instanceof Ball2) {
+                        if (asteroide instanceof Ball) {
                             asteroids1.remove(j);
                             asteroids2.remove(j);
                             j--;

@@ -1,10 +1,10 @@
 package io.github.SpaceNav.Armas;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.github.SpaceNav.Bullet;
+import Pantallas.PantallaJuego;
 import io.github.SpaceNav.Nave;
-import io.github.SpaceNav.PantallaJuego;
 
 
 public class WeaponSingle extends Weapon {
