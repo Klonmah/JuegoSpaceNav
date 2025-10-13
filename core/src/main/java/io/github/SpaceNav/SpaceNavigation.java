@@ -18,7 +18,7 @@ public class SpaceNavigation extends Game {
 	private Music gameMusic;
 
 	public void create() {
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("song-loop.wav")); //
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("../assets/song-loop.wav")); //
 		
 		gameMusic.setLooping(true);
 		gameMusic.setVolume(0.4f);

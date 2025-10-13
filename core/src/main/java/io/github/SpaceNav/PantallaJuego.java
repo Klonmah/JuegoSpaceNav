@@ -44,15 +44,15 @@ public class PantallaJuego implements Screen {
         camera.setToOrtho(false, 800, 640);
 
         // Efectos de sonido
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("../assets/explosion.ogg"));
         explosionSound.setVolume(0, 0.05f);
 
         // Cargar nave
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
-                new Texture(Gdx.files.internal("MainShip3.png")),
-                Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")),
-                new Texture(Gdx.files.internal("Rocket2.png")),
-                Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
+                new Texture(Gdx.files.internal("../assets/MainShip3.png")),
+                Gdx.audio.newSound(Gdx.files.internal("../assets/hurt.ogg")),
+                new Texture(Gdx.files.internal("../assets/Rocket2.png")),
+                Gdx.audio.newSound(Gdx.files.internal("../assets/pop-sound.mp3")));
         nave.setVidas(vidas);
 
         // Crear asteroides
@@ -67,7 +67,7 @@ public class PantallaJuego implements Screen {
             Ball2 bb = new Ball2(x, y, size,
                     velXAsteroides + r.nextInt(4),
                     velYAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("aGreyMedium4.png")));
+                    new Texture(Gdx.files.internal("../assets/aGreyMedium4.png")));
 
             asteroids1.add(bb);
             asteroids2.add(bb);
