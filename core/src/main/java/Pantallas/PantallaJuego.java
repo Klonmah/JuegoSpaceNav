@@ -32,6 +32,7 @@ public class PantallaJuego implements Screen {
     private int velXAsteroides;
     private int velYAsteroides;
     private int cantAsteroides;
+    private float volumeMenu;
 
     private Nave nave;
     private ArrayList<Asteroid> asteroids1 = new ArrayList<>();
@@ -39,13 +40,14 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bullet> balas = new ArrayList<>();
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,
-                         int velXAsteroides, int velYAsteroides, int cantAsteroides) {
+                         int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
         this.velXAsteroides = velXAsteroides;
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
+        this.volumeMenu = volumen;
 
         batch = game.getBatch();
         camera = new OrthographicCamera();
@@ -54,7 +56,7 @@ public class PantallaJuego implements Screen {
         // Efectos de sonido
         
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("../assets/explosion.ogg"));
-        explosionSound.setVolume(1, 0.1f);
+        explosionSound.setVolume(1, volumeMenu);
 
         // Cargar nave
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
@@ -104,6 +106,15 @@ public class PantallaJuego implements Screen {
     public void setPausa(boolean pausa) {
     	this.pausa = pausa;
     }
+
+    // testeando nuevo volumen
+    public float getVolume() {
+    	return this.volumeMenu;
+    }
+    public void setVolume(int v) {
+    	this.volumeMenu = v;
+    }
+    
     public void actualizarJuego(float delta) {
         // --- actualizar nave con pausa ---
         nave.update(pausa, this);
@@ -203,7 +214,7 @@ public class PantallaJuego implements Screen {
         // --- nivel completado o game over ---
         if (nave.estaDestruido()) {
             if (score > game.getHighScore()) game.setHighScore(score);
-            Screen ss = new PantallaGameOver(game);
+            Screen ss = new PantallaGameOver(game, volumeMenu);
             ss.resize(1200, 800);
             game.setScreen(ss);
             dispose();
@@ -211,7 +222,7 @@ public class PantallaJuego implements Screen {
 
         if (asteroids1.isEmpty()) {
             Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
-                    velXAsteroides + 3, velYAsteroides + 3, cantAsteroides + 6);
+                    velXAsteroides + 3, velYAsteroides + 3, cantAsteroides + 6, volumeMenu);
             ss.resize(1200, 800);
             game.setScreen(ss);
             dispose();

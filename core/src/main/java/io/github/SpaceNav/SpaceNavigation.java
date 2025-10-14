@@ -18,12 +18,13 @@ public class SpaceNavigation extends Game {
 	private BitmapFont font;
 	private int highScore;	
 	private Music gameMusic;
+	private float volumeGive = 0.5f;
 
 	public void create() {
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("../assets/song-loop.wav")); //
 		
 		gameMusic.setLooping(true);
-		gameMusic.setVolume(0.4f);
+		gameMusic.setVolume(volumeGive);
 		gameMusic.play();
 		highScore = 0;
 		batch = new SpriteBatch();
@@ -32,6 +33,18 @@ public class SpaceNavigation extends Game {
 		Screen ss = new PantallaMenu(this);
 		this.setScreen(ss);
 	}
+
+	//cambiar volumen
+	public void setVolume(float v) {
+    volumeGive = v;
+    if (gameMusic != null) {
+        gameMusic.setVolume(volumeGive);
+    	}
+    }
+    
+    public float getVolume() {
+        return volumeGive;
+    }
 
 	public void render() {
 		super.render(); // important!
