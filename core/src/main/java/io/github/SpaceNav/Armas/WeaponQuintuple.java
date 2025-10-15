@@ -8,8 +8,8 @@ import io.github.SpaceNav.Nave;
 
 public class WeaponQuintuple extends Weapon {
 
-    public WeaponQuintuple(Texture txBala, Sound sonidoBala, float cadencia) {
-        super(txBala, sonidoBala, cadencia);
+    public WeaponQuintuple(Texture txBala, Texture txBomb, Sound sonidoBala, float cadencia) {
+        super(txBala, txBomb, sonidoBala, cadencia);
     }
 
     @Override
@@ -24,6 +24,19 @@ public class WeaponQuintuple extends Weapon {
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion() + 20));
         
         // Sonido
+        long idSonido = this.getSonidoBala().play();
+        this.getSonidoBala().setVolume(idSonido, 0.3f);
+
+        this.setTiempoDesdeUltimoDisparo(0f);
+    }
+    
+    public void firebomb(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
+        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return; // aún en cooldown
+
+        // Crear bala
+        juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBomb(), nave.getRotacion()));
+
+        // Reproducir sonido
         long idSonido = this.getSonidoBala().play();
         this.getSonidoBala().setVolume(idSonido, 0.3f);
 

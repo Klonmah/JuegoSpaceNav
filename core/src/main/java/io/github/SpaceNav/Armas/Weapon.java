@@ -8,6 +8,7 @@ import io.github.SpaceNav.Nave;
 
 public abstract class Weapon {
     private Texture txBala;
+    private Texture txBomb;
     private Sound sonidoBala;
     private float cadencia; // segundos entre disparos
     private float tiempoDesdeUltimoDisparo = 0f;
@@ -15,6 +16,10 @@ public abstract class Weapon {
  // GETTERS
     public Texture getTxBala() {
         return txBala;
+    }
+
+    public Texture getTxBomb() {
+        return txBomb;
     }
 
     public Sound getSonidoBala() {
@@ -33,6 +38,11 @@ public abstract class Weapon {
     public void setTxBala(Texture txBala) {
         this.txBala = txBala;
     }
+    
+
+    public void setTxBomb(Texture txBomb) {
+        this.txBomb = txBomb;
+    }
 
     public void setSonidoBala(Sound sonidoBala) {
         this.sonidoBala = sonidoBala;
@@ -46,8 +56,9 @@ public abstract class Weapon {
         this.tiempoDesdeUltimoDisparo = tiempoDesdeUltimoDisparo;
     }
     
-    public Weapon(Texture txBala, Sound sonidoBala, float cadencia) {
+    public Weapon(Texture txBala, Texture txBomb, Sound sonidoBala, float cadencia) {
         this.txBala = txBala;
+        this.txBomb = txBomb;
         this.sonidoBala = sonidoBala;
         this.cadencia = cadencia;
     }
@@ -58,4 +69,7 @@ public abstract class Weapon {
 
     // Recibe la posición de la punta de la nave
     public abstract void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY);
+    
+    // Recibe la posición de la punta de la nave (bomb)
+    public abstract void firebomb(Nave nave, PantallaJuego juego, float puntaX, float puntaY);
 }
