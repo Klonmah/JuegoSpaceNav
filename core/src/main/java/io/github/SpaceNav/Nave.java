@@ -20,6 +20,7 @@ import io.github.SpaceNav.Armas.WeaponQuintuple;
 public class Nave {
 	
 	private boolean destruida = false;
+    private int Iframes = 120;
 	private float vidaMax = 20;
     private int vidas = 20;
     private int bombs = 3;
@@ -78,6 +79,14 @@ public class Nave {
  // Nuevo método update
     public void update(boolean pausa, PantallaJuego juego) {
         if (pausa) return;
+        if (Iframes > 0)
+        {
+        	Iframes--;
+        }
+        if (Iframes <= 0)
+        {
+        	Iframes = 0;
+        }
         
         if(herido) {
         	spr.setX(spr.getX() + MathUtils.random(-2,2));
@@ -173,7 +182,7 @@ public class Nave {
     }
       
     public boolean checkCollision(Asteroid b) {
-        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
             // Rebote simple: invertir la dirección de la bola según dónde chocó
             if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
                 b.setXSpeed(-Math.abs(b.getXSpeed())); // rebote a la izquierda
@@ -192,6 +201,7 @@ public class Nave {
             herido = true;
             tiempoHerido = tiempoHeridoMax;
             sonidoHerido.play();
+            Iframes = 120;
             if (vidas <= 0)
                 destruida = true;
 
