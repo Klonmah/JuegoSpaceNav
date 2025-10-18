@@ -40,8 +40,8 @@ public class Nave {
     private float velX = 0f;
     private float velY = 0f;
     private float velocityfixed = 4f;
-    //private float aceleracion = 0.15f;
-    //private float friccion = 0.99f;
+    private float aceleracion = 0.15f;
+    private float friccion = 0.99f; // 0.99f
     private float velocidadMax = 6f;
     private Weapon weapon; // arma actual
 
@@ -96,52 +96,61 @@ public class Nave {
         }else {
         	
         	
-        	// New Hard movement system
-        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        		{
-        			velY = velocityfixed/2;
-        		} else { velY = velocityfixed; } 
-        	} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-        		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        		{
-        			velY = -velocityfixed/2;
-        		} else { velY = -velocityfixed; } 
-        	} else {
-        		velY = 0;
-        	}
-
-        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-        		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        		{
-        			velX = velocityfixed/2;
-        		} else { velX = velocityfixed; } 
-        	    
-        	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-        		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        		{
-        			velX = -velocityfixed/2;
-        		} else { velX = -velocityfixed; } 
-        	} else {
-        		velX = 0;
-        	}
-        	// ROTACIÓN (deprecated)
-        	//if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
-        	//if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
-        	//rotacion = (rotacion + 360) % 360;
-
-        	//anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
-
-        	// ACELERACIÓN (deprecated)
+        	// New Hard movement system (deprecated)
         	//if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        	//	velX -= MathUtils.cos(anguloRad) * aceleracion;
-        	//	velY -= MathUtils.sin(anguloRad) * aceleracion;
+        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        	//	{
+        	//		velY = velocityfixed/2;
+        	//	} else { velY = velocityfixed; } 
+        	//} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        	//	{
+        	//		velY = -velocityfixed/2;
+        	//	} else { velY = -velocityfixed; } 
+        	//} else {
+        	//	velY = 0;
+        	//}
+
+        	//if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        	//	{
+        	//		velX = velocityfixed/2;
+        	//	} else { velX = velocityfixed; } 
+        	//    
+        	//} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        	//	{
+        	//		velX = -velocityfixed/2;
+        	//	} else { velX = -velocityfixed; } 
+        	//} else {
+        	//	velX = 0;
         	//}
         	
+        	
+        	//ROTACIÓN (restaurada)
+        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
+        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
+        	rotacion = (rotacion + 360) % 360;
 
-        	// FRICCIÓN (deprecated)
-        	//velX *= friccion;
-        	//velY *= friccion;
+        	anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+
+        	//ACELERACIÓN
+        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        		
+            	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+            	{velX -= MathUtils.cos(anguloRad) * (aceleracion/4);}
+            	else { velX -= MathUtils.cos(anguloRad) * aceleracion; } 
+            	
+	        	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+	        	{velY -= MathUtils.sin(anguloRad) * (aceleracion/4);}
+	        	else { velY -= MathUtils.sin(anguloRad) * aceleracion; } 
+        		
+        	}
+        	
+
+        	// FRICCIÓN
+        	velX *= friccion;
+        	velY *= friccion;
 
         	// Limitar velocidad
         	float velocidadActual = (float)Math.sqrt(velX*velX + velY*velY);
