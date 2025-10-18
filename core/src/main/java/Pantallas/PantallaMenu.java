@@ -39,7 +39,6 @@ public class PantallaMenu implements Screen {
 		game.getFont().draw(game.getBatch(), "Presiona Space para comenzar, U y J para cambiar volumen...", 100, 300);
 	
 		game.getBatch().end();
-		volumeGive = 0.5f;
 
 		if ( Gdx.input.isKeyJustPressed(Input.Keys.U )) {
 			volumeGive += 0.1f;
@@ -57,7 +56,7 @@ public class PantallaMenu implements Screen {
 			}
 		    game.setVolume(volumeGive);
 		}  else if ( Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,1,1,10,volumeGive);
+			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10,volumeGive);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();

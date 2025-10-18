@@ -22,11 +22,11 @@ public abstract class Asteroid {
         int ancho = (int) spr.getWidth();
         int alto = (int) spr.getHeight();
 
-        // Corrige si el sprite estaría fuera de pantalla
+        // Corrige si el sprite estaría fuera de pantalla //quitado ancho y alto en el segundo y tercer if por como se dibujan los sprites
         if (x < 0) x = 0;
-        if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
+        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
         if (y < 0) y = 0;
-        if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
         // Guardar posición corregida
         this.x = x;

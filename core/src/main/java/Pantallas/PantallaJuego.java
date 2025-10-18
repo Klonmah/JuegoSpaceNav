@@ -42,7 +42,7 @@ public class PantallaJuego implements Screen {
     // bomb
     private ArrayList<Bomb> bombs = new ArrayList<>();
 
-    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,
+    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
                          int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen) {
         this.game = game;
         this.ronda = ronda;
@@ -69,6 +69,7 @@ public class PantallaJuego implements Screen {
                 new Texture(Gdx.files.internal("../assets/BombLowScaled.png")),
                 Gdx.audio.newSound(Gdx.files.internal("../assets/pop-sound.mp3")));
         nave.setVidas(vidas);
+        nave.setBombs(bombs);
 
         // Crear asteroides
         Random r = new Random();
@@ -215,7 +216,6 @@ public class PantallaJuego implements Screen {
             }
         }
     }
-    
     // --- dibujar el juego ---
     public void dibujarJuego() {
         batch.begin();
@@ -257,13 +257,14 @@ public class PantallaJuego implements Screen {
         }
 
         if (asteroids1.isEmpty()) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
-                    velXAsteroides + 3, velYAsteroides + 3, cantAsteroides + 6, volumeMenu);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
+            game.setScreen(new PantallaPerks(game, this, nave, ronda, score, velXAsteroides, velYAsteroides, cantAsteroides,volumeMenu));
+            //Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs(), score,
+            //        velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
+            //ss.resize(1200, 800);
             dispose();
         }
     }
+
 
     public boolean agregarBala(Bullet bb) {
         return balas.add(bb);

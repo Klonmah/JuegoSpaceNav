@@ -15,11 +15,11 @@ public class Ball extends Asteroid {
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();
 
-        // Corrige si el sprite estaría fuera de pantalla
+     // Corrige si el sprite estaría fuera de pantalla //quitado ancho y alto en el segundo y tercer if por como se dibujan los sprites
         if (x < 0) x = 0;
-        if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
+        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
         if (y < 0) y = 0;
-        if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
         // Guardar posición corregida
         setX(x);
@@ -83,22 +83,22 @@ public class Ball extends Asteroid {
             float vy2 = another.getYSpeed();
 
             // Proyección de las velocidades sobre el eje de colisión
-            float p1 = vx1 * nx + vy1 * ny;
-            float p2 = vx2 * nx + vy2 * ny;
+            //float p1 = vx1 * nx + vy1 * ny;
+            //float p2 = vx2 * nx + vy2 * ny;
 
             // Supongamos masas iguales (si quieres, puedes hacer que dependa del tamaño)
-            float m1 = 1f;
-            float m2 = 1f;
+            //float m1 = 1f;
+            //float m2 = 1f;
 
             // Fórmulas de colisión elástica 1D (solo sobre el eje de impacto)
-            float p1Final = ((m1 - m2) * p1 + 2 * m2 * p2) / (m1 + m2);
-            float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
+            //float p1Final = ((m1 - m2) * p1 + 2 * m2 * p2) / (m1 + m2);
+            //float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
 
             // Cambiar solo la componente normal, mantener tangencial igual
-            setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
-            setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
-            another.setXSpeed((int) (another.getXSpeed()+(p2Final - p2) * nx+2));
-            another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
+            //setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
+            //setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
+            //another.setXSpeed((int) (another.getXSpeed()+(p2Final - p2) * nx+2));
+            //another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
         }
     }
 	

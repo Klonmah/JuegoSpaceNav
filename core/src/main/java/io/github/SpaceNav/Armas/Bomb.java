@@ -11,10 +11,10 @@ public class Bomb {
     private float x;
     private float y;
     private float rotacion;        
-    private float scale = 1f;      
-    private float growthSpeed = 0.02f; 
+    private float scale = 2f;      
+    private float growthSpeed = 0.04f; 
     private float rotationSpeed = 2f;  
-    private float lifeTime = 4f;   
+    private float lifeTime = 1f;   
     private boolean destroyed = false;
 
     private Sprite spr;
@@ -31,8 +31,8 @@ public class Bomb {
     }
 
     public void update(float delta) {
-        this.x +=  0.2f;
-        this.y +=  0.2f;
+        this.x +=  growthSpeed * 15;
+        this.y +=  growthSpeed * 15;
         if (destroyed) return;
 
         lifeTime -= delta;

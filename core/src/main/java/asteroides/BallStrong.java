@@ -84,22 +84,21 @@ public class BallStrong extends Asteroid {
             float vy2 = another.getYSpeed();
 
             // Proyección de las velocidades sobre el eje de colisión
-            float p1 = vx1 * nx + vy1 * ny;
-            float p2 = vx2 * nx + vy2 * ny;
+            //float p1 = vx1 * nx + vy1 * ny;
+            //float p2 = vx2 * nx + vy2 * ny;
 
             // Supongamos masas iguales (si quieres, puedes hacer que dependa del tamaño)
-            float m1 = 1f;
-            float m2 = 1f;
+            // vfloat m1 = 1f;
+            //float m2 = 1f;
 
             // Fórmulas de colisión elástica 1D (solo sobre el eje de impacto)
-            float p1Final = ((m1 - m2) * p1 + 2 * m2 * p2) / (m1 + m2);
-            float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
+            //float p1Final = ((m1 - m2) * p1 + 2 * m2 * p2) / (m1 + m2);
+            //float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
 
             // Cambiar solo la componente normal, mantener tangencial igual
-            setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
-            setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
-            another.setXSpeed((int) (another.getXSpeed()+(p2Final - p2) * nx+2));
-            another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
+            //setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
+            //setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
+            //another.setXSpeed((int) (another.getXZz Speed()+(p2Final - p2) * ny+2));
         }
     }
 	public int getHp() {

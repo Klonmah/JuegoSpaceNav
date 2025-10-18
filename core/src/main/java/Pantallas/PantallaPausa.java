@@ -1,6 +1,7 @@
 package Pantallas;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,7 +33,24 @@ public class PantallaPausa implements Screen {
         game.getFont().draw(batch, "PAUSA",
                 Gdx.graphics.getWidth() / 2 - 100,
                 Gdx.graphics.getHeight() / 2);
+        game.getFont().draw(batch, "Presiona U y J para cambiar volumen...",
+                Gdx.graphics.getWidth() / 2 - 400,
+                Gdx.graphics.getHeight() / 2 -100);
         batch.end();
+
+		if ( Gdx.input.isKeyJustPressed(Input.Keys.U )) {
+		    game.setVolume(game.getVolume() + 0.1f);
+			if (game.getVolume() > 1f)
+			{
+				game.setVolume(1f);
+			}
+		}
+		else if ( Gdx.input.isKeyJustPressed(Input.Keys.J )) {
+			if (game.getVolume() > 0.1f)
+			{
+			    game.setVolume(game.getVolume() - 0.1f);
+			}else{game.setVolume(0f);}
+		}
 
         // input para reanudar
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
