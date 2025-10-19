@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+import Enemigos.NaveEnemiga;
 import asteroides.Asteroid;
+import Enemigos.Mobs;
 import asteroides.Ball;
 import asteroides.BallStrong;
 import io.github.SpaceNav.Nave;
@@ -34,16 +36,19 @@ public class PantallaJuego implements Screen {
     private int velYAsteroides;
     private int cantAsteroides;
     private float volumeMenu;
+    private int cantMobs;
 
     private Nave nave;
     private ArrayList<Asteroid> asteroids1 = new ArrayList<>();
     private ArrayList<Asteroid> asteroids2 = new ArrayList<>();
+    private ArrayList<Mobs> enemies1 = new ArrayList<>();
+    private ArrayList<Mobs> enemies2 = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
     // bomb
     private ArrayList<Bomb> bombs = new ArrayList<>();
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
-                         int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen) {
+                         int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen, int cantMobs) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
@@ -51,6 +56,7 @@ public class PantallaJuego implements Screen {
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
         this.volumeMenu = volumen;
+        this.cantMobs=cantMobs;
 
         batch = game.getBatch();
         camera = new OrthographicCamera();
@@ -105,6 +111,21 @@ public class PantallaJuego implements Screen {
             asteroids1.add(bb);
             asteroids2.add(bb);
         }
+        
+        //Naves Normales
+        for(int i=0;i<cantMobs;i++) {
+        	int size= 25;
+        	int ancho=50;
+        	int x=r.nextInt(Gdx.graphics.getWidth() - ancho);
+        	int y = 200;
+        	
+        	NaveEnemiga nn= new NaveEnemiga(x, y, size,
+                    velXAsteroides + r.nextInt(4),
+                    new Texture(Gdx.files.internal("../assets/EnemyShip1.png")));
+        	
+        	enemies1.add(nn);
+            enemies2.add(nn);
+        }
     }
     
     
@@ -156,6 +177,17 @@ public class PantallaJuego implements Screen {
                         score += 10;
                     }
                 }
+                for (int j = 0; j < enemies1.size(); j++) {
+                    Mobs mob = enemies1.get(j);
+                    if (b.checkCollision(mob)) {
+                        long explosionId = explosionSound.play();
+                        explosionSound.setVolume(explosionId, 0.1f);
+                        enemies1.remove(j);
+                        enemies2.remove(j);
+                        j--;
+                        score += 10;
+                    }
+                }
                 if (b.isDestroyed()) {
                     balas.remove(i);
                     i--;
@@ -187,6 +219,18 @@ public class PantallaJuego implements Screen {
                         score += 5;
                     }
                 }
+                for (int j = 0; j < enemies1.size(); j++) {
+                    Mobs mob = enemies1.get(j);
+                    if (b.checkCollision(mob)) {
+                        long explosionId = explosionSound.play();
+                        explosionSound.setVolume(explosionId, 0.1f);
+                        
+                        asteroids1.remove(j);
+                        asteroids2.remove(j);
+                        j--;
+                        score += 5;
+                    }
+                }
                 if (b.isDestroyed()) {
                 	bombs.remove(i);
                     i--;
@@ -195,6 +239,9 @@ public class PantallaJuego implements Screen {
 
             // Movimiento asteroides
             for (Asteroid ball : asteroids1) ball.update();
+            
+            //Movimiento enemigos
+            for (Mobs mob : enemies1) mob.update();
 
             // Colisiones asteroides entre sí
             for (int i = 0; i < asteroids1.size(); i++) {
@@ -204,6 +251,15 @@ public class PantallaJuego implements Screen {
                     if (i < j) ball1.checkCollision(ball2);
                 }
             }
+            
+            //Colisiones enemigos entre sí
+            //for (int i = 0; i < enemies1.size(); i++) {
+              //  Mobs mob1 = enemies1.get(i);
+                //for (int j = 0; j < enemies2.size(); j++) {
+                  //  Mobs mob2 = enemies2.get(j);
+                    //if (i < j) mob1.checkCollision(mob2);
+                //}
+            //}
 
             // Colisión asteroides - nave
             for (int i = 0; i < asteroids1.size(); i++) {
@@ -211,6 +267,17 @@ public class PantallaJuego implements Screen {
                 if (nave.checkCollision(b)) {
                     asteroids1.remove(i);
                     asteroids2.remove(i);
+                    i--;
+                }
+            }
+            
+            //Colisión enemigos - nave
+            
+            for (int i = 0; i < enemies1.size(); i++) {
+                Mobs b = enemies1.get(i);
+                if (nave.checkCollision(b)) {
+                    enemies1.remove(i);
+                    enemies2.remove(i);
                     i--;
                 }
             }
@@ -224,12 +291,14 @@ public class PantallaJuego implements Screen {
         for (Bomb b : bombs) b.draw(batch);
         nave.draw(batch);
         for (Asteroid b : asteroids1) b.draw(batch);
+        for (Mobs b : enemies1) b.draw(batch);
         batch.end();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    	Gdx.gl.glClearColor(0, 0, 0, 1);
+    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
            
@@ -257,7 +326,7 @@ public class PantallaJuego implements Screen {
         }
 
         if (asteroids1.isEmpty()) {
-            game.setScreen(new PantallaPerks(game, this, nave, ronda, score, velXAsteroides, velYAsteroides, cantAsteroides,volumeMenu));
+            game.setScreen(new PantallaPerks(game, this, nave, ronda, score, velXAsteroides, velYAsteroides, cantAsteroides,volumeMenu, cantMobs));
             //Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs(), score,
             //        velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
             //ss.resize(1200, 800);

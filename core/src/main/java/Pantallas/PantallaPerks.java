@@ -21,8 +21,9 @@ public class PantallaPerks implements Screen {
     private int velYAsteroides;
     private int cantAsteroides;
     private float volumeMenu;
+    private int cantMobs;
     
-    public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumeMenu) {
+    public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumeMenu, int cantMobs) {
         this.game = game;
         this.juego = juego;
         this.batch = game.getBatch();
@@ -33,11 +34,13 @@ public class PantallaPerks implements Screen {
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
         this.volumeMenu = volumeMenu;
+        this.cantMobs = cantMobs;
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    	Gdx.gl.glClearColor(0, 0, 0, 1);
+    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         
         this.juego.dibujarJuego();
@@ -76,7 +79,7 @@ public class PantallaPerks implements Screen {
         // input para reanudar
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.O)) {
             Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas()+ 1, nave.getBombs(), score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
+                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
             ss.resize(1200, 800);
             game.setScreen(ss);
 			dispose();
@@ -85,7 +88,7 @@ public class PantallaPerks implements Screen {
         // input para reanudar
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
             Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs()+ 1, score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
+                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
             ss.resize(1200, 800);
             game.setScreen(ss);
 			dispose();
@@ -94,7 +97,7 @@ public class PantallaPerks implements Screen {
         // input para reanudar
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs(), score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
+                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
             ss.resize(1200, 800);
             game.setScreen(ss);
 			dispose();

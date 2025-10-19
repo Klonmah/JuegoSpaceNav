@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 import asteroides.Asteroid;
+import Enemigos.Mobs;
 
 
 public class Bullet {
@@ -51,6 +52,16 @@ public class Bullet {
 	    
 	    public boolean checkCollision(Asteroid asteroid) {
 	        if(spr.getBoundingRectangle().overlaps(asteroid.getArea())){
+	        	// Se destruyen ambos
+	            this.destroyed = true;
+	            return true;
+	
+	        }
+	        return false;
+	    }
+	    
+	    public boolean checkCollision(Mobs mob) {
+	        if(spr.getBoundingRectangle().overlaps(mob.getArea())){
 	        	// Se destruyen ambos
 	            this.destroyed = true;
 	            return true;

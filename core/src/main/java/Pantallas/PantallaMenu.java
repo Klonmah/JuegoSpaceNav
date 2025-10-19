@@ -56,7 +56,7 @@ public class PantallaMenu implements Screen {
 			}
 		    game.setVolume(volumeGive);
 		}  else if ( Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10,volumeGive);
+			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10,volumeGive,1);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();

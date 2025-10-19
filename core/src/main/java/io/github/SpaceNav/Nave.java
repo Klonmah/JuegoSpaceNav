@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+import Enemigos.Mobs;
 import Pantallas.PantallaJuego;
 import asteroides.Asteroid;
 import io.github.SpaceNav.Armas.Weapon;
@@ -203,6 +204,29 @@ public class Nave {
                 b.setYSpeed(-Math.abs(b.getYSpeed())); // rebote hacia abajo
             } else {
                 b.setYSpeed(Math.abs(b.getYSpeed()));  // rebote hacia arriba
+            }
+
+            // Actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            sonidoHerido.play();
+            Iframes = 120;
+            if (vidas <= 0)
+                destruida = true;
+
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkCollision(Mobs b) {
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+            // Rebote simple: invertir la dirección de la bola según dónde chocó
+            if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
+                b.setXSpeed(-Math.abs(b.getXSpeed())); // rebote a la izquierda
+            } else {
+                b.setXSpeed(Math.abs(b.getXSpeed()));  // rebote a la derecha
             }
 
             // Actualizar vidas y herir

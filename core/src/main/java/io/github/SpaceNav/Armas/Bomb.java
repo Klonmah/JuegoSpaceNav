@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import asteroides.Asteroid;
+import Enemigos.Mobs;
 
 public class Bomb {
 
@@ -58,6 +59,10 @@ public class Bomb {
 
     public boolean checkCollision(Asteroid asteroid) {
         return !destroyed && spr.getBoundingRectangle().overlaps(asteroid.getArea());
+    }
+    
+    public boolean checkCollision(Mobs mob) {
+        return !destroyed && spr.getBoundingRectangle().overlaps(mob.getArea());
     }
 
     public boolean isDestroyed() {return destroyed;}
