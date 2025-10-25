@@ -1,10 +1,16 @@
 package Enemigos;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import Pantallas.PantallaJuego;
+import io.github.SpaceNav.Armas.EnemyBullet;
 
 public class NaveEnemiga implements Mobs{
 	
@@ -12,11 +18,21 @@ public class NaveEnemiga implements Mobs{
     private int y;
     private int xSpeed;
     private Sprite spr;
+    private float cadencia; // segundos entre disparos
+    private float tiempoDesdeUltimoDisparo = 0f;
+    private Texture balaTexture;
+    private Sound disparoSound;
+    float pitch;
 
     public NaveEnemiga(int x, int y, int size, int xSpeed, Texture tx) {
+    	Random r = new Random();
+    	this.cadencia = 4.0f + r.nextFloat();
+    	pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
         spr = new Sprite(tx);
         spr.setSize(size * 2, size * 2); // el size es el radio
         spr.setOriginCenter();
+        balaTexture = new Texture(Gdx.files.internal("../assets/EnemyBullet.png"));
+        disparoSound = Gdx.audio.newSound(Gdx.files.internal("../assets/laserSound.mp3"));
 
         int ancho = (int) spr.getWidth();
         int alto = (int) spr.getHeight();
@@ -88,6 +104,25 @@ public class NaveEnemiga implements Mobs{
             float vx1 = xSpeed;
             float vx2 = another.getXSpeed();
         }
+    }
+    
+    public void updateDisparo(float delta, PantallaJuego juego) {
+        tiempoDesdeUltimoDisparo += delta;
+
+        if (tiempoDesdeUltimoDisparo >= cadencia) {
+            tiempoDesdeUltimoDisparo = 0;
+            EnemyBullet b = new EnemyBullet(
+                    getX() + getWidth()/2f,
+                    getY(),
+                    balaTexture
+            );
+            juego.agregarBalaEnemiga(b);
+            disparoSound.play(0.5f, pitch, 0);
+        }
+    }
+
+    private void disparar(PantallaJuego juego) {
+        
     }
     
 	public int getXSpeed() {

@@ -1,6 +1,7 @@
 package asteroides;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,9 @@ public abstract class Asteroid {
     private int xSpeed;
     private int ySpeed;
     private Sprite spr;
+    private Sound sonidoBala;
+    private float cadencia; // segundos entre disparos
+    private float tiempoDesdeUltimoDisparo = 0f;
 
     public Asteroid(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
         spr = new Sprite(tx);

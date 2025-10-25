@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 
 import Enemigos.Mobs;
 import Pantallas.PantallaJuego;
 import asteroides.Asteroid;
+import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
 
@@ -262,4 +264,29 @@ public class Nave {
     public int getX() {return (int) spr.getX();}
     public int getY() {return (int) spr.getY();}
 	public void setVidas(int vidas2) {vidas = vidas2;}
+
+	public Rectangle getArea() {
+    	return spr.getBoundingRectangle();
+    }
+	
+	public void destruir() {
+		destruida=true;
+	}
+
+	public boolean checkCollision(EnemyBullet e) {
+		if (!herido && e.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+
+            // Actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            sonidoHerido.play();
+            Iframes = 120;
+            if (vidas <= 0)
+                destruida = true;
+
+            return true;
+        }
+        return false;
+	}
 }

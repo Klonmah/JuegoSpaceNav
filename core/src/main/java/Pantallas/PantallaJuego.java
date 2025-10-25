@@ -21,6 +21,7 @@ import io.github.SpaceNav.Nave;
 import io.github.SpaceNav.SpaceNavigation;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
+import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.*;
 
 public class PantallaJuego implements Screen {
@@ -44,8 +45,8 @@ public class PantallaJuego implements Screen {
     private ArrayList<Mobs> enemies1 = new ArrayList<>();
     private ArrayList<Mobs> enemies2 = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
-    // bomb
     private ArrayList<Bomb> bombs = new ArrayList<>();
+    private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
                          int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen, int cantMobs) {
@@ -193,6 +194,16 @@ public class PantallaJuego implements Screen {
                     i--;
                 }
             }
+            
+            //Disparos enemigos
+            for (int j = 0; j < enemies1.size(); j++) {
+            	Mobs mob = enemies1.get(j);
+                mob.update();
+                if (mob instanceof NaveEnemiga) {
+                    ((NaveEnemiga) mob).updateDisparo(delta, this);
+                }
+            }
+            
             // Colisiones bombs - asteroides
             for (int i = 0; i < bombs.size(); i++) {
                 Bomb b = bombs.get(i);
@@ -281,6 +292,21 @@ public class PantallaJuego implements Screen {
                     i--;
                 }
             }
+            //Balas Enemigas
+            for (int i = 0; i < enemyBullets.size(); i++) {
+                EnemyBullet e = enemyBullets.get(i);
+                e.update();
+                System.out.println("Bullet pos: x=" + e.getX() + " y=" + e.getY());
+
+                if (nave.checkCollision(e)) {
+                    enemyBullets.remove(e);
+                }
+
+                if (e.isDestroyed()) {
+                    enemyBullets.remove(i);
+                    i--;
+                }
+            }
         }
     }
     // --- dibujar el juego ---
@@ -288,6 +314,7 @@ public class PantallaJuego implements Screen {
         batch.begin();
         dibujaEncabezado();
         for (Bullet b : balas) b.draw(batch);
+        for (EnemyBullet e : enemyBullets) e.draw(batch);
         for (Bomb b : bombs) b.draw(batch);
         nave.draw(batch);
         for (Asteroid b : asteroids1) b.draw(batch);
@@ -337,6 +364,11 @@ public class PantallaJuego implements Screen {
 
     public boolean agregarBala(Bullet bb) {
         return balas.add(bb);
+    }
+    
+    public boolean agregarBalaEnemiga(EnemyBullet bb) {
+    	System.out.println("Enemy Bullet added: " + enemyBullets.size());
+        return enemyBullets.add(bb);
     }
 
     // bomb
