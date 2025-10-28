@@ -5,19 +5,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import io.github.SpaceNav.SpaceNavigation;
+
 
 public class PantallaPausa implements Screen {
 
     private SpaceNavigation game;
     private PantallaJuego juego;
     private SpriteBatch batch;
+    private Stage pantalla;
+    
+    
 
     public PantallaPausa(SpaceNavigation game, PantallaJuego juego) {
         this.game = game;
         this.juego = juego;
         this.batch = game.getBatch();
+        
     }
 
     @Override
@@ -33,28 +40,16 @@ public class PantallaPausa implements Screen {
         game.getFont().draw(batch, "PAUSA",
                 Gdx.graphics.getWidth() / 2 - 100,
                 Gdx.graphics.getHeight() / 2);
-        game.getFont().draw(batch, "Presiona U y J para cambiar volumen...",
-                Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2 -100);
         batch.end();
 
-		if ( Gdx.input.isKeyJustPressed(Input.Keys.U )) {
-		    game.setVolume(game.getVolume() + 0.1f);
-			if (game.getVolume() > 1f)
-			{
-				game.setVolume(1f);
-			}
-		}
-		else if ( Gdx.input.isKeyJustPressed(Input.Keys.J )) {
-			if (game.getVolume() > 0.1f)
-			{
-			    game.setVolume(game.getVolume() - 0.1f);
-			}else{game.setVolume(0f);}
-		}
-
+		
         // input para reanudar
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             game.setScreen(juego);
+            juego.setPausa(false); // restablece la pausa
+        }
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.D)) {
+            game.setScreen(new PantallaAjustes(this.game));
             juego.setPausa(false); // restablece la pausa
         }
     }

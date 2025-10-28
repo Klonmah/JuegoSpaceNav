@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import Pantallas.PantallaMenu;
-
+import Pantallas.PantallaAjustes;
 
 
 
@@ -34,6 +34,14 @@ public class SpaceNavigation extends Game {
 		this.setScreen(ss);
 	}
 
+	public void mostrarMenu() {
+		this.setScreen(new PantallaMenu(this));
+	}
+	
+	public void mostrarAjustes() {
+		this.setScreen(new PantallaAjustes(this));
+	}
+	
 	//cambiar volumen
 	public void setVolume(float v) {
     volumeGive = v;
