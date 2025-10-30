@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.MathUtils;
 import Enemigos.NaveEnemiga;
 import asteroides.Asteroid;
 import Enemigos.Mobs;
+import Enemigos.NaveCrasher;
 import asteroides.Ball;
 import asteroides.BallStrong;
 import io.github.SpaceNav.Armas.Bomb;
@@ -78,31 +79,51 @@ public class PantallaJuego implements Screen {
         nave.setVidas(vidas);
         nave.setBombs(bombs);
 
-        // Crear asteroides
-        Random r = new Random();
-        for (int i = 0; i < cantAsteroides; i++) {
-            int size = 20 + r.nextInt(10);
-            int ancho = size * 2;
-            int alto = size * 2;
-            int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
-            int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
+	     // Crear asteroides
+	     Random r = new Random();
+	     for (int i = 0; i < cantAsteroides; i++) {
+	         int size = 20 + r.nextInt(10);
+	         int ancho = size * 2;
+	         int alto = size * 2;
 
-            Ball bb = new Ball(x, y, size,
-                    velXAsteroides + r.nextInt(4),
-                    velYAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("../assets/aGreyMedium4.png")));
+	         // Centro de la pantalla
+	         int centerX = Gdx.graphics.getWidth() / 2;
+	         int centerY = Gdx.graphics.getHeight() / 2;
 
-            asteroids1.add(bb);
-            asteroids2.add(bb);
-        }
+	         // Dispersarción aleatoria alrededor del centro
+	         int dispersion = 200;
+	         int x = centerX + r.nextInt(dispersion * 2) - dispersion;
+	         int y = centerY + r.nextInt(dispersion * 2) - dispersion;
+	         
+	         Ball bb = new Ball(
+	             x, y,
+	             size,
+	             velXAsteroides + r.nextInt(4),
+	             velYAsteroides + r.nextInt(4),
+	             new Texture(Gdx.files.internal("../assets/aGreyMedium4.png"))
+	         );
+	
+	         asteroids1.add(bb);
+	         asteroids2.add(bb);
+	     }
 
         // Asteroides fuertes
         for (int i = 0; i < cantAsteroides / 4; i++) {
             int size = 20 + r.nextInt(10);
             int ancho = size * 2;
             int alto = size * 2;
-            int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
-            int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
+            //int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
+            //int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
+            
+
+	         // Centro de la pantalla
+	         int centerX = Gdx.graphics.getWidth() / 2;
+	         int centerY = Gdx.graphics.getHeight() / 2;
+
+	         // Dispersación aleatoria alrededor del centro
+	         int dispersion = 200; 
+	         int x = centerX + r.nextInt(dispersion * 2) - dispersion;
+	         int y = centerY + r.nextInt(dispersion * 2) - dispersion;
 
             BallStrong bb = new BallStrong(x, y, size,
                     velXAsteroides + r.nextInt(4),
@@ -118,9 +139,25 @@ public class PantallaJuego implements Screen {
         	int size= 25;
         	int ancho=50;
         	int x=r.nextInt(Gdx.graphics.getWidth() - ancho);
-        	int y = 200;
+        	int y = 320;
         	
         	NaveEnemiga nn= new NaveEnemiga(x, y, size,
+                    velXAsteroides + r.nextInt(4),
+                    new Texture(Gdx.files.internal("../assets/EnemyShip1.png")));
+        	
+        	enemies1.add(nn);
+            enemies2.add(nn);
+        }
+        
+
+        //Naves Crashers (sigen al jugador wuuuu)
+        for(int i=0;i<cantMobs;i++) {
+        	int size= 25;
+        	int ancho=50;
+        	int x=r.nextInt(Gdx.graphics.getWidth() - ancho);
+        	int y = 800;
+        	
+        	NaveCrasher nn= new NaveCrasher(x, y, size,
                     velXAsteroides + r.nextInt(4),
                     new Texture(Gdx.files.internal("../assets/EnemyShip1.png")));
         	
@@ -198,7 +235,7 @@ public class PantallaJuego implements Screen {
             //Disparos enemigos
             for (int j = 0; j < enemies1.size(); j++) {
             	Mobs mob = enemies1.get(j);
-                mob.update(delta);
+                mob.update(delta, nave);
                 if (mob instanceof NaveEnemiga) {
                     ((NaveEnemiga) mob).updateDisparo(delta, this);
                 }
@@ -235,13 +272,14 @@ public class PantallaJuego implements Screen {
                     if (b.checkCollision(mob)) {
                         long explosionId = explosionSound.play();
                         explosionSound.setVolume(explosionId, 0.1f);
-                        
-                        asteroids1.remove(j);
-                        asteroids2.remove(j);
+
+                        enemies1.remove(j);
+                        enemies2.remove(j);
                         j--;
                         score += 5;
                     }
                 }
+
                 if (b.isDestroyed()) {
                 	bombs.remove(i);
                     i--;
@@ -252,7 +290,7 @@ public class PantallaJuego implements Screen {
             for (Asteroid ball : asteroids1) ball.update();
             
             //Movimiento enemigos
-            for (Mobs mob : enemies1) mob.update(delta);
+            for (Mobs mob : enemies1) mob.update(delta, nave);
 
             // Colisiones asteroides entre sí
             for (int i = 0; i < asteroids1.size(); i++) {
@@ -273,25 +311,61 @@ public class PantallaJuego implements Screen {
             //}
 
             // Colisión asteroides - nave
-            for (int i = 0; i < asteroids1.size(); i++) {
-                Asteroid b = asteroids1.get(i);
-                if (nave.checkCollision(b)) {
-                    asteroids1.remove(i);
-                    asteroids2.remove(i);
-                    i--;
-                }
-            }
+            //for (int i = 0; i < asteroids1.size(); i++) {
+            //    Asteroid b = asteroids1.get(i);
+            //    if (nave.checkCollision(b)) {
+            //        asteroids1.remove(i);
+            //        asteroids2.remove(i);
+            //        i--;
+            //    }
+            //}
             
             //Colisión enemigos - nave
             
-            for (int i = 0; i < enemies1.size(); i++) {
-                Mobs b = enemies1.get(i);
-                if (nave.checkCollision(b)) {
-                    enemies1.remove(i);
-                    enemies2.remove(i);
-                    i--;
-                }
-            }
+            //for (int i = 0; i < enemies1.size(); i++) {
+            //    Mobs b = enemies1.get(i);
+            //    if (nave.checkCollision(b)) {
+            //        enemies1.remove(i);
+            //        enemies2.remove(i);
+            //        i--;
+            //    }
+            //}
+            
+			 // Colisión asteroides - nave
+			for (int i = 0; i < asteroids1.size(); i++) {
+			    Asteroid b = asteroids1.get(i);
+			    if (nave.checkCollision(b)) {
+			        // Eliminar de la primera lista si el índice existe
+			        if (i < asteroids1.size()) {
+			            asteroids1.remove(i);
+			        }
+			
+			        // Eliminar de la segunda lista solo si existe ese índice
+			        if (i < asteroids2.size()) {
+			            asteroids2.remove(i);
+			        }
+			
+			        i--; // Corrige el índice tras eliminar
+			    }
+			}
+			
+			// Colisión enemigos - nave
+			for (int i = 0; i < enemies1.size(); i++) {
+			    Mobs b = enemies1.get(i);
+			    if (nave.checkCollision(b)) {
+			        if (i < enemies1.size()) {
+			            enemies1.remove(i);
+			        }
+			
+			        if (i < enemies2.size()) {
+			            enemies2.remove(i);
+			        }
+			
+			        i--;
+			    }
+			}
+
+
             //Balas Enemigas
             for (int i = 0; i < enemyBullets.size(); i++) {
                 EnemyBullet e = enemyBullets.get(i);

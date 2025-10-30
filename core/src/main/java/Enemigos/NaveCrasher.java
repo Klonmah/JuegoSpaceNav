@@ -15,7 +15,7 @@ import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.Imagen;
 import io.github.SpaceNav.AudioManager;
 
-public class NaveEnemiga implements Mobs {
+public class NaveCrasher implements Mobs {
     
     private int x;
     private int y;
@@ -23,14 +23,13 @@ public class NaveEnemiga implements Mobs {
     private Sprite spr;
     private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
-    private Texture balaTexture;
     private Sound disparoSound;
     private float pitch;
     private boolean activa = true;
     private boolean destruida = false;
     private AudioManager audioManager = AudioManager.getInstance();
 
-    public NaveEnemiga(int x, int y, int size, int xSpeed, Texture tx) {
+    public NaveCrasher(int x, int y, int size, int xSpeed, Texture tx) {
         Random r = new Random();
         this.cadencia = 4.0f + r.nextFloat();
         pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
@@ -39,20 +38,19 @@ public class NaveEnemiga implements Mobs {
         spr.setSize(size * 2, size * 2);
         spr.setOriginCenter();
         
-        balaTexture = new Texture(Gdx.files.internal("../assets/EnemyBullet.png"));
         disparoSound = Gdx.audio.newSound(Gdx.files.internal("../assets/laserSound.mp3"));
         
         
 
         int ancho = (int) spr.getWidth();
         int alto = (int) spr.getHeight();
-        
-        // Corrección de posición para mantener dentro de la pantalla
-        if (x < 0) x = 0;
-        if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
 
-        if (y < 0) y = 0;
-        if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        // Corrección de posición
+        if (x < 0) x = 0;
+        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
+        if (y < 0) y = Gdx.graphics.getHeight() - 20;
+        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
+        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
         this.x = x;
         this.y = y;
@@ -64,10 +62,21 @@ public class NaveEnemiga implements Mobs {
     public void update(float deltaTime, Nave Jugador) {
         if (!activa || destruida) return;
         
-        x += xSpeed;
-
-        if (x + xSpeed < 0 || x + xSpeed + spr.getWidth() > Gdx.graphics.getWidth()) {
-            xSpeed *= -1;
+        if ( this.getX() < Jugador.getX())
+        {
+            x += xSpeed/4;
+        }
+        if ( this.getX() > Jugador.getX())
+        {
+            x -= xSpeed/4;
+        }
+        if ( this.getY() < Jugador.getY())
+        {
+            y += xSpeed/4;
+        }
+        if ( this.getY() > Jugador.getY())
+        {
+            y -= xSpeed/4;
         }
         
         spr.setPosition(x, y);
@@ -98,24 +107,6 @@ public class NaveEnemiga implements Mobs {
         return activa && !destruida;
     }
     
-    // ✅ Método específico para el disparo (no en la interfaz)
-    public void updateDisparo(float delta, PantallaJuego juego) {
-        if (!isActive()) return;
-        
-        tiempoDesdeUltimoDisparo += delta;
-
-        if (tiempoDesdeUltimoDisparo >= cadencia) {
-            tiempoDesdeUltimoDisparo = 0;
-            EnemyBullet b = new EnemyBullet(
-                    getX() + getWidth() / 2f,
-                    getY(),
-                    balaTexture
-            );
-            juego.agregarBalaEnemiga(b);
-            audioManager.reproducirEfecto(disparoSound);
-            
-        }
-    }
     
     // ✅ Getters mejorados
     @Override
