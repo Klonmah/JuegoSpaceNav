@@ -1,5 +1,5 @@
 package io.github.SpaceNav.Armas;
-
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
@@ -7,35 +7,36 @@ import io.github.SpaceNav.AudioManager;
 import jugador.Nave;
 
 public class WeaponTriple extends Weapon {
-    
-    public WeaponTriple(Texture txBala, Texture txBomb, float cadencia) {
-        super(txBala, txBomb, cadencia);
-     
-        AudioManager.getInstance().cargarSonido("disparoTriple", "../assets/pop-sound.mp3");
+
+    public WeaponTriple(Texture txBala, Texture txBomb, Sound sonidoBala, float cadencia) {
+        super(txBala, txBomb, sonidoBala, cadencia);
     }
 
     @Override
     public void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
-        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return;
+        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return; // aún en cooldown
 
+        // Disparo triple (central + dos laterales)
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion() - 10));
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion()));
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion() + 10));
   
-
-        AudioManager.getInstance().reproducirSonido("disparoTriple");
+        
+        // Sonido
+        long idSonido = this.getSonidoBala().play();
+        this.getSonidoBala().setVolume(idSonido, 0.3f);
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }
     
-    @Override
     public void firebomb(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
-        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return;
+        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return; // aún en cooldown
 
- 
-        juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBomb(), nave.getRotacion()));
+        // Crear bala
+        juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBala(), nave.getRotacion()));
 
-    
+        // Reproducir sonido
+        AudioManager.getInstance().cargarSonido("disparoTriple","../assets/pop-sound.mp3");
         AudioManager.getInstance().reproducirSonido("disparoTriple");
 
         this.setTiempoDesdeUltimoDisparo(0f);

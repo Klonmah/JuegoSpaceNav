@@ -1,37 +1,36 @@
 package jugador;
 
-
+import java.net.NoRouteToHostException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
-
+import Enemigos.Mobs;
 import Pantallas.PantallaJuego;
-
-
+import asteroides.Asteroid;
+import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
 import io.github.SpaceNav.AudioManager;
-import io.github.SpaceNav.Colisionable;
 
 
 public class Nave {
 	
 	private boolean destruida = false;
     private int Iframes = 120;
-	
+	private float vidaMax = 20;
     private int vidas = 20;
     private int bombs = 3;
-  
+    private float velocidad = 4f;
     private Sprite spr;
- 
-
+    private Sound sonidoHerido;
+    private Sound soundBala;
 
     private boolean herido = false;
     private int tiempoHeridoMax=50;
@@ -68,7 +67,7 @@ public class Nave {
     
     public Nave(int x, int y, Texture tx, Texture txBala, Texture txBomb) {
     	
-    	AudioManager.getInstance().cargarSonido("herido", "../assets/hurt.ogg");
+    	;
     	spr = new Sprite(tx);
     	spr.setPosition(x, y);
     	spr.setOriginCenter();
@@ -76,7 +75,7 @@ public class Nave {
     	this.largoNave =  spr.getHeight();
     	this.anchoNave= this.spr.getWidth();
     	
-    	this.weapon = new WeaponQuintuple(txBala, txBomb, 0.3f); // 0.3s entre disparos
+    	this.weapon = new WeaponQuintuple(txBala, txBomb, soundBala, 0.3f); // 0.3s entre disparos
     }
  // Nuevo método update
     public void update(boolean pausa, PantallaJuego juego) {
@@ -160,30 +159,60 @@ public class Nave {
         spr.draw(batch);
     }
       
-    public boolean checkCollision(Colisionable colisionable) {
-        if (!herido && colisionable.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
-            
-            
-            colisionable.onColision();
-            
-            
-            aplicarDanio();
-            
+    public boolean checkCollision(Asteroid b) {
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+            // Rebote simple: invertir la dirección de la bola según dónde chocó
+            if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
+                b.setXSpeed(-Math.abs(b.getXSpeed())); // rebote a la izquierda
+            } else {
+                b.setXSpeed(Math.abs(b.getXSpeed()));  // rebote a la derecha
+            }
+
+            if (b.getY() + b.getHeight()/2 < spr.getY() + spr.getHeight()/2) {
+                b.setYSpeed(-Math.abs(b.getYSpeed())); // rebote hacia abajo
+            } else {
+                b.setYSpeed(Math.abs(b.getYSpeed()));  // rebote hacia arriba
+            }
+
+            // Actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            AudioManager.getInstance().cargarSonido("herido", "../assets/hurt.ogg");
+            AudioManager.getInstance().reproducirSonido("herido");
+            Iframes = 120;
+            if (vidas <= 0)
+                destruida = true;
+
             return true;
         }
         return false;
     }
     
-    private void aplicarDanio() {
-        vidas--;
-        herido = true;
-        tiempoHerido = tiempoHeridoMax;
-        Iframes = 120;
-        AudioManager.getInstance().reproducirSonido("herido");
-        if (vidas <= 0) {
-            destruida = true;
+    public boolean checkCollision(Mobs b) {
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+            // Rebote simple: invertir la dirección de la bola según dónde chocó
+            if (b.getX() + b.getWidth()/2 < spr.getX() + spr.getWidth()/2) {
+                b.setXSpeed(-Math.abs(b.getXSpeed())); // rebote a la izquierda
+            } else {
+                b.setXSpeed(Math.abs(b.getXSpeed()));  // rebote a la derecha
+            }
+
+            // Actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            
+            AudioManager.getInstance().reproducirSonido("herido");
+            Iframes = 120;
+            if (vidas <= 0)
+                destruida = true;
+
+            return true;
         }
+        return false;
     }
+    
     
     
     public boolean estaDestruido() {
@@ -199,7 +228,7 @@ public class Nave {
     
     public void setBombs(int b) {bombs = b;}
     
-   
+    //public boolean isDestruida() {return destruida;}
     public int getX() {return (int) spr.getX();}
     public int getY() {return (int) spr.getY();}
 	public void setVidas(int vidas2) {vidas = vidas2;}
@@ -212,4 +241,40 @@ public class Nave {
 		this.destruida = true;
 	}
 	
+	// Disparar
+
+	
+	
+	public void rotar(float grados) {
+	    this.rotacion = (this.rotacion + grados + 360) % 360;
+	
+	
+	    if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+	    	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+	    		velX -= MathUtils.cos(anguloRad) * (aceleracion/4);
+	    		velY -= MathUtils.sin(anguloRad) * (aceleracion/4);
+	    	} else {
+	    		velX -= MathUtils.cos(anguloRad) * aceleracion;
+	    		velY -= MathUtils.sin(anguloRad) * aceleracion;
+	    	}
+	    }
+	}
+	
+	
+	public boolean checkCollision(EnemyBullet e) {
+		if (!herido && e.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+
+            // Actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            sonidoHerido.play();
+            Iframes = 120;
+            if (vidas <= 0)
+                destruida = true;
+
+            return true;
+        }
+        return false;
+	}
 }

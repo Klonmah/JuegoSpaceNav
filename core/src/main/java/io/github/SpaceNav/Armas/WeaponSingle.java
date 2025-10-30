@@ -1,6 +1,6 @@
 package io.github.SpaceNav.Armas;
 
-
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
@@ -9,34 +9,35 @@ import jugador.Nave;
 
 
 public class WeaponSingle extends Weapon {
-    
-    public WeaponSingle(Texture txBala, Texture txBomb, float cadencia) {
-        super(txBala, txBomb, cadencia);
-        
-        AudioManager.getInstance().cargarSonido("disparoSingle", "../assets/pop-sound.mp3");
+
+    public WeaponSingle(Texture txBala, Texture txBomb, Sound sonidoBala, float cadencia) {
+        super(txBala, txBomb, sonidoBala, cadencia);
     }
 
     @Override
     public void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
-        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return;
+        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return; // aún en cooldown
 
+        // Crear bala
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion()));
 
-        
-        AudioManager.getInstance().reproducirSonido("disparoSingle");
+        // Reproducir sonido
+        long idSonido = this.getSonidoBala().play();
+        this.getSonidoBala().setVolume(idSonido, 0.3f);
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }
     
-    @Override
     public void firebomb(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
-        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return;
+        if (this.getTiempoDesdeUltimoDisparo() < this.getCadencia()) return; // aún en cooldown
 
-        
-        juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBomb(), nave.getRotacion()));
+        // Crear bala
+        juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBala(), nave.getRotacion()));
 
+        // Reproducir sonido
         
-        AudioManager.getInstance().reproducirSonido("disparoSingle");
+        AudioManager.getInstance().cargarSonido("disparoSingle","../assets/pop-sound.mp3");
+        AudioManager.getInstance().reproducirSonido("disparoQuintuple");
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }

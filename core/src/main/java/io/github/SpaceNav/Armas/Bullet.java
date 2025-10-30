@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.SpaceNav.Colisionable;
+
 import asteroides.Asteroid;
 import Enemigos.Mobs;
 
@@ -50,15 +50,24 @@ public class Bullet {
 	    	spr.draw(batch);
 	    }
 	    
-	    public boolean checkCollision(Colisionable colisionable) {
-	        boolean colisiona = !destroyed && spr.getBoundingRectangle().overlaps(colisionable.getArea());
-	        
-	        if (colisiona) {
-	            colisionable.onColision();
+	    public boolean checkCollision(Asteroid asteroid) {
+	        if(spr.getBoundingRectangle().overlaps(asteroid.getArea())){
+	        	// Se destruyen ambos
 	            this.destroyed = true;
+	            return true;
+	
 	        }
-	        
-	        return colisiona;
+	        return false;
+	    }
+	    
+	    public boolean checkCollision(Mobs mob) {
+	        if(spr.getBoundingRectangle().overlaps(mob.getArea())){
+	        	// Se destruyen ambos
+	            this.destroyed = true;
+	            return true;
+	
+	        }
+	        return false;
 	    }
 	    
 	    public boolean isDestroyed() {return destroyed;}
