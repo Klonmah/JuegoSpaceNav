@@ -44,17 +44,37 @@ public abstract class Asteroid implements Colisionable {
     
     public void update() {
         if (destruido) return;
-        
-        x += getXSpeed();
-        y += getYSpeed();
 
-        if (x + getXSpeed() < 0 || x + getXSpeed() + spr.getWidth() > Gdx.graphics.getWidth())
-            setXSpeed(getXSpeed() * -1);
-        if (y + getYSpeed() < 0 || y + getYSpeed() > Gdx.graphics.getHeight())
-            setYSpeed(getYSpeed() * -1);
+        // Actualiza posición
+        x += xSpeed;
+        y += ySpeed;
+
+        float ancho = spr.getWidth();
+        float alto = spr.getHeight();
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+
+        // --- Rebote horizontal ---
+        if (x < 0) {
+            x = 0;
+            xSpeed = Math.abs(xSpeed); // rebota hacia la derecha
+        } else if (x + ancho > screenWidth) {
+            x = (int) (screenWidth - ancho);
+            xSpeed = -Math.abs(xSpeed); // rebota hacia la izquierda
+        }
+
+        // --- Rebote vertical ---
+        if (y < 0) {
+            y = 0;
+            ySpeed = Math.abs(ySpeed); // rebota hacia arriba
+        } else if (y + alto > screenHeight) {
+            y = (int) (screenHeight - alto);
+            ySpeed = -Math.abs(ySpeed); // rebota hacia abajo
+        }
+
         spr.setPosition(x, y);
     }
-    
+
     @Override
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
