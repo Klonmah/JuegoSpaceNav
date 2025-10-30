@@ -12,13 +12,14 @@ public class Ball extends Asteroid {
         
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();
+        int screenW = Gdx.graphics.getWidth();
+        int screenH = Gdx.graphics.getHeight();
 
-        // Corrección de posición
+        // Ajuste inicial para no aparecer fuera de pantalla
         if (x < 0) x = 0;
-        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
-        if (y < 0) y = Gdx.graphics.getHeight() - 20;
-        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
-        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (x > screenW - ancho) x = screenW - ancho;
+        if (y < 0) y = 0;
+        if (y > screenH - alto) y = screenH - alto;
 
         setX(x);
         setY(y);
@@ -28,14 +29,33 @@ public class Ball extends Asteroid {
     @Override
     public void update() {
         if (isDestruido()) return;
-        
+
         setX(getX() + getXSpeed());
         setY(getY() + getYSpeed());
 
-        if (getX() + getXSpeed() < 0 || getX() + getXSpeed() + getSprite().getWidth() > Gdx.graphics.getWidth())
-            setXSpeed(getXSpeed() * -1);
-        if (getY() + getYSpeed() < 0 || getY() + getYSpeed() > Gdx.graphics.getHeight())
-            setYSpeed(getYSpeed() * -1);
+        float ancho = getSprite().getWidth();
+        float alto = getSprite().getHeight();
+        float screenW = Gdx.graphics.getWidth();
+        float screenH = Gdx.graphics.getHeight();
+
+        // --- Rebote horizontal ---
+        if (getX() < 0) {
+            setX(0);
+            setXSpeed(Math.abs(getXSpeed())); // rebota hacia la derecha
+        } else if (getX() + ancho > screenW) {
+            setX((int) (screenW - ancho));
+            setXSpeed(-Math.abs(getXSpeed())); // rebota hacia la izquierda
+        }
+
+        // --- Rebote vertical ---
+        if (getY() < 0) {
+            setY(0);
+            setYSpeed(Math.abs(getYSpeed())); // rebota hacia arriba
+        } else if (getY() + alto > screenH) {
+            setY((int) (screenH - alto));
+            setYSpeed(-Math.abs(getYSpeed())); // rebota hacia abajo
+        }
+        
         getSprite().setPosition(getX(), getY());
     }
     

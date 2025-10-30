@@ -262,19 +262,27 @@ public class Nave {
 	
 	
 	public boolean checkCollision(EnemyBullet e) {
-		if (!herido && e.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
+	    // Si la bala o el sprite de la nave no existen, no hay colisión
+	    if (e == null || e.getArea() == null || spr == null) return false;
 
-            // Actualizar vidas y herir
-            vidas--;
-            herido = true;
-            tiempoHerido = tiempoHeridoMax;
-            sonidoHerido.play();
-            Iframes = 120;
-            if (vidas <= 0)
-                destruida = true;
+	    // Si está destruida o invulnerable, no hacer nada
+	    if (herido || Iframes > 0) return false;
 
-            return true;
-        }
-        return false;
+	    if (e.getArea().overlaps(spr.getBoundingRectangle())) {
+	        // Actualizar vidas y herir
+	        vidas--;
+	        herido = true;
+	        tiempoHerido = tiempoHeridoMax;
+	        //sonidoHerido.play();
+	        Iframes = 120;
+
+	        if (vidas <= 0)
+	            destruida = true;
+
+	        return true;
+	    }
+
+	    return false;
 	}
+
 }

@@ -120,7 +120,7 @@ public class PantallaJuego implements Screen {
 	         int centerY = Gdx.graphics.getHeight() / 2;
 
 	         // Dispersación aleatoria alrededor del centro
-	         int dispersion = 200; 
+	         int dispersion = 300; 
 	         int x = centerX + r.nextInt(dispersion * 2) - dispersion;
 	         int y = centerY + r.nextInt(dispersion * 2) - dispersion;
 
@@ -138,7 +138,7 @@ public class PantallaJuego implements Screen {
         	int size= 25;
         	int ancho=50;
         	int x=r.nextInt(Gdx.graphics.getWidth() - ancho);
-        	int y = 320;
+        	int y = 420;
         	
         	NaveEnemiga nn= new NaveEnemiga(x, y, size,
                     velXAsteroides + r.nextInt(4),
@@ -368,22 +368,25 @@ public class PantallaJuego implements Screen {
 			    }
 			}
 
+			// Balas Enemigas
+			for (int i = 0; i < enemyBullets.size(); i++) {
+			    EnemyBullet e = enemyBullets.get(i);
+			    if (e == null) continue;
 
-            //Balas Enemigas
-            for (int i = 0; i < enemyBullets.size(); i++) {
-                EnemyBullet e = enemyBullets.get(i);
-                e.update();
-                System.out.println("Bullet pos: x=" + e.getX() + " y=" + e.getY());
+			    e.update();
 
-                if (nave.checkCollision(e)) {
-                    enemyBullets.remove(e);
-                }
+			    if (nave.checkCollision(e)) {
+			        enemyBullets.remove(i);
+			        i--; // Ajustar índice tras eliminar
+			        continue;
+			    }
 
-                if (e.isDestroyed()) {
-                    enemyBullets.remove(i);
-                    i--;
-                }
-            }
+			    if (e.isDestroyed()) {
+			        enemyBullets.remove(i);
+			        i--; // También aquí
+			    }
+			}
+
         }
     }
     // --- dibujar el juego ---
