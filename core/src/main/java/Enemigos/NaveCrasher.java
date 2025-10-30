@@ -23,7 +23,7 @@ public class NaveCrasher implements Mobs {
     private float pitch;
     private boolean activa = true;
     private boolean destruida = false;
-    private AudioManager audioManager = AudioManager.getInstance();
+ 
 
     public NaveCrasher(int x, int y, int size, int xSpeed, Texture tx) {
         Random r = new Random();
