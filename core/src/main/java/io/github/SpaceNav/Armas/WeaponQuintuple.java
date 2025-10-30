@@ -1,11 +1,12 @@
 package io.github.SpaceNav.Armas;
 
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
 import jugador.Nave;
-
+import io.github.SpaceNav.AudioManager;
 public class WeaponQuintuple extends Weapon {
 
     public WeaponQuintuple(Texture txBala, Texture txBomb, Sound sonidoBala, float cadencia) {
@@ -24,8 +25,8 @@ public class WeaponQuintuple extends Weapon {
         juego.agregarBala(new Bullet(puntaX, puntaY, this.getTxBala(), nave.getRotacion() + 20));
         
         // Sonido
-        long idSonido = this.getSonidoBala().play();
-        this.getSonidoBala().setVolume(idSonido, 0.3f);
+        AudioManager.getInstance().cargarSonido("disparoQuintuple","../assets/pop-sound.mp3");
+        AudioManager.getInstance().reproducirSonido("disparoQuintuple");
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }
@@ -37,9 +38,9 @@ public class WeaponQuintuple extends Weapon {
         juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBomb(), nave.getRotacion()));
 
         // Reproducir sonido
+        AudioManager.getInstance().cargarSonido("disparoQuintuple","../assets/pop-sound.mp3");
+        AudioManager.getInstance().reproducirSonido("disparoQuintuple");
         
-        long idSonido = this.getSonidoBala().play();
-        this.getSonidoBala().setVolume(idSonido, 0.3f);
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }

@@ -17,7 +17,7 @@ import asteroides.Asteroid;
 import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
-
+import io.github.SpaceNav.AudioManager;
 
 
 public class Nave {
@@ -46,6 +46,7 @@ public class Nave {
     private float friccion = 0.99f; // 0.99f
     private float velocidadMax = 6f;
     private Weapon weapon; // arma actual
+    
 
 
 
@@ -64,9 +65,9 @@ public class Nave {
     	return this.anchoNave;
     }
     
-    public Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Texture txBomb, Sound soundBala) {
-    	sonidoHerido = soundChoque;
-    	this.soundBala = soundBala;
+    public Nave(int x, int y, Texture tx, Texture txBala, Texture txBomb) {
+    	
+    	;
     	spr = new Sprite(tx);
     	spr.setPosition(x, y);
     	spr.setOriginCenter();
@@ -177,7 +178,8 @@ public class Nave {
             vidas--;
             herido = true;
             tiempoHerido = tiempoHeridoMax;
-            sonidoHerido.play();
+            AudioManager.getInstance().cargarSonido("herido", "../assets/hurt.ogg");
+            AudioManager.getInstance().reproducirSonido("herido");
             Iframes = 120;
             if (vidas <= 0)
                 destruida = true;
@@ -200,7 +202,8 @@ public class Nave {
             vidas--;
             herido = true;
             tiempoHerido = tiempoHeridoMax;
-            sonidoHerido.play();
+            
+            AudioManager.getInstance().reproducirSonido("herido");
             Iframes = 120;
             if (vidas <= 0)
                 destruida = true;

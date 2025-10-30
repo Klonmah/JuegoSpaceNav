@@ -20,11 +20,10 @@ public class SpaceNavigation extends Game {
 	private float volumeGive = 0.5f;
 
 	public void create() {
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("../assets/song-loop.wav")); //
 		
-		gameMusic.setLooping(true);
-		gameMusic.setVolume(volumeGive);
-		gameMusic.play();
+		AudioManager.getInstance().cargarSonido("MusicaFondo", "../assets/song-loop.wav");
+		AudioManager.getInstance().reproducirEnLoop("MusicaFondo");
+	
 		highScore = 0;
 		batch = new SpriteBatch();
 		font = new BitmapFont(); // usa Arial font x defecto
@@ -60,7 +59,7 @@ public class SpaceNavigation extends Game {
 	public void dispose() {
 		this.batch.dispose();
 		this.font.dispose();
-		this.gameMusic.dispose();
+		AudioManager.getInstance().dispose();
 	}
 
 	public SpriteBatch getBatch() {

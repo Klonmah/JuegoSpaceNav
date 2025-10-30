@@ -28,7 +28,7 @@ public class NaveEnemiga implements Mobs {
     private float pitch;
     private boolean activa = true;
     private boolean destruida = false;
-    private AudioManager audioManager = AudioManager.getInstance();
+   
 
     public NaveEnemiga(int x, int y, int size, int xSpeed, Texture tx) {
         Random r = new Random();
@@ -40,7 +40,7 @@ public class NaveEnemiga implements Mobs {
         spr.setOriginCenter();
         
         balaTexture = new Texture(Gdx.files.internal("../assets/EnemyBullet.png"));
-        disparoSound = Gdx.audio.newSound(Gdx.files.internal("../assets/laserSound.mp3"));
+     
         
         
 
@@ -80,10 +80,10 @@ public class NaveEnemiga implements Mobs {
     
     @Override
     public void onColision() {
-        // ✅ Implementa el método de Colisionable
+        
         System.out.println("NaveEnemiga impactada!");
         this.destruida = true;
-        // Aquí puedes añadir efectos de explosión, sonido, etc.
+        
     }
     
     @Override
@@ -112,7 +112,8 @@ public class NaveEnemiga implements Mobs {
                     balaTexture
             );
             juego.agregarBalaEnemiga(b);
-            audioManager.reproducirEfecto(disparoSound);
+            AudioManager.getInstance().cargarSonido("laserEnemigo", "../assets/laserSound.mp3");
+            AudioManager.getInstance().reproducirSonido("laserEnemigo");
             
         }
     }

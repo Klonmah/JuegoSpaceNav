@@ -23,7 +23,6 @@ public class NaveCrasher implements Mobs {
     private Sprite spr;
     private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
-    private Sound disparoSound;
     private float pitch;
     private boolean activa = true;
     private boolean destruida = false;
@@ -38,7 +37,8 @@ public class NaveCrasher implements Mobs {
         spr.setSize(size * 2, size * 2);
         spr.setOriginCenter();
         
-        disparoSound = Gdx.audio.newSound(Gdx.files.internal("../assets/laserSound.mp3"));
+        
+
         
         
 
@@ -89,10 +89,9 @@ public class NaveCrasher implements Mobs {
     
     @Override
     public void onColision() {
-        // ✅ Implementa el método de Colisionable
-        System.out.println("NaveEnemiga impactada!");
+       
         this.destruida = true;
-        // Aquí puedes añadir efectos de explosión, sonido, etc.
+
     }
     
     @Override
@@ -108,7 +107,7 @@ public class NaveCrasher implements Mobs {
     }
     
     
-    // ✅ Getters mejorados
+
     @Override
     public float getX() {
         return this.x;

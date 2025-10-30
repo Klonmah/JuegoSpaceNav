@@ -5,7 +5,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,7 +29,7 @@ public class PantallaJuego implements Screen {
     private SpaceNavigation game;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    private Sound explosionSound;
+    
     private boolean pausa = false;
     private int score;
     private int ronda;
@@ -47,7 +47,7 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
-    private AudioManager audioManager = AudioManager.getInstance();
+    
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
                          int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen, int cantMobs) {
@@ -65,17 +65,16 @@ public class PantallaJuego implements Screen {
         camera.setToOrtho(false, 800, 640);
 
         // Efectos de sonido
+        AudioManager.getInstance().cargarSonido("explosion", "../assets/explosion.ogg");
         
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("../assets/explosion.ogg"));
-        explosionSound.setVolume(1, volumeMenu);
+        
 
         // Cargar nave
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
                 new Texture(Gdx.files.internal("../assets/MainShip3.png")),
-                Gdx.audio.newSound(Gdx.files.internal("../assets/hurt.ogg")),
                 new Texture(Gdx.files.internal("../assets/Rocket2.png")),
-                new Texture(Gdx.files.internal("../assets/BombLowScaled.png")),
-                Gdx.audio.newSound(Gdx.files.internal("../assets/pop-sound.mp3")));
+                new Texture(Gdx.files.internal("../assets/BombLowScaled.png"))
+                );
         nave.setVidas(vidas);
         nave.setBombs(bombs);
 
@@ -196,8 +195,7 @@ public class PantallaJuego implements Screen {
                 for (int j = 0; j < asteroids1.size(); j++) {
                     Asteroid asteroide = asteroids1.get(j);
                     if (b.checkCollision(asteroide)) {
-                        long explosionId = explosionSound.play();
-                        explosionSound.setVolume(explosionId, 0.1f);
+                        AudioManager.getInstance().reproducirSonido("explosion");
 
                         if (asteroide instanceof Ball) {
                             asteroids1.remove(j);
@@ -218,8 +216,7 @@ public class PantallaJuego implements Screen {
                 for (int j = 0; j < enemies1.size(); j++) {
                     Mobs mob = enemies1.get(j);
                     if (b.checkCollision(mob)) {
-                        long explosionId = explosionSound.play();
-                        explosionSound.setVolume(explosionId, 0.1f);
+                    	AudioManager.getInstance().reproducirSonido("explosion");
                         enemies1.remove(j);
                         enemies2.remove(j);
                         j--;
@@ -248,8 +245,7 @@ public class PantallaJuego implements Screen {
                 for (int j = 0; j < asteroids1.size(); j++) {
                     Asteroid asteroide = asteroids1.get(j);
                     if (b.checkCollision(asteroide)) {
-                        long explosionId = explosionSound.play();
-                        explosionSound.setVolume(explosionId, 0.1f);
+                    	AudioManager.getInstance().reproducirSonido("explosion");
 
                         if (asteroide instanceof Ball) {
                             asteroids1.remove(j);
@@ -270,8 +266,7 @@ public class PantallaJuego implements Screen {
                 for (int j = 0; j < enemies1.size(); j++) {
                     Mobs mob = enemies1.get(j);
                     if (b.checkCollision(mob)) {
-                        long explosionId = explosionSound.play();
-                        explosionSound.setVolume(explosionId, 0.1f);
+                    	AudioManager.getInstance().reproducirSonido("explosion");
 
                         enemies1.remove(j);
                         enemies2.remove(j);
@@ -455,7 +450,7 @@ public class PantallaJuego implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
-    @Override public void dispose() { this.explosionSound.dispose(); }
+    @Override public void dispose() {  }
 
     public void dibujaEncabezado() {
         game.getFont().getData().setScale(2f);
