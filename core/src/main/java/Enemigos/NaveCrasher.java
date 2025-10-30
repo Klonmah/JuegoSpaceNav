@@ -20,7 +20,6 @@ public class NaveCrasher implements Mobs {
     private float xSpeed;
     private Sprite spr;
     private float cadencia;
-    private float tiempoDesdeUltimoDisparo = 0f;
     private float pitch;
     private boolean activa = true;
     private boolean destruida = false;
