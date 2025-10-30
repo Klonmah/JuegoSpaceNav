@@ -10,16 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import jugador.Nave;
 
-import Pantallas.PantallaJuego;
-import io.github.SpaceNav.Armas.EnemyBullet;
-import io.github.SpaceNav.Imagen;
+
 import io.github.SpaceNav.AudioManager;
 
 public class NaveCrasher implements Mobs {
     
     private int x;
     private int y;
-    private int xSpeed;
+    private float xSpeed;
     private Sprite spr;
     private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
@@ -134,11 +132,12 @@ public class NaveCrasher implements Mobs {
         spr.setPosition(x, y);
     }
     
-    public int getXSpeed() {
+    public float getXSpeed() {
         return xSpeed;
     }
     
-    public void setXSpeed(int xSpeed) {
+    
+    public void setXSpeed(float xSpeed) {
         this.xSpeed = xSpeed;
     }
     

@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
+import io.github.SpaceNav.AudioManager;
 import jugador.Nave;
 
 
@@ -35,8 +36,8 @@ public class WeaponSingle extends Weapon {
 
         // Reproducir sonido
         
-        long idSonido = this.getSonidoBala().play();
-        this.getSonidoBala().setVolume(idSonido, 0.3f);
+        AudioManager.getInstance().cargarSonido("disparoSingle","../assets/pop-sound.mp3");
+        AudioManager.getInstance().reproducirSonido("disparoQuintuple");
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }

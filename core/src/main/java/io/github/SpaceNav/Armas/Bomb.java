@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import asteroides.Asteroid;
-import Enemigos.Mobs;
+import io.github.SpaceNav.Colisionable;
 
 public class Bomb {
 
@@ -48,7 +47,7 @@ public class Bomb {
         scale += growthSpeed;
         spr.setScale(scale);
 
-        // Mantener centrado al crecer
+        
         spr.setPosition(x - spr.getWidth() / 2f * (scale - 1), y - spr.getHeight() / 2f * (scale - 1));
     }
 
@@ -57,14 +56,20 @@ public class Bomb {
             spr.draw(batch);
     }
 
-    public boolean checkCollision(Asteroid asteroid) {
-        return !destroyed && spr.getBoundingRectangle().overlaps(asteroid.getArea());
-    }
-    
-    public boolean checkCollision(Mobs mob) {
-        return !destroyed && spr.getBoundingRectangle().overlaps(mob.getArea());
+ 
+    public boolean checkCollision(Colisionable colisionable) {
+        boolean colisiona = !destroyed && spr.getBoundingRectangle().overlaps(colisionable.getArea());
+        
+        if (colisiona) {
+            
+            colisionable.onColision();
+            this.destroyed = true;
+        }
+        
+        return colisiona;
     }
 
-    public boolean isDestroyed() {return destroyed;}
+    public boolean isDestroyed() {
+        return destroyed;
+    }
 }
-

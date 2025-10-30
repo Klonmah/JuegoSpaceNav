@@ -142,7 +142,8 @@ public class PantallaJuego implements Screen {
         	
         	NaveEnemiga nn= new NaveEnemiga(x, y, size,
                     velXAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("../assets/EnemyShip1.png")));
+                    new Texture(Gdx.files.internal("../assets/EnemyShip1.png")),
+                    new Texture(Gdx.files.internal("../assets/EnemyBullet.png")));
         	
         	enemies1.add(nn);
             enemies2.add(nn);
@@ -231,10 +232,17 @@ public class PantallaJuego implements Screen {
             
             //Disparos enemigos
             for (int j = 0; j < enemies1.size(); j++) {
-            	Mobs mob = enemies1.get(j);
+                Mobs mob = enemies1.get(j);
                 mob.update(delta, nave);
+                
                 if (mob instanceof NaveEnemiga) {
-                    ((NaveEnemiga) mob).updateDisparo(delta, this);
+                    
+                    NaveEnemiga naveEnemiga = (NaveEnemiga) mob;
+                    EnemyBullet bala = naveEnemiga.getBala(delta);
+                    
+                    if (bala != null) {
+                        agregarBalaEnemiga(bala); 
+                    }
                 }
             }
             

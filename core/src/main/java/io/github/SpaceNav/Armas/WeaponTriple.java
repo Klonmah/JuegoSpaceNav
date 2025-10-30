@@ -3,6 +3,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
+import io.github.SpaceNav.AudioManager;
 import jugador.Nave;
 
 public class WeaponTriple extends Weapon {
@@ -35,8 +36,8 @@ public class WeaponTriple extends Weapon {
         juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBala(), nave.getRotacion()));
 
         // Reproducir sonido
-        long idSonido = this.getSonidoBala().play();
-        this.getSonidoBala().setVolume(idSonido, 0.3f);
+        AudioManager.getInstance().cargarSonido("disparoTriple","../assets/pop-sound.mp3");
+        AudioManager.getInstance().reproducirSonido("disparoTriple");
 
         this.setTiempoDesdeUltimoDisparo(0f);
     }
