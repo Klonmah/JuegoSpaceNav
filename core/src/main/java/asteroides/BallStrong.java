@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.SpaceNav.Colisionable;
+
 public class BallStrong extends Asteroid {
     private int hp = 2;
 
@@ -64,8 +66,7 @@ public class BallStrong extends Asteroid {
     
    
     @Override
-    public void checkCollision(Asteroid another) {
-        if (this.isDestruido() || another.isDestruido()) return;
+    public void checkCollision(Colisionable another) {
         super.checkCollision(another); 
     }
     
