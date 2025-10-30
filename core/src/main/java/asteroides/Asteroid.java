@@ -77,9 +77,13 @@ public abstract class Asteroid implements Colisionable {
     }
     
 
-    public void checkCollision(Asteroid another) {
+    public void checkCollision(Colisionable otro) {
+    	
+    	if (!(otro instanceof Asteroid)) return; // Solo colisiona con otros asteroides
+        
+        Asteroid another = (Asteroid) otro;
+    	
         if (this.destruido || another.isDestruido()) return;
-if (this.isDestruido() || another.isDestruido()) return;
         
         // Calcular los centros de ambos
         float cx1 = getX() + getSprite().getWidth() / 2f;
