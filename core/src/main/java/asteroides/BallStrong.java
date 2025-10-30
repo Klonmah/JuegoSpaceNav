@@ -13,11 +13,12 @@ public class BallStrong extends Asteroid {
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();
 
-        // Corrige si el sprite estaría fuera de pantalla
+        // Corrección de posición
         if (x < 0) x = 0;
-        if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
-        if (y < 0) y = 0;
-        if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
+        if (y < 0) y = Gdx.graphics.getHeight() - 20;
+        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
+        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
         setX(x);
         setY(y);

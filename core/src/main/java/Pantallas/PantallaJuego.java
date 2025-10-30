@@ -159,7 +159,7 @@ public class PantallaJuego implements Screen {
         	
         	NaveCrasher nn= new NaveCrasher(x, y, size,
                     velXAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("../assets/EnemyShip1.png")));
+                    new Texture(Gdx.files.internal("../assets/EnemyShip2.png")));
         	
         	enemies1.add(nn);
             enemies2.add(nn);
