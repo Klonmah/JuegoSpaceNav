@@ -27,11 +27,11 @@ public class PantallaAjustes implements Screen {
     private final SpaceNavigation game;   
     private TextButton botonVolverMenu;
     private Screen pantallaAnterior;
-    
+    private AudioManager audioManager = AudioManager.getInstance();
     
     public PantallaAjustes(SpaceNavigation game) {
     	this.game = game;
-    	this.pantallaAnterior = pantallaAnterior;
+    	
     }
     
     @Override
@@ -43,7 +43,7 @@ public class PantallaAjustes implements Screen {
         BitmapFont font = new BitmapFont();
         
         this.slider = new Slider(0f, 100f, 1f, false, EstilosUI.getEstiloSlider());
-        this.slider.setValue(AudioManager.getVolumenMusica());
+        this.slider.setValue(audioManager.getVolumenMusica());
         this.slider.setPosition(400, 300);
 
         // Etiqueta que muestra el valor
@@ -93,7 +93,8 @@ public class PantallaAjustes implements Screen {
             float nuevoVolumen = slider.getValue() / 100f;
             game.setVolume(nuevoVolumen);
             valorLabel.setText("Volumen: " + (int)slider.getValue());
-            AudioManager.setVolumenMusica(slider.getValue());
+            audioManager.setVolumenMaestro((int)slider.getValue());
+            
             return false;
         });
     }

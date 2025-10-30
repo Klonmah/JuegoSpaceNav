@@ -44,7 +44,7 @@ public class PantallaMenu implements Screen {
         this.camera.setToOrtho(false, 1200, 800);
         this.font = new BitmapFont();
         EstilosUI.inicializar();
-        System.out.println(Float.toString(AudioManager.getVolumenMusica()));
+        
         Gdx.input.setInputProcessor(stage);
         crearPantalla();
     }

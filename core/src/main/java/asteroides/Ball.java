@@ -5,47 +5,62 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-
 public class Ball extends Asteroid {
 
-
     public Ball(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-    	super(x, y, size, xSpeed, ySpeed, tx);
-    	
+        super(x, y, size, xSpeed, ySpeed, tx);
+        
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();
 
-     // Corrige si el sprite estaría fuera de pantalla //quitado ancho y alto en el segundo y tercer if por como se dibujan los sprites
         if (x < 0) x = 0;
         if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
         if (y < 0) y = 0;
         if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
-        // Guardar posición corregida
         setX(x);
         setY(y);
         getSprite().setPosition(getX(), getY());
     }
     
+    @Override
     public void update() {
-        setX(getX()+getXSpeed());
-        setY(getY()+getYSpeed());
+        if (isDestruido()) return;
+        
+        setX(getX() + getXSpeed());
+        setY(getY() + getYSpeed());
 
-        if (getX()+getXSpeed() < 0 || getX()+getXSpeed()+getSprite().getWidth() > Gdx.graphics.getWidth())
-        	setXSpeed(getXSpeed() * -1);
-        if (getY()+getYSpeed() < 0 || getY()+getYSpeed() > Gdx.graphics.getHeight())
-        	setYSpeed(getYSpeed() * -1);
+        if (getX() + getXSpeed() < 0 || getX() + getXSpeed() + getSprite().getWidth() > Gdx.graphics.getWidth())
+            setXSpeed(getXSpeed() * -1);
+        if (getY() + getYSpeed() < 0 || getY() + getYSpeed() > Gdx.graphics.getHeight())
+            setYSpeed(getYSpeed() * -1);
         getSprite().setPosition(getX(), getY());
     }
     
+    @Override
     public Rectangle getArea() {
-    	return getSprite().getBoundingRectangle();
-    }
-    public void draw(SpriteBatch batch) {
-    	getSprite().draw(batch);
+        return getSprite().getBoundingRectangle();
     }
     
+    @Override
+    public void onColision() {
+        // Puedes sobrescribir el comportamiento específico para Ball
+        super.onColision(); // Llama al método base que marca como destruido
+        System.out.println("¡Pelota de asteroide destruida!");
+        
+    }
+    
+    @Override
+    public void draw(SpriteBatch batch) {
+        if (!isDestruido()) {
+            getSprite().draw(batch);
+        }
+    }
+    
+
     public void checkCollision(Asteroid another) {
+        if (this.isDestruido() || another.isDestruido()) return;
+        
         // Calcular los centros de ambos
         float cx1 = getX() + getSprite().getWidth() / 2f;
         float cy1 = getY() + getSprite().getHeight() / 2f;
@@ -62,16 +77,17 @@ public class Ball extends Asteroid {
 
         // ¿Se tocan o superponen?
         if (distancia < radio1 + radio2) {
+            
             // Normalizar el vector de colisión
             float nx = dx / distancia;
             float ny = dy / distancia;
 
             // Separarlas un poco para evitar vibración
             float overlap = (radio1 + radio2 - distancia) / 2f;
-            setX((int) (getX()-(nx * overlap)));
-            setY((int) (getY()-(ny * overlap)));
-            another.setY((int) (another.getY()+(ny*overlap)));
-            another.setX((int) (another.getX()+(nx*overlap)));
+            setX((int) (getX() - (nx * overlap)));
+            setY((int) (getY() - (ny * overlap)));
+            another.setY((int) (another.getY() + (ny * overlap)));
+            another.setX((int) (another.getX() + (nx * overlap)));
             getSprite().setPosition(getX(), getY());
             another.getSprite().setPosition(another.getX(), another.getY());
 
@@ -94,25 +110,13 @@ public class Ball extends Asteroid {
             float p1Final = ((m1 - m2) * p1 + 2 * m2 * p2) / (m1 + m2);
             float p2Final = ((m2 - m1) * p2 + 2 * m1 * p1) / (m1 + m2);
 
-            // Cambiar solo la componente normal, mantener tangencial igual
-            setXSpeed((int) (getXSpeed()+((p1Final - p1) * nx+2)));
-            setYSpeed((int) (getYSpeed()+((p1Final - p1) * ny+2)));
-            another.setXSpeed((int) (another.getXSpeed()+(p2Final - p2) * nx+2));
-            another.setYSpeed((int) (another.getYSpeed()+(p2Final - p2) * ny+2));
+            
+            setXSpeed((int) (getXSpeed() + ((p1Final - p1) * nx + 2)));
+            setYSpeed((int) (getYSpeed() + ((p1Final - p1) * ny + 2)));
+            another.setXSpeed((int) (another.getXSpeed() + (p2Final - p2) * nx + 2));
+            another.setYSpeed((int) (another.getYSpeed() + (p2Final - p2) * ny + 2));
         }
     }
-	
-	public float getWidth() {
-	    return getSprite().getWidth();
-	}
-
-	public float getHeight() {
-	    return getSprite().getHeight();
-	}
-	public void setPosition(float x, float y) {
-	    setX((int) x);
-	    setY((int) y);
-	    getSprite().setPosition(x, y);
-	}
-    
 }
+    
+    

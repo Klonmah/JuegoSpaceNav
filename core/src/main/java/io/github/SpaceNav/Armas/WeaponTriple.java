@@ -3,7 +3,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
-import io.github.SpaceNav.Nave;
+import jugador.Nave;
 
 public class WeaponTriple extends Weapon {
 

@@ -6,8 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.SpaceNav.Nave;
 import io.github.SpaceNav.SpaceNavigation;
+import jugador.Nave;
 
 public class PantallaPerks implements Screen {
 

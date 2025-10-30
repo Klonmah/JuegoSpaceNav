@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
-import io.github.SpaceNav.Nave;
+import jugador.Nave;
 
 public class WeaponQuintuple extends Weapon {
 
@@ -37,6 +37,7 @@ public class WeaponQuintuple extends Weapon {
         juego.agregarBomb(new Bomb(puntaX, puntaY, this.getTxBomb(), nave.getRotacion()));
 
         // Reproducir sonido
+        
         long idSonido = this.getSonidoBala().play();
         this.getSonidoBala().setVolume(idSonido, 0.3f);
 

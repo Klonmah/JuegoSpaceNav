@@ -4,7 +4,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 import Pantallas.PantallaJuego;
-import io.github.SpaceNav.Nave;
+import io.github.SpaceNav.AudioManager;
+import jugador.Nave;
 
 public abstract class Weapon {
     private Texture txBala;
@@ -12,8 +13,12 @@ public abstract class Weapon {
     private Sound sonidoBala;
     private float cadencia; // segundos entre disparos
     private float tiempoDesdeUltimoDisparo = 0f;
+    private AudioManager audioManager = AudioManager.getInstance();
     
  // GETTERS
+    public AudioManager getAudioManager() {
+    	return this.audioManager;
+    }
     public Texture getTxBala() {
         return txBala;
     }
@@ -47,7 +52,6 @@ public abstract class Weapon {
     public void setSonidoBala(Sound sonidoBala) {
         this.sonidoBala = sonidoBala;
     }
-
     public void setCadencia(float cadencia) {
         this.cadencia = cadencia;
     }

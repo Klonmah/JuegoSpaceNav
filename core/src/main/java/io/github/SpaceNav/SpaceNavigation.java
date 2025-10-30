@@ -13,7 +13,6 @@ import Pantallas.PantallaAjustes;
 
 
 public class SpaceNavigation extends Game {
-	private String nombreJuego = "Space Navigation";
 	private SpriteBatch batch;
 	private BitmapFont font;
 	private int highScore;	
@@ -55,12 +54,13 @@ public class SpaceNavigation extends Game {
     }
 
 	public void render() {
-		super.render(); // important!
+		super.render(); 
 	}
 
 	public void dispose() {
-		batch.dispose();
-		font.dispose();
+		this.batch.dispose();
+		this.font.dispose();
+		this.gameMusic.dispose();
 	}
 
 	public SpriteBatch getBatch() {

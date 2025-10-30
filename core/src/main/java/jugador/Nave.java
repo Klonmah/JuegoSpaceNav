@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package jugador;
 
 import java.net.NoRouteToHostException;
 
@@ -31,8 +31,7 @@ public class Nave {
     private Sprite spr;
     private Sound sonidoHerido;
     private Sound soundBala;
-    private Texture txBala;
-    private Texture txBomb;
+
     private boolean herido = false;
     private int tiempoHeridoMax=50;
     private int tiempoHerido;
@@ -68,8 +67,6 @@ public class Nave {
     public Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Texture txBomb, Sound soundBala) {
     	sonidoHerido = soundChoque;
     	this.soundBala = soundBala;
-    	this.txBala = txBala;
-    	this.txBomb = txBomb;
     	spr = new Sprite(tx);
     	spr.setPosition(x, y);
     	spr.setOriginCenter();
@@ -99,38 +96,6 @@ public class Nave {
         }else {
         	
         	
-        	// New Hard movement system (deprecated)
-        	//if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        	//	{
-        	//		velY = velocityfixed/2;
-        	//	} else { velY = velocityfixed; } 
-        	//} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        	//	{
-        	//		velY = -velocityfixed/2;
-        	//	} else { velY = -velocityfixed; } 
-        	//} else {
-        	//	velY = 0;
-        	//}
-
-        	//if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        	//	{
-        	//		velX = velocityfixed/2;
-        	//	} else { velX = velocityfixed; } 
-        	//    
-        	//} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-        	//	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-        	//	{
-        	//		velX = -velocityfixed/2;
-        	//	} else { velX = -velocityfixed; } 
-        	//} else {
-        	//	velX = 0;
-        	//}
-        	
-        	
-        	//ROTACIÓN (restaurada)
         	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
         	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
         	rotacion = (rotacion + 360) % 360;
@@ -270,9 +235,29 @@ public class Nave {
     }
 	
 	public void destruir() {
-		destruida=true;
+		this.destruida = true;
 	}
+	
+	// Disparar
 
+	
+	
+	public void rotar(float grados) {
+	    this.rotacion = (this.rotacion + grados + 360) % 360;
+	
+	
+	    if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+	    	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+	    		velX -= MathUtils.cos(anguloRad) * (aceleracion/4);
+	    		velY -= MathUtils.sin(anguloRad) * (aceleracion/4);
+	    	} else {
+	    		velX -= MathUtils.cos(anguloRad) * aceleracion;
+	    		velY -= MathUtils.sin(anguloRad) * aceleracion;
+	    	}
+	    }
+	}
+	
+	
 	public boolean checkCollision(EnemyBullet e) {
 		if (!herido && e.getArea().overlaps(spr.getBoundingRectangle()) && Iframes == 0) {
 

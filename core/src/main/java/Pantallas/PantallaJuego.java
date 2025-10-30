@@ -17,11 +17,10 @@ import asteroides.Asteroid;
 import Enemigos.Mobs;
 import asteroides.Ball;
 import asteroides.BallStrong;
-import io.github.SpaceNav.Nave;
-import io.github.SpaceNav.SpaceNavigation;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
 import io.github.SpaceNav.Armas.EnemyBullet;
+import jugador.Nave;
 import io.github.SpaceNav.*;
 
 public class PantallaJuego implements Screen {
@@ -47,6 +46,7 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
+    private AudioManager audioManager = AudioManager.getInstance();
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
                          int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen, int cantMobs) {
@@ -198,7 +198,7 @@ public class PantallaJuego implements Screen {
             //Disparos enemigos
             for (int j = 0; j < enemies1.size(); j++) {
             	Mobs mob = enemies1.get(j);
-                mob.update();
+                mob.update(delta);
                 if (mob instanceof NaveEnemiga) {
                     ((NaveEnemiga) mob).updateDisparo(delta, this);
                 }
@@ -252,7 +252,7 @@ public class PantallaJuego implements Screen {
             for (Asteroid ball : asteroids1) ball.update();
             
             //Movimiento enemigos
-            for (Mobs mob : enemies1) mob.update();
+            for (Mobs mob : enemies1) mob.update(delta);
 
             // Colisiones asteroides entre sí
             for (int i = 0; i < asteroids1.size(); i++) {

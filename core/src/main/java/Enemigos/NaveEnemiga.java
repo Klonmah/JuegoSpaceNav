@@ -11,155 +11,153 @@ import com.badlogic.gdx.math.Rectangle;
 
 import Pantallas.PantallaJuego;
 import io.github.SpaceNav.Armas.EnemyBullet;
+import io.github.SpaceNav.Imagen;
+import io.github.SpaceNav.AudioManager;
 
-public class NaveEnemiga implements Mobs{
-	
-	private int x;
+public class NaveEnemiga implements Mobs {
+    
+    private int x;
     private int y;
     private int xSpeed;
     private Sprite spr;
-    private float cadencia; // segundos entre disparos
+    private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
     private Texture balaTexture;
     private Sound disparoSound;
-    float pitch;
+    private float pitch;
+    private boolean activa = true;
+    private boolean destruida = false;
+    private AudioManager audioManager = AudioManager.getInstance();
 
     public NaveEnemiga(int x, int y, int size, int xSpeed, Texture tx) {
-    	Random r = new Random();
-    	this.cadencia = 4.0f + r.nextFloat();
-    	pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
+        Random r = new Random();
+        this.cadencia = 4.0f + r.nextFloat();
+        pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
+        
         spr = new Sprite(tx);
-        spr.setSize(size * 2, size * 2); // el size es el radio
+        spr.setSize(size * 2, size * 2);
         spr.setOriginCenter();
+        
         balaTexture = new Texture(Gdx.files.internal("../assets/EnemyBullet.png"));
         disparoSound = Gdx.audio.newSound(Gdx.files.internal("../assets/laserSound.mp3"));
+        
+        
 
         int ancho = (int) spr.getWidth();
         int alto = (int) spr.getHeight();
 
-        // Corrige si el sprite estaría fuera de pantalla //quitado ancho y alto en el segundo y tercer if por como se dibujan los sprites
+        // Corrección de posición
         if (x < 0) x = 0;
         if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
-        if (y < 0) y = Gdx.graphics.getHeight()-20;
-        if (y>0 && y<Gdx.graphics.getHeight()-40) y=Gdx.graphics.getHeight()-20;
+        if (y < 0) y = Gdx.graphics.getHeight() - 20;
+        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
         if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
 
-        // Guardar posición corregida
         this.x = x;
         this.y = y;
         spr.setPosition(this.x, this.y);
-
-        // Velocidad
         this.xSpeed = xSpeed;
     }
     
-    public void update() {
-        x += getXSpeed();
+    @Override
+    public void update(float deltaTime) {
+        if (!activa || destruida) return;
+        
+        x += xSpeed;
 
-        if (x+getXSpeed() < 0 || x+getXSpeed()+spr.getWidth() > Gdx.graphics.getWidth())
-        	setXSpeed(getXSpeed() * -1);
+        if (x + xSpeed < 0 || x + xSpeed + spr.getWidth() > Gdx.graphics.getWidth()) {
+            xSpeed *= -1;
+        }
         
         spr.setPosition(x, y);
     }
     
+    @Override
     public Rectangle getArea() {
-    	return spr.getBoundingRectangle();
-    }
-    public void draw(SpriteBatch batch) {
-    	spr.draw(batch);
+        return spr.getBoundingRectangle();
     }
     
-    public void checkCollision(Mobs another) {
-    	// Calcular los centros de ambos
-        float cx1 = x + spr.getWidth() / 2f;
-        float cy1 = y + spr.getHeight() / 2f;
-        float cx2 = another.getX() + another.getSprite().getWidth() / 2f;
-        float cy2 = another.getY() + another.getSprite().getHeight() / 2f;
-
-        // Diferencia de posición
-        float dx = cx2 - cx1;
-        float dy = cy2 - cy1;
-        float distancia = (float) Math.sqrt(dx * dx + dy * dy);
-
-        float radio1 = getSprite().getWidth() / 2f;
-        float radio2 = another.getSprite().getWidth() / 2f;
-
-        // ¿Se tocan o superponen?
-        if (distancia < radio1 + radio2) {
-            // Normalizar el vector de colisión
-            float nx = dx / distancia;
-            float ny = dy / distancia;
-
-            // Separarlas un poco para evitar vibración
-            float overlap = (radio1 + radio2 - distancia) / 2f;
-            setX((int) (x-(nx * overlap)));
-            setY((int) (y-(ny * overlap)));
-            another.setY((int) (another.getY()+(ny*overlap)));
-            another.setX((int) (another.getX()+(nx*overlap)));
-            spr.setPosition(x, y);
-            another.getSprite().setPosition(another.getX(), another.getY());
-
-            // --- Rebote realista ---
-            // Velocidades antes del impacto
-            float vx1 = xSpeed;
-            float vx2 = another.getXSpeed();
+    @Override
+    public void onColision() {
+        // ✅ Implementa el método de Colisionable
+        System.out.println("NaveEnemiga impactada!");
+        this.destruida = true;
+        // Aquí puedes añadir efectos de explosión, sonido, etc.
+    }
+    
+    @Override
+    public void draw(SpriteBatch batch) {
+        if (activa && !destruida) {
+            spr.draw(batch);
         }
     }
     
+    @Override
+    public boolean isActive() {
+        return activa && !destruida;
+    }
+    
+    // ✅ Método específico para el disparo (no en la interfaz)
     public void updateDisparo(float delta, PantallaJuego juego) {
+        if (!isActive()) return;
+        
         tiempoDesdeUltimoDisparo += delta;
 
         if (tiempoDesdeUltimoDisparo >= cadencia) {
             tiempoDesdeUltimoDisparo = 0;
             EnemyBullet b = new EnemyBullet(
-                    getX() + getWidth()/2f,
+                    getX() + getWidth() / 2f,
                     getY(),
                     balaTexture
             );
             juego.agregarBalaEnemiga(b);
-            disparoSound.play(0.5f, pitch, 0);
+            audioManager.reproducirEfecto(disparoSound);
+            
         }
     }
-
-    private void disparar(PantallaJuego juego) {
-        
+    
+    // ✅ Getters mejorados
+    @Override
+    public float getX() {
+        return this.x;
     }
     
-	public int getXSpeed() {
-		return xSpeed;
-	}
-	public void setXSpeed(int xSpeed) {
-		this.xSpeed = xSpeed;
-	}
-	
-	public int getX() {
-		return this.x;
-	}
-	public int getY() {
-		return this.y;
-	}
-	public void setX(int x) {
-		this.x=x;
-	}
-	
-	public void setY(int y) {
-		this.y=y;
-	}
-	
-	public float getWidth() {
-	    return spr.getWidth();
-	}
-
-	public float getHeight() {
-	    return spr.getHeight();
-	}
-	public void setPosition(float x, float y) {
-	    this.x = (int) x;
-	    this.y = (int) y;
-	    spr.setPosition(x, y);
-	}
-    public Sprite getSprite() {
-    	return spr;
+    @Override
+    public float getY() {
+        return this.y;
     }
-	
+    
+    @Override
+    public float getWidth() {
+        return spr.getWidth();
+    }
+
+    @Override
+    public float getHeight() {
+        return spr.getHeight();
+    }
+    
+    public void setPosition(float x, float y) {
+        this.x = (int) x;
+        this.y = (int) y;
+        spr.setPosition(x, y);
+    }
+    
+    public int getXSpeed() {
+        return xSpeed;
+    }
+    
+    public void setXSpeed(int xSpeed) {
+        this.xSpeed = xSpeed;
+    }
+    
+    
+    
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
+    
+    public boolean isDestruida() {
+        return destruida;
+    }
 }
