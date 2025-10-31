@@ -26,7 +26,7 @@ public class PantallaAjustes implements Screen {
     private Label valorLabel;
     private final SpaceNavigation game;   
     private TextButton botonVolverMenu;
-    private Screen pantallaAnterior;
+    private BitmapFont font;
     private AudioManager audioManager = AudioManager.getInstance();
     
     public PantallaAjustes(SpaceNavigation game) {
@@ -40,10 +40,10 @@ public class PantallaAjustes implements Screen {
         Gdx.input.setInputProcessor(pantalla);
 
         // Fuente para los textos
-        BitmapFont font = new BitmapFont();
+        this.font = new BitmapFont();
         
         this.slider = new Slider(0f, 100f, 1f, false, EstilosUI.getEstiloSlider());
-        this.slider.setValue(audioManager.getVolumenMusica());
+        this.slider.setValue(audioManager.getVolumenMaestro());
         this.slider.setPosition(400, 300);
 
         // Etiqueta que muestra el valor
@@ -116,5 +116,6 @@ public class PantallaAjustes implements Screen {
     @Override
     public void dispose() {
         pantalla.dispose();
+        font.dispose();
     }
 }

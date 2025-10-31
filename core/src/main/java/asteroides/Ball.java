@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 public class Ball extends Asteroid {
 
     public Ball(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-        super(x, y, size, xSpeed, ySpeed, tx);
+        // Ball tiene 1 de vida y da 10 puntos
+        super(x, y, size, xSpeed, ySpeed, tx, 1, 10);
         
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();
@@ -28,7 +29,7 @@ public class Ball extends Asteroid {
     
     @Override
     public void update() {
-        if (isDestruido()) return;
+        if (isDestroyed()) return; // Usar isDestroyed() en lugar de isDestruido()
 
         setX(getX() + getXSpeed());
         setY(getY() + getYSpeed());
@@ -66,24 +67,17 @@ public class Ball extends Asteroid {
     
     @Override
     public void onColision() {
-       
-        super.onColision(); 
-  
-        
+        takeDamage(1);
     }
     
     @Override
     public void draw(SpriteBatch batch) {
-        if (!isDestruido()) {
+        if (!isDestroyed()) {
             getSprite().draw(batch);
         }
     }
     
-
     public void checkCollision(Asteroid another) {
-    	super.checkCollision(another); 
-        }
-    
-}
-    
-    
+        super.checkCollision(another);
+    }
+} 

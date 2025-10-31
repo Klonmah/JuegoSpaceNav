@@ -10,7 +10,7 @@ import java.util.List;
 public class AudioManager {
     private static AudioManager instance;
     
-    private int volumenMaestro = 80;
+    private int volumenMaestro = 50;
     private int volumenMusica = 50;
     
 

@@ -24,7 +24,7 @@ import io.github.SpaceNav.Armas.EnemyBullet;
 import jugador.Nave;
 import io.github.SpaceNav.*;
 
-public class PantallaJuego implements Screen {
+public class PantallaJuego implements Screen , GameEventListener{
 
     private SpaceNavigation game;
     private OrthographicCamera camera;
@@ -36,28 +36,28 @@ public class PantallaJuego implements Screen {
     private int velXAsteroides;
     private int velYAsteroides;
     private int cantAsteroides;
-    private float volumeMenu;
+    
     private int cantMobs;
 
     private Nave nave;
-    private ArrayList<Asteroid> asteroids1 = new ArrayList<>();
-    private ArrayList<Asteroid> asteroids2 = new ArrayList<>();
-    private ArrayList<Mobs> enemies1 = new ArrayList<>();
-    private ArrayList<Mobs> enemies2 = new ArrayList<>();
+    private ArrayList<Asteroid> asteroids = new ArrayList<>();
+
+    private ArrayList<Mobs> enemies = new ArrayList<>();
+
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
     
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
-                         int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumen, int cantMobs) {
+                         int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
         this.velXAsteroides = velXAsteroides;
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
-        this.volumeMenu = volumen;
+    
         this.cantMobs=cantMobs;
 
         batch = game.getBatch();
@@ -67,7 +67,7 @@ public class PantallaJuego implements Screen {
         // Efectos de sonido
         AudioManager.getInstance().cargarSonido("explosion", "../assets/explosion.ogg");
         
-        
+       
 
         // Cargar nave
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
@@ -77,13 +77,14 @@ public class PantallaJuego implements Screen {
                 );
         nave.setVidas(vidas);
         nave.setBombs(bombs);
-
+        
+      
+        nave.setEventListener(this);
 	     // Crear asteroides
 	     Random r = new Random();
 	     for (int i = 0; i < cantAsteroides; i++) {
 	         int size = 20 + r.nextInt(10);
-	         int ancho = size * 2;
-	         int alto = size * 2;
+	         
 
 	         // Centro de la pantalla
 	         int centerX = Gdx.graphics.getWidth() / 2;
@@ -102,17 +103,15 @@ public class PantallaJuego implements Screen {
 	             new Texture(Gdx.files.internal("../assets/aGreyMedium4.png"))
 	         );
 	
-	         asteroids1.add(bb);
-	         asteroids2.add(bb);
+	         asteroids.add(bb);
+
 	     }
 
         // Asteroides fuertes
         for (int i = 0; i < cantAsteroides / 4; i++) {
             int size = 20 + r.nextInt(10);
-            int ancho = size * 2;
-            int alto = size * 2;
-            //int x = r.nextInt(Gdx.graphics.getWidth() - ancho);
-            //int y = 50 + r.nextInt(Gdx.graphics.getHeight() - 50 - alto);
+      
+      
             
 
 	         // Centro de la pantalla
@@ -124,13 +123,14 @@ public class PantallaJuego implements Screen {
 	         int x = centerX + r.nextInt(dispersion * 2) - dispersion;
 	         int y = centerY + r.nextInt(dispersion * 2) - dispersion;
 
-            BallStrong bb = new BallStrong(x, y, size,
-                    velXAsteroides + r.nextInt(4),
-                    velYAsteroides + r.nextInt(4),
-                    new Texture(Gdx.files.internal("../assets/aGreyMedium4Red.png")));
+	     
+	         BallStrong bb = new BallStrong(x, y, size,
+	             velXAsteroides + r.nextInt(4),
+	             velYAsteroides + r.nextInt(4),
+	             new Texture(Gdx.files.internal("../assets/aGreyMedium4Red.png")));
 
-            asteroids1.add(bb);
-            asteroids2.add(bb);
+            asteroids.add(bb);
+
         }
         
         //Naves Normales
@@ -145,8 +145,8 @@ public class PantallaJuego implements Screen {
                     new Texture(Gdx.files.internal("../assets/EnemyShip1.png")),
                     new Texture(Gdx.files.internal("../assets/EnemyBullet.png")));
         	
-        	enemies1.add(nn);
-            enemies2.add(nn);
+        	enemies.add(nn);
+ 
         }
         
 
@@ -161,8 +161,8 @@ public class PantallaJuego implements Screen {
                     velXAsteroides + r.nextInt(4),
                     new Texture(Gdx.files.internal("../assets/EnemyShip2.png")));
         	
-        	enemies1.add(nn);
-            enemies2.add(nn);
+        	enemies.add(nn);
+
         }
     }
     
@@ -172,224 +172,89 @@ public class PantallaJuego implements Screen {
     }
 
     // testeando nuevo volumen
-    public float getVolume() {
-    	return this.volumeMenu;
-    }
-    public void setVolume(int v) {
-    	this.volumeMenu = v;
-    }
+  
     
     public void actualizarJuego(float delta) {
-        // --- actualizar nave con pausa ---
-        nave.update(pausa, this);
+        // ✅ LLAMAR AL NUEVO MÉTODO SIN PantallaJuego
+        nave.update(pausa);  // Ya no pasa 'this'
 
         // Si está en pausa, no actualizar nada más
         if (pausa) return;
         
-        
-        
         if (!nave.estaHerido()) {
-            // Colisiones balas - asteroides
-            for (int i = 0; i < balas.size(); i++) {
-                Bullet b = balas.get(i);
-                b.update();
-                for (int j = 0; j < asteroids1.size(); j++) {
-                    Asteroid asteroide = asteroids1.get(j);
-                    if (b.checkCollision(asteroide)) {
-                        AudioManager.getInstance().reproducirSonido("explosion");
-
-                        if (asteroide instanceof Ball) {
-                            asteroids1.remove(j);
-                            asteroids2.remove(j);
-                            j--;
-                        } else if (asteroide instanceof BallStrong) {
-                            BallStrong ball = (BallStrong) asteroide;
-                            ball.getHit();
-                            if (ball.getHp() <= 0) {
-                                asteroids1.remove(j);
-                                asteroids2.remove(j);
-                                j--;
-                            }
-                        }
-                        score += 10;
-                    }
-                }
-                for (int j = 0; j < enemies1.size(); j++) {
-                    Mobs mob = enemies1.get(j);
-                    if (b.checkCollision(mob)) {
-                    	AudioManager.getInstance().reproducirSonido("explosion");
-                        enemies1.remove(j);
-                        enemies2.remove(j);
-                        j--;
-                        score += 10;
-                    }
-                }
-                if (b.isDestroyed()) {
-                    balas.remove(i);
-                    i--;
-                }
-            }
+            // Actualizar proyectiles
+            updateProjectiles(delta);
             
-            //Disparos enemigos
-            for (int j = 0; j < enemies1.size(); j++) {
-                Mobs mob = enemies1.get(j);
-                mob.update(delta, nave);
-                
-                if (mob instanceof NaveEnemiga) {
-                    
-                    NaveEnemiga naveEnemiga = (NaveEnemiga) mob;
-                    EnemyBullet bala = naveEnemiga.getBala(delta);
-                    
-                    if (bala != null) {
-                        agregarBalaEnemiga(bala); 
-                    }
-                }
-            }
+            // Disparos enemigos
+            updateEnemyShots(delta);
             
-            // Colisiones bombs - asteroides
-            for (int i = 0; i < bombs.size(); i++) {
-                Bomb b = bombs.get(i);
-                b.update(delta);
-                for (int j = 0; j < asteroids1.size(); j++) {
-                    Asteroid asteroide = asteroids1.get(j);
-                    if (b.checkCollision(asteroide)) {
-                    	AudioManager.getInstance().reproducirSonido("explosion");
-
-                        if (asteroide instanceof Ball) {
-                            asteroids1.remove(j);
-                            asteroids2.remove(j);
-                            j--;
-                        } else if (asteroide instanceof BallStrong) {
-                            BallStrong ball = (BallStrong) asteroide;
-                            ball.getHit();
-                            if (ball.getHp() <= 0) {
-                                asteroids1.remove(j);
-                                asteroids2.remove(j);
-                                j--;
-                            }
-                        }
-                        score += 5;
-                    }
-                }
-                for (int j = 0; j < enemies1.size(); j++) {
-                    Mobs mob = enemies1.get(j);
-                    if (b.checkCollision(mob)) {
-                    	AudioManager.getInstance().reproducirSonido("explosion");
-
-                        enemies1.remove(j);
-                        enemies2.remove(j);
-                        j--;
-                        score += 5;
-                    }
-                }
-
-                if (b.isDestroyed()) {
-                	bombs.remove(i);
-                    i--;
-                }
-            }
-
-            // Movimiento asteroides
-            for (Asteroid ball : asteroids1) ball.update();
+            // Sistema de colisiones
+            SystemaColision.checkBulletAsteroidCollisions(balas, asteroids, this);
+            SystemaColision.checkBulletEnemyCollisions(balas, enemies, this);
+            SystemaColision.checkBombCollisions(bombs, asteroids, enemies, this);
+            SystemaColision.checkAsteroidCollisions(asteroids);
+            SystemaColision.checkPlayerCollisions(nave, asteroids, enemies, enemyBullets);
             
-            //Movimiento enemigos
-            for (Mobs mob : enemies1) mob.update(delta, nave);
-
-            // Colisiones asteroides entre sí
-            for (int i = 0; i < asteroids1.size(); i++) {
-                Asteroid ball1 = asteroids1.get(i);
-                for (int j = 0; j < asteroids2.size(); j++) {
-                    Asteroid ball2 = asteroids2.get(j);
-                    if (i < j) ball1.checkCollision(ball2);
-                }
-            }
+            // Movimiento
+            updateMovements(delta);
             
-            //Colisiones enemigos entre sí
-            //for (int i = 0; i < enemies1.size(); i++) {
-              //  Mobs mob1 = enemies1.get(i);
-                //for (int j = 0; j < enemies2.size(); j++) {
-                  //  Mobs mob2 = enemies2.get(j);
-                    //if (i < j) mob1.checkCollision(mob2);
-                //}
-            //}
-
-            // Colisión asteroides - nave
-            //for (int i = 0; i < asteroids1.size(); i++) {
-            //    Asteroid b = asteroids1.get(i);
-            //    if (nave.checkCollision(b)) {
-            //        asteroids1.remove(i);
-            //        asteroids2.remove(i);
-            //        i--;
-            //    }
-            //}
-            
-            //Colisión enemigos - nave
-            
-            //for (int i = 0; i < enemies1.size(); i++) {
-            //    Mobs b = enemies1.get(i);
-            //    if (nave.checkCollision(b)) {
-            //        enemies1.remove(i);
-            //        enemies2.remove(i);
-            //        i--;
-            //    }
-            //}
-            
-			 // Colisión asteroides - nave
-			for (int i = 0; i < asteroids1.size(); i++) {
-			    Asteroid b = asteroids1.get(i);
-			    if (nave.checkCollision(b)) {
-			        // Eliminar de la primera lista si el índice existe
-			        if (i < asteroids1.size()) {
-			            asteroids1.remove(i);
-			        }
-			
-			        // Eliminar de la segunda lista solo si existe ese índice
-			        if (i < asteroids2.size()) {
-			            asteroids2.remove(i);
-			        }
-			
-			        i--; // Corrige el índice tras eliminar
-			    }
-			}
-			
-			// Colisión enemigos - nave
-			for (int i = 0; i < enemies1.size(); i++) {
-			    Mobs b = enemies1.get(i);
-			    if (nave.checkCollision(b)) {
-			        if (i < enemies1.size()) {
-			            enemies1.remove(i);
-			        }
-			
-			        if (i < enemies2.size()) {
-			            enemies2.remove(i);
-			        }
-			
-			        i--;
-			    }
-			}
-
-			// Balas Enemigas
-			for (int i = 0; i < enemyBullets.size(); i++) {
-			    EnemyBullet e = enemyBullets.get(i);
-			    if (e == null) continue;
-
-			    e.update();
-
-			    if (nave.checkCollision(e)) {
-			        enemyBullets.remove(i);
-			        i--; // Ajustar índice tras eliminar
-			        continue;
-			    }
-
-			    if (e.isDestroyed()) {
-			        enemyBullets.remove(i);
-			        i--; // También aquí
-			    }
-			}
-
+            // Limpiar proyectiles destruidos
+            cleanDestroyedProjectiles();
         }
     }
-    // --- dibujar el juego ---
+
+    private void updateProjectiles(float delta) {
+        for (Bullet b : balas) b.update();
+        for (Bomb b : bombs) b.update(delta);
+        for (EnemyBullet e : enemyBullets) e.update();
+    }
+
+    private void updateEnemyShots(float delta) {
+        for (int j = 0; j < enemies.size(); j++) {
+            Mobs mob = enemies.get(j);
+            mob.update(delta, nave);
+            
+            if (mob instanceof NaveEnemiga) {
+                NaveEnemiga naveEnemiga = (NaveEnemiga) mob;
+                EnemyBullet bala = naveEnemiga.getBala(delta);
+                if (bala != null) {
+                    // ✅ USAR EL NUEVO MÉTODO CON EVENTOS
+                    onEnemyBulletFired(bala);
+                }
+            }
+        }
+    }
+
+    private void updateMovements(float delta) {
+        for (Asteroid ball : asteroids) ball.update();
+        for (Mobs mob : enemies) mob.update(delta, nave);
+    }
+
+    private void cleanDestroyedProjectiles() {
+        // Limpiar balas destruidas (iterar hacia atrás para evitar problemas de índice)
+        for (int i = balas.size() - 1; i >= 0; i--) {
+            if (balas.get(i).isDestroyed()) {
+                balas.remove(i);
+            }
+        }
+        
+        // Limpiar bombas destruidas  
+        for (int i = bombs.size() - 1; i >= 0; i--) {
+            if (bombs.get(i).isDestroyed()) {
+                bombs.remove(i);
+            }
+        }
+        
+        // Limpiar balas enemigas destruidas
+        for (int i = enemyBullets.size() - 1; i >= 0; i--) {
+            EnemyBullet e = enemyBullets.get(i);
+            if (e != null && e.isDestroyed()) {
+                enemyBullets.remove(i);
+            }
+        }
+    }
+    
+
     public void dibujarJuego() {
         batch.begin();
         dibujaEncabezado();
@@ -397,8 +262,8 @@ public class PantallaJuego implements Screen {
         for (EnemyBullet e : enemyBullets) e.draw(batch);
         for (Bomb b : bombs) b.draw(batch);
         nave.draw(batch);
-        for (Asteroid b : asteroids1) b.draw(batch);
-        for (Mobs b : enemies1) b.draw(batch);
+        for (Asteroid b : asteroids) b.draw(batch);
+        for (Mobs b : enemies) b.draw(batch);
         batch.end();
     }
 
@@ -426,17 +291,14 @@ public class PantallaJuego implements Screen {
         // --- nivel completado o game over ---
         if (nave.estaDestruido()) {
             if (score > game.getHighScore()) game.setHighScore(score);
-            Screen ss = new PantallaGameOver(game, volumeMenu);
+            Screen ss = new PantallaGameOver(game);
             ss.resize(1200, 800);
             game.setScreen(ss);
             dispose();
         }
 
-        if (asteroids1.isEmpty()) {
-            game.setScreen(new PantallaPerks(game, this, nave, ronda, score, velXAsteroides, velYAsteroides, cantAsteroides,volumeMenu, cantMobs));
-            //Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs(), score,
-            //        velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu);
-            //ss.resize(1200, 800);
+        if (asteroids.isEmpty()) {
+            game.setScreen(new PantallaPerks(game, this, nave, ronda, score, velXAsteroides, velYAsteroides, cantAsteroides, cantMobs));
             dispose();
         }
     }
@@ -455,6 +317,9 @@ public class PantallaJuego implements Screen {
     public boolean agregarBomb(Bomb bb) {
         return bombs.add(bb);
     }
+    public void addScore(int points) {
+        this.score += points;
+    }
 
     @Override public void show() {}
     @Override public void resize(int width, int height) {}
@@ -470,5 +335,29 @@ public class PantallaJuego implements Screen {
         game.getFont().draw(batch, "Score:" + score, Gdx.graphics.getWidth() - 150, 30);
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(),
                 Gdx.graphics.getWidth() / 2 - 100, 30);
+    }
+    @Override
+    public void onBulletFired(Bullet bullet) {
+        balas.add(bullet);
+    }
+    
+    @Override
+    public void onBombFired(Bomb bomb) {
+        bombs.add(bomb);
+    }
+    
+    @Override
+    public void onEnemyBulletFired(EnemyBullet bullet) {
+        enemyBullets.add(bullet);
+    }
+    
+    @Override
+    public void onScoreChanged(int points) {
+        score += points;
+    }
+    
+    @Override
+    public void onEntityDestroyed() {
+        AudioManager.getInstance().reproducirSonido("explosion");
     }
 }

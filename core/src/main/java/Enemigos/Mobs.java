@@ -1,11 +1,11 @@
 package Enemigos;
 
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SpaceNav.Colisionable;
 import jugador.Nave;
 
-public interface Mobs extends Colisionable {
+
+public interface Mobs extends Colisionable, Destructible {
     void update(float deltaTime, Nave jugador);
     void draw(SpriteBatch batch);
     boolean isActive();

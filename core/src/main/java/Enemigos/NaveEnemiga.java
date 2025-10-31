@@ -12,25 +12,24 @@ import Enemigos.Sistemas.SistemaDisparos;
 import Enemigos.Sistemas.SistemaEstado;
 import io.github.SpaceNav.Armas.EnemyBullet;
 
-public class NaveEnemiga implements Mobs {
+public class NaveEnemiga implements Mobs, ShooterEnemigo {
     
     private SistemaMovimiento movimiento;
     private SistemaDisparos disparos;
     private SistemaEstado estado;
     private Sprite sprite;
+    private int vida = 1;
+    private int valorPuntos = 15;
     
     public NaveEnemiga(int x, int y, int size, int xSpeed, Texture texturaNave, Texture balaTexture) {
-        // Inicializar sprite
         this.sprite = new Sprite(texturaNave);
         this.sprite.setSize(size * 2, size * 2);
         this.sprite.setOriginCenter();
         
-        //  Inicializar sistemas mediante composición
         this.movimiento = new SistemaMovimiento(x, y, xSpeed, sprite);
         this.disparos = new SistemaDisparos(4.0f, balaTexture);
         this.estado = new SistemaEstado();
         
-        // Corrección de posición inicial
         corregirPosicionInicial();
     }
     
@@ -51,14 +50,21 @@ public class NaveEnemiga implements Mobs {
     @Override
     public void update(float deltaTime, Nave jugador) {
         if (!estado.isActive()) return;
-        
-        // Actualizar movimiento
         movimiento.update(deltaTime);
-        
-        
     }
     
-
+    // Implementación de Shooter
+    @Override
+    public EnemyBullet shoot(float delta) {
+        return getBala(delta); // Reutiliza tu método existente
+    }
+    
+    @Override
+    public boolean canShoot() {
+        return estado.isActive() && disparos != null;
+    }
+    
+    // Mantener método existente para compatibilidad
     public EnemyBullet getBala(float delta) {
         if (!estado.isActive() || disparos == null) return null;
         
@@ -89,7 +95,6 @@ public class NaveEnemiga implements Mobs {
         return estado.isActive();
     }
     
-    // ✅ Getters de la interfaz Mobs
     @Override
     public float getX() {
         return movimiento.getX();
@@ -127,5 +132,34 @@ public class NaveEnemiga implements Mobs {
     
     public boolean isDestruida() {
         return estado.isDestruida();
+    }
+
+    // Implementación de Destructible
+    @Override
+    public void takeDamage(int damage) {
+        vida -= damage;
+        if (vida <= 0) {
+            estado.destruir();
+        }
+    }
+    
+    @Override
+    public boolean isDestroyed() {
+        return estado.isDestruida();
+    }
+    
+    @Override
+    public int getScoreValue() {
+        return valorPuntos;
+    }
+    
+    @Override
+    public int getHp() {
+        return vida;
+    }
+    
+    @Override
+    public int getMaxHp() {
+        return 1;
     }
 }

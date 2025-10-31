@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import Enemigos.Destructible;
 import io.github.SpaceNav.Colisionable;
 
-public abstract class Asteroid implements Colisionable {
+public abstract class Asteroid implements Colisionable, Destructible {
     private int x;
     private int y;
     private int xSpeed;
@@ -18,8 +20,15 @@ public abstract class Asteroid implements Colisionable {
     private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
     private boolean destruido = false;
+    private int vida;
+    private int vidaMaxima;
+    private int valorPuntos;
 
-    public Asteroid(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
+    public Asteroid(int x, int y, int size, int xSpeed, int ySpeed, Texture tx, int vida, int valorPuntos) {
+        this.vida = vida;
+        this.vidaMaxima = vida;
+        this.valorPuntos = valorPuntos;
+        
         spr = new Sprite(tx);
         spr.setSize(size * 2, size * 2);
         spr.setOriginCenter();
@@ -42,6 +51,36 @@ public abstract class Asteroid implements Colisionable {
         this.ySpeed = ySpeed;
     }
     
+    // Implementación de Destructible
+    @Override
+    public void takeDamage(int damage) {
+        vida -= damage;
+        if (vida <= 0) {
+            this.destruido = true;
+        }
+    }
+    
+    @Override
+    public boolean isDestroyed() {
+        return destruido;
+    }
+    
+    @Override
+    public int getScoreValue() {
+        return valorPuntos;
+    }
+    
+    @Override
+    public int getHp() {
+        return vida;
+    }
+    
+    @Override
+    public int getMaxHp() {
+        return vidaMaxima;
+    }
+    
+    // Resto de tus métodos existentes se mantienen igual...
     public void update() {
         if (destruido) return;
 
@@ -83,7 +122,6 @@ public abstract class Asteroid implements Colisionable {
     @Override
     public void onColision() {
         this.destruido = true;
-        
     }
     
     public boolean isDestruido() {
@@ -96,13 +134,11 @@ public abstract class Asteroid implements Colisionable {
         }
     }
     
-
     public void checkCollision(Colisionable otro) {
-    	
-    	if (!(otro instanceof Asteroid)) return; // Solo colisiona con otros asteroides
+        if (!(otro instanceof Asteroid)) return; // Solo colisiona con otros asteroides
         
         Asteroid another = (Asteroid) otro;
-    	
+        
         if (this.destruido || another.isDestruido()) return;
         
         // Calcular los centros de ambos
@@ -211,9 +247,4 @@ public abstract class Asteroid implements Colisionable {
     public Sprite getSprite() {
         return spr;
     }
-
-	public void checkCollision(Asteroid another) {
-		// TODO Auto-generated method stub
-		
-	}
 }

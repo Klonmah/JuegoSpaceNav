@@ -1,92 +1,36 @@
 package asteroides;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.SpaceNav.Colisionable;
-
 public class BallStrong extends Asteroid {
-    private int hp = 2;
+    private int hits = 0;
 
     public BallStrong(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-        super(x, y, size, xSpeed, ySpeed, tx);
-        
-        int ancho = (int) getSprite().getWidth();
-        int alto = (int) getSprite().getHeight();
-        int screenW = Gdx.graphics.getWidth();
-        int screenH = Gdx.graphics.getHeight();
+        // BallStrong tiene 3 de vida y da 30 puntos
+        super(x, y, size, xSpeed, ySpeed, tx, 3, 30);
+    }
+    
 
-        // Ajuste inicial para no aparecer fuera de pantalla
-        if (x < 0) x = 0;
-        if (x > screenW - ancho) x = screenW - ancho;
-        if (y < 0) y = 0;
-        if (y > screenH - alto) y = screenH - alto;
-
-        setX(x);
-        setY(y);
-        getSprite().setPosition(getX(), getY());
+    public void getHit() {
+        takeDamage(1);
     }
     
     @Override
     public void update() {
-        if (isDestruido()) return;
-
-        setX(getX() + getXSpeed());
-        setY(getY() + getYSpeed());
-
-
-        float ancho = getSprite().getWidth();
-        float alto = getSprite().getHeight();
-        float screenW = Gdx.graphics.getWidth();
-        float screenH = Gdx.graphics.getHeight();
-
-        // --- Rebote horizontal ---
-        if (getX() < 0) {
-            setX(0);
-            setXSpeed(Math.abs(getXSpeed())); // rebota hacia la derecha
-        } else if (getX() + ancho > screenW) {
-            setX((int) (screenW - ancho));
-            setXSpeed(-Math.abs(getXSpeed())); // rebota hacia la izquierda
-        }
-
-        // --- Rebote vertical ---
-        if (getY() < 0) {
-            setY(0);
-            setYSpeed(Math.abs(getYSpeed())); // rebota hacia arriba
-        } else if (getY() + alto > screenH) {
-            setY((int) (screenH - alto));
-            setYSpeed(-Math.abs(getYSpeed())); // rebota hacia abajo
-        }
-        
-        getSprite().setPosition(getX(), getY());
+        super.update(); // Usa el update de Asteroid
     }
     
     @Override
     public void onColision() {
-        getHit();
-    }
-    
-   
-    @Override
-    public void checkCollision(Colisionable another) {
-        super.checkCollision(another); 
-    }
-    
-    public int getHp() {
-        return hp;
-    }
-    
-    public void getHit() {
-        hp--;
+       
+        takeDamage(1);
     }
     
     @Override
     public void draw(SpriteBatch batch) {
-        if (!isDestruido()) {
+        if (!isDestroyed()) {
             getSprite().draw(batch);
         }
     }
-    
-  
 }

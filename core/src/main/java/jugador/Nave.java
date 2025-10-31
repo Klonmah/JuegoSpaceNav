@@ -10,10 +10,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-
+import Pantallas.GameEventListener;
 
 import Pantallas.PantallaJuego;
-import io.github.SpaceNav.Armas.EnemyBullet;
+
+
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
 import io.github.SpaceNav.AudioManager;
@@ -24,12 +25,12 @@ public class Nave {
 	
 	private boolean destruida = false;
     private int Iframes = 120;
-	
+	private float vidaMax = 20;
     private int vidas = 20;
     private int bombs = 3;
-  
+    private float velocidad = 4f;
     private Sprite spr;
- 
+    private GameEventListener eventListener;
 
 
     private boolean herido = false;
@@ -77,81 +78,73 @@ public class Nave {
     	
     	this.weapon = new WeaponQuintuple(txBala, txBomb, 0.3f); // 0.3s entre disparos
     }
- // Nuevo método update
-    public void update(boolean pausa, PantallaJuego juego) {
+    public void update(boolean pausa) {  
         if (pausa) return;
-        if (Iframes > 0)
-        {
-        	Iframes--;
+        if (Iframes > 0) {
+            Iframes--;
         }
-        if (Iframes <= 0)
-        {
-        	Iframes = 0;
+        if (Iframes <= 0) {
+            Iframes = 0;
         }
         
         if(herido) {
-        	spr.setX(spr.getX() + MathUtils.random(-2,2));
+            spr.setX(spr.getX() + MathUtils.random(-2,2));
             spr.setY(spr.getY() + MathUtils.random(-2,2));
             tiempoHerido--;
             if (tiempoHerido <= 0) herido = false;
-        }else {
-        	
-        	
-        	if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
-        	if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
-        	rotacion = (rotacion + 360) % 360;
+        } else {
+            
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  rotacion += 2f;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotacion -= 2f;
+            rotacion = (rotacion + 360) % 360;
 
-        	anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
+            anguloRad = (rotacion - 90) * MathUtils.degreesToRadians;
 
-        	//ACELERACIÓN
-        	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        		
-            	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-            	{velX -= MathUtils.cos(anguloRad) * (aceleracion/4);}
-            	else { velX -= MathUtils.cos(anguloRad) * aceleracion; } 
-            	
-	        	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-	        	{velY -= MathUtils.sin(anguloRad) * (aceleracion/4);}
-	        	else { velY -= MathUtils.sin(anguloRad) * aceleracion; } 
-        		
-        	}
-        	
+            //ACELERACIÓN
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                
+                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                {velX -= MathUtils.cos(anguloRad) * (aceleracion/4);}
+                else { velX -= MathUtils.cos(anguloRad) * aceleracion; } 
+                
+                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                {velY -= MathUtils.sin(anguloRad) * (aceleracion/4);}
+                else { velY -= MathUtils.sin(anguloRad) * aceleracion; } 
+                
+            }
+            
 
-        	// FRICCIÓN
-        	velX *= friccion;
-        	velY *= friccion;
+            // FRICCIÓN
+            velX *= friccion;
+            velY *= friccion;
 
-        	// Limitar velocidad
-        	float velocidadActual = (float)Math.sqrt(velX*velX + velY*velY);
-        	if (velocidadActual > velocidadMax) {
-        		float factor = velocidadMax / velocidadActual;
-        		velX *= factor;
-        		velY *= factor;
-        	}
+            // Limitar velocidad
+            float velocidadActual = (float)Math.sqrt(velX*velX + velY*velY);
+            if (velocidadActual > velocidadMax) {
+                float factor = velocidadMax / velocidadActual;
+                velX *= factor;
+                velY *= factor;
+            }
 
-        	// Mover nave
-        	float x = MathUtils.clamp(spr.getX() + velX, 0, Gdx.graphics.getWidth() - spr.getWidth());
-        	float y = MathUtils.clamp(spr.getY() + velY, 0, Gdx.graphics.getHeight() - spr.getHeight());
-        	spr.setPosition(x, y);
-        	spr.setRotation(rotacion);
+            // Mover nave
+            float x = MathUtils.clamp(spr.getX() + velX, 0, Gdx.graphics.getWidth() - spr.getWidth());
+            float y = MathUtils.clamp(spr.getY() + velY, 0, Gdx.graphics.getHeight() - spr.getHeight());
+            spr.setPosition(x, y);
+            spr.setRotation(rotacion);
 
-        	// Disparo spammer old : isKeyJustPressed
-        	if (weapon != null) {
-        		weapon.update(Gdx.graphics.getDeltaTime());
-        		if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-        			weapon.fire(this, juego, spr.getX()+17, spr.getY()+40);
-        		}
-        	}
-        	if (weapon != null) {
-        		weapon.update(Gdx.graphics.getDeltaTime());
-        		if ( bombs > 0)
-        		{
-            		if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            		    bombs--;
-            			weapon.firebomb(this, juego, spr.getX()+17, spr.getY()+40);
-            		}
-        		}
-        	}
+            // ✅ Disparos SIN pasar PantallaJuego - el arma usará eventos
+            if (weapon != null) {
+                weapon.update(Gdx.graphics.getDeltaTime());
+                if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+                    weapon.fire(this, spr.getX()+17, spr.getY()+40);  // ✅ Sin "juego"
+                }
+                
+                // ✅ Bombas también SIN PantallaJuego
+                if (bombs > 0 && Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+                    bombs--;
+                    weapon.firebomb(this, spr.getX()+17, spr.getY()+40);  // ✅ Sin "juego"
+                }
+            }
         }
     }
     // Nuevo draw simplificado
@@ -198,7 +191,7 @@ public class Nave {
     
     public void setBombs(int b) {bombs = b;}
     
-   
+    //public boolean isDestruida() {return destruida;}
     public int getX() {return (int) spr.getX();}
     public int getY() {return (int) spr.getY();}
 	public void setVidas(int vidas2) {vidas = vidas2;}
@@ -206,53 +199,14 @@ public class Nave {
 	public Rectangle getArea() {
     	return spr.getBoundingRectangle();
     }
-	
+	public void setEventListener(GameEventListener listener) {
+        this.eventListener = listener;
+        if (this.weapon != null) {
+            this.weapon.setEventListener(listener);  // ✅ Pasar también al arma
+        }
+    }
 	public void destruir() {
 		this.destruida = true;
 	}
 	
-	// Disparar
-
-	
-	
-	public void rotar(float grados) {
-	    this.rotacion = (this.rotacion + grados + 360) % 360;
-	
-	
-	    if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-	    	if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-	    		velX -= MathUtils.cos(anguloRad) * (aceleracion/4);
-	    		velY -= MathUtils.sin(anguloRad) * (aceleracion/4);
-	    	} else {
-	    		velX -= MathUtils.cos(anguloRad) * aceleracion;
-	    		velY -= MathUtils.sin(anguloRad) * aceleracion;
-	    	}
-	    }
-	}
-	
-	
-	public boolean checkCollision(EnemyBullet e) {
-	    // Si la bala o el sprite de la nave no existen, no hay colisión
-	    if (e == null || e.getArea() == null || spr == null) return false;
-
-	    // Si está destruida o invulnerable, no hacer nada
-	    if (herido || Iframes > 0) return false;
-
-	    if (e.getArea().overlaps(spr.getBoundingRectangle())) {
-	        // Actualizar vidas y herir
-	        vidas--;
-	        herido = true;
-	        tiempoHerido = tiempoHeridoMax;
-	        //sonidoHerido.play();
-	        Iframes = 120;
-
-	        if (vidas <= 0)
-	            destruida = true;
-
-	        return true;
-	    }
-
-	    return false;
-	}
-
 }

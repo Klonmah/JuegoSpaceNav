@@ -20,10 +20,11 @@ public class PantallaPerks implements Screen {
     private int velXAsteroides;
     private int velYAsteroides;
     private int cantAsteroides;
-    private float volumeMenu;
+
     private int cantMobs;
     
-    public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, int velXAsteroides, int velYAsteroides, int cantAsteroides, float volumeMenu, int cantMobs) {
+    public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, 
+                        int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
         this.game = game;
         this.juego = juego;
         this.batch = game.getBatch();
@@ -33,19 +34,19 @@ public class PantallaPerks implements Screen {
         this.velXAsteroides = velXAsteroides;
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
-        this.volumeMenu = volumeMenu;
+   
         this.cantMobs = cantMobs;
     }
 
     @Override
     public void render(float delta) {
-    	Gdx.gl.glClearColor(0, 0, 0, 1);
-    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        
+        // Dibujar el juego de fondo
         this.juego.dibujarJuego();
 
-        // dibujar menú de pausa encima
+        // Dibujar menú de perks
         batch.begin();
         game.getFont().getData().setScale(3f);
         game.getFont().draw(batch, "ELIGE TUS PERKS",
@@ -53,55 +54,41 @@ public class PantallaPerks implements Screen {
                 Gdx.graphics.getHeight() / 2 + 100);
         game.getFont().draw(batch, "Presiona O para mas vida.",
                 Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2 );
+                Gdx.graphics.getHeight() / 2);
         game.getFont().draw(batch, "Presiona P para mas bombas.",
                 Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2 -75);
-        game.getFont().draw(batch, "Presiona U y J para cambiar volumen...\nEscape para ignorar",
-                Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2 -200);
+                Gdx.graphics.getHeight() / 2 - 75);
         batch.end();
 
-		if ( Gdx.input.isKeyJustPressed(Input.Keys.U )) {
-		    game.setVolume(game.getVolume() + 0.1f);
-			if (game.getVolume() > 1f)
-			{
-				game.setVolume(1f);
-			}
-		}
-		else if ( Gdx.input.isKeyJustPressed(Input.Keys.J )) {
-			if (game.getVolume() > 0.1f)
-			{
-			    game.setVolume(game.getVolume() - 0.1f);
-			}else{game.setVolume(0f);}
-		}
-		
-        // input para reanudar
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.O)) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas()+ 1, nave.getBombs(), score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-			dispose();
+        // Control de volumen
+        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+            game.setVolume(Math.min(1f, game.getVolume() + 0.1f));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+            game.setVolume(Math.max(0f, game.getVolume() - 0.1f));
         }
+        
+        // ✅ PERKS - Usando método único
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            crearSiguienteNivel(1, 0); // +1 vida
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            crearSiguienteNivel(0, 1); // +1 bomba
+        } 
+    }
 
-        // input para reanudar
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs()+ 1, score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-			dispose();
-        }
-
-        // input para reanudar
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), nave.getBombs(), score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 6, volumeMenu, cantMobs+2);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-			dispose();
-        }
+    private void crearSiguienteNivel(int vidasExtra, int bombsExtra) {
+        Screen ss = new PantallaJuego(game, 
+            ronda + 1, 
+            nave.getVidas() + vidasExtra, 
+            nave.getBombs() + bombsExtra, 
+            score, 
+            velXAsteroides + 1, 
+            velYAsteroides + 1, 
+            cantAsteroides + 6,  
+            cantMobs + 2
+        );
+        ss.resize(1200, 800);
+        game.setScreen(ss);
+        dispose();
     }
 
     @Override public void show() {}

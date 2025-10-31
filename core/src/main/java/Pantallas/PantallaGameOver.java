@@ -14,11 +14,11 @@ public class PantallaGameOver implements Screen {
 
 	private SpaceNavigation game;
 	private OrthographicCamera camera;
-    private float volumeMenu;
 
-	public PantallaGameOver(SpaceNavigation game, float v) {
+
+	public PantallaGameOver(SpaceNavigation game) {
 		this.game = game;
-		this.volumeMenu = v;
+	
         
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1200, 800);
@@ -40,7 +40,7 @@ public class PantallaGameOver implements Screen {
 		game.getBatch().end();
 
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10, this.volumeMenu,1);
+			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10,1);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();
