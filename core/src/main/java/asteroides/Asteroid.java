@@ -80,7 +80,6 @@ public abstract class Asteroid implements Colisionable, Destructible {
         return vidaMaxima;
     }
     
-    // Resto de tus métodos existentes se mantienen igual...
     public void update() {
         if (destruido) return;
 

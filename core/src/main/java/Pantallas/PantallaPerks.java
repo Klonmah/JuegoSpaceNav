@@ -67,7 +67,7 @@ public class PantallaPerks implements Screen {
             game.setVolume(Math.max(0f, game.getVolume() - 0.1f));
         }
         
-        // ✅ PERKS - Usando método único
+        // PERKS
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             crearSiguienteNivel(1, 0); // +1 vida
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {

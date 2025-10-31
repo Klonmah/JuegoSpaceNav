@@ -23,7 +23,7 @@ public abstract class Weapon {
     public Texture getTxBomb() { return txBomb; }
     public float getCadencia() { return cadencia; }
     public float getTiempoDesdeUltimoDisparo() { return tiempoDesdeUltimoDisparo; }
-    public GameEventListener getEventListener() { return eventListener; } // ✅ Getter para eventListener
+    public GameEventListener getEventListener() { return eventListener; } 
 
     // SETTERS
     public void setTiempoDesdeUltimoDisparo(float tiempo) { this.tiempoDesdeUltimoDisparo = tiempo; }
@@ -38,25 +38,24 @@ public abstract class Weapon {
         tiempoDesdeUltimoDisparo += delta;
     }
 
-    // ✅ Métodos finales que manejan la lógica común
     public final void fire(Nave nave, float puntaX, float puntaY) {
         if (tiempoDesdeUltimoDisparo >= cadencia && eventListener != null) {
             tiempoDesdeUltimoDisparo = 0f;
-            executeFire(nave, puntaX, puntaY); // ✅ Delegar a método concreto
+            executeFire(nave, puntaX, puntaY); 
         }
     }
     
     public final void firebomb(Nave nave, float puntaX, float puntaY) {
         if (eventListener != null) {
-            executeFireBomb(nave, puntaX, puntaY); // ✅ Delegar a método concreto
+            executeFireBomb(nave, puntaX, puntaY); 
         }
     }
 
-    // ✅ Métodos abstractos que las subclases deben implementar
+    //Métodos abstractos
     public abstract void executeFire(Nave nave, float puntaX, float puntaY);
     public abstract void executeFireBomb(Nave nave, float puntaX, float puntaY);
 
-    // ✅ Mantener compatibilidad
+
     public void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
         this.fire(nave, puntaX, puntaY);
     }

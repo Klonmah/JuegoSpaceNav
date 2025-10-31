@@ -24,7 +24,7 @@ public class PantallaMenu implements Screen {
         this.game = game;
         this.stage = new Stage();
         
-        // ✅ ELIMINADA: Cámara innecesaria
+        
         this.logo = new Imagen("../assets/LogoUniformUpscaled.png", 400, 400);
         
         EstilosUI.inicializar();

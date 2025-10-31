@@ -14,7 +14,6 @@ public class WeaponTriple extends Weapon {
         AudioManager.getInstance().cargarSonido("disparoTriple", "../assets/pop-sound.mp3");
     }
 
-    // ✅ Implementar métodos de ejecución concreta
     @Override
     public void executeFire(Nave nave, float puntaX, float puntaY) {
         GameEventListener listener = getEventListener();
@@ -32,7 +31,6 @@ public class WeaponTriple extends Weapon {
         AudioManager.getInstance().reproducirSonido("disparoTriple");
     }
 
-    // ✅ Mantener compatibilidad
     @Override
     public void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
         super.fire(nave, puntaX, puntaY);

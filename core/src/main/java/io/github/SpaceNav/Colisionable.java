@@ -3,6 +3,6 @@ import com.badlogic.gdx.math.Rectangle;
 
 public interface Colisionable {
 	    Rectangle getArea();
-	    void onColision(); // Opcional: para manejar lo que pasa al colisionar
+	    void onColision(); //Maneja lo que pasa al colisionar
 }
 

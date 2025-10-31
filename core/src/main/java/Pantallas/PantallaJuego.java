@@ -41,7 +41,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     private int variacionTamanioAsteroide = 10;
     private int tamanioEnemigo = 25;
     private int spawnEnemigoX = 50;
-    //private int spawnEnemigoY = 50; Se usara Proximamente
+    //private int spawnEnemigoY = 50;
     private int dispersionAsteroideNormal = 200;
     private int dispersionAsteroideStrong = 300;
     private int variacionVelocidad = 4;
@@ -63,10 +63,12 @@ public class PantallaJuego implements Screen, GameEventListener {
     private Texture texturaRocket;
     private Texture texturaBomb;
     private boolean texturasCargadas = false;
+    private Texture texturaFondo;
     
  
     private void cargarTexturas() {
         if (!texturasCargadas) {
+        	texturaFondo = new Texture(Gdx.files.internal("../assets/fondo.jpg"));
             texturaAsteroide = new Texture(Gdx.files.internal("../assets/aGreyMedium4.png"));
             texturaAsteroideStrong = new Texture(Gdx.files.internal("../assets/aGreyMedium4Red.png"));
             texturaEnemigo1 = new Texture(Gdx.files.internal("../assets/EnemyShip1.png"));
@@ -190,7 +192,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         int vel = velXAsteroides + r.nextInt(variacionVelocidad);
         
         return new NaveEnemiga(
-            x, 420, size, vel, texturaEnemigo1, texturaBalaEnemiga
+            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga
         );
     }
     
@@ -287,6 +289,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     public void dibujarJuego() {
         batch.begin();
         
+        batch.draw(texturaFondo, 0, 0, Gdx.graphics.getWidth()*1.5f, Gdx.graphics.getHeight()*1.5f);
         dibujaEncabezado();
         
         
@@ -401,7 +404,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         bombs.clear();
         enemyBullets.clear();
         
-        // ✅ LIBERAR texturas específicas de esta pantalla
+        // LIBERAR texturas
         if (texturaNave != null) {
             texturaNave.dispose();
             texturaNave = null;
@@ -414,7 +417,6 @@ public class PantallaJuego implements Screen, GameEventListener {
             texturaBomb.dispose();
             texturaBomb = null;
         }
-    
     }
 
 

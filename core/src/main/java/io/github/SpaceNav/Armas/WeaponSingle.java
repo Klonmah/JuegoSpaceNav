@@ -12,7 +12,6 @@ public class WeaponSingle extends Weapon {
         AudioManager.getInstance().cargarSonido("disparoSingle", "../assets/pop-sound.mp3");
     }
 
-    // ✅ Implementar métodos de ejecución concreta
     @Override
     public void executeFire(Nave nave, float puntaX, float puntaY) {
         getEventListener().onBulletFired(new Bullet(puntaX, puntaY, getTxBala(), nave.getRotacion()));
@@ -25,7 +24,6 @@ public class WeaponSingle extends Weapon {
         AudioManager.getInstance().reproducirSonido("disparoSingle");
     }
 
-    // ✅ Mantener compatibilidad
     @Override
     public void fire(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
         super.fire(nave, puntaX, puntaY);

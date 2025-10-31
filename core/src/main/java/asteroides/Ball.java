@@ -29,7 +29,7 @@ public class Ball extends Asteroid {
     
     @Override
     public void update() {
-        if (isDestroyed()) return; // Usar isDestroyed() en lugar de isDestruido()
+        if (isDestroyed()) return; 
 
         setX(getX() + getXSpeed());
         setY(getY() + getYSpeed());

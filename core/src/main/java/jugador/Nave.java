@@ -132,17 +132,17 @@ public class Nave {
             spr.setPosition(x, y);
             spr.setRotation(rotacion);
 
-            // ✅ Disparos SIN pasar PantallaJuego - el arma usará eventos
+            
             if (weapon != null) {
                 weapon.update(Gdx.graphics.getDeltaTime());
                 if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-                    weapon.fire(this, spr.getX()+17, spr.getY()+40);  // ✅ Sin "juego"
+                    weapon.fire(this, spr.getX()+17, spr.getY()+40);  
                 }
                 
-                // ✅ Bombas también SIN PantallaJuego
+               
                 if (bombs > 0 && Gdx.input.isKeyJustPressed(Input.Keys.X)) {
                     bombs--;
-                    weapon.firebomb(this, spr.getX()+17, spr.getY()+40);  // ✅ Sin "juego"
+                    weapon.firebomb(this, spr.getX()+17, spr.getY()+40); 
                 }
             }
         }
@@ -202,7 +202,7 @@ public class Nave {
 	public void setEventListener(GameEventListener listener) {
         this.eventListener = listener;
         if (this.weapon != null) {
-            this.weapon.setEventListener(listener);  // ✅ Pasar también al arma
+            this.weapon.setEventListener(listener);  
         }
     }
 	public void destruir() {

@@ -28,7 +28,6 @@ public class EstilosUI {
         estiloBoton.downFontColor = Color.BLUE;
 
         // --- Estilo de slider ---
-        // Fondo (track)
         Pixmap pmFondo = new Pixmap(200, 8, Pixmap.Format.RGBA8888);
         pmFondo.setColor(Color.DARK_GRAY);
         pmFondo.fillRectangle(0, 0, 200, 8);
@@ -47,7 +46,7 @@ public class EstilosUI {
         estiloSlider.background = new TextureRegionDrawable(new TextureRegion(fondo));
         estiloSlider.knob = new TextureRegionDrawable(new TextureRegion(knob));
 
-        // Opcional: agrega color al "relleno" cuando el knob pasa
+        // Agrega color al "relleno" cuando el knob pasa
         estiloSlider.knobBefore = new TextureRegionDrawable(new TextureRegion(fondo));
     }
 
@@ -61,7 +60,7 @@ public class EstilosUI {
         return estiloSlider;
     }
 
-    // Liberar recursos (si lo usas globalmente, podrías no llamarlo hasta el final del juego)
+    // Liberar recursos
     public static void dispose() {
         if (fuente != null) fuente.dispose();
     }

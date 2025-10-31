@@ -36,7 +36,6 @@ public class EnemyBullet implements Colisionable {
         spr.draw(batch);
     }
     
-    // ✅ MÉTODO CORREGIDO: Usa Colisionable en lugar de Nave
     public boolean checkCollision(Colisionable colisionable) {
         boolean colisiona = !destroyed && spr.getBoundingRectangle().overlaps(colisionable.getArea());
         
@@ -48,13 +47,11 @@ public class EnemyBullet implements Colisionable {
         return colisiona;
     }
     
-    // ✅ IMPLEMENTACIÓN de Colisionable
     @Override
     public void onColision() {
         this.destroyed = true; // La bala enemiga puede ser destruida
     }
     
-    // ✅ getArea() ya existe - perfecto
     @Override
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
