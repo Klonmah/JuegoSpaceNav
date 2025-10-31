@@ -1,14 +1,15 @@
-package Pantallas;
+package io.github.SpaceNav.Pantallas;
 
 
 import java.util.List;
-import Enemigos.Mobs;
-import asteroides.Asteroid;
+import io.github.SpaceNav.Enemigos.*;
+import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
 import io.github.SpaceNav.Armas.EnemyBullet;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.AudioManager;
+import io.github.SpaceNav.Enemigos.Destructible;
 
 public class SystemaColision {
     
@@ -105,7 +106,7 @@ public class SystemaColision {
         }
     }
     
-    private static void manejarColisionDestructible(Enemigos.Destructible target, List<?> list, int index, PantallaJuego pantalla) {
+    private static void manejarColisionDestructible(Destructible target, List<?> list, int index, PantallaJuego pantalla) {
         target.takeDamage(1);
         if (target.isDestroyed()) {
             list.remove(index);

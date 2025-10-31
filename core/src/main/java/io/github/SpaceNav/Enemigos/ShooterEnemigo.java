@@ -1,4 +1,4 @@
-package Enemigos;
+package io.github.SpaceNav.Enemigos;
 
 import io.github.SpaceNav.Armas.EnemyBullet;
 

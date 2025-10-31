@@ -1,15 +1,13 @@
-package Enemigos;
+package io.github.SpaceNav.Enemigos;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 
-import Enemigos.Sistemas.SistemaMovimiento;
-import Enemigos.Sistemas.SistemaDisparos;
-import Enemigos.Sistemas.SistemaEstado;
+import io.github.SpaceNav.Enemigos.Sistemas.*;
 import io.github.SpaceNav.Armas.EnemyBullet;
 
 public class NaveEnemiga implements Mobs, ShooterEnemigo {

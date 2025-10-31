@@ -3,11 +3,11 @@ package io.github.SpaceNav;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Imagen {
+public class Image {
 	private Texture tex;
     private float x, y;
 
-    public Imagen(String ruta, float x, float y) {
+    public Image(String ruta, float x, float y) {
         tex = new Texture(ruta);
         this.x = x;
         this.y = y;

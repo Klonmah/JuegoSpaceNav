@@ -1,4 +1,4 @@
-package Enemigos.Sistemas;
+package io.github.SpaceNav.Enemigos.Sistemas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;

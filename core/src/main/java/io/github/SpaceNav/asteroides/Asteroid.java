@@ -1,4 +1,4 @@
-package asteroides;
+package io.github.SpaceNav.asteroides;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import Enemigos.Destructible;
+import io.github.SpaceNav.Enemigos.*;
 import io.github.SpaceNav.Colisionable;
 
 public abstract class Asteroid implements Colisionable, Destructible {
@@ -16,7 +16,6 @@ public abstract class Asteroid implements Colisionable, Destructible {
     private int xSpeed;
     private int ySpeed;
     private Sprite spr;
-    private Sound sonidoBala;
     private float cadencia;
     private float tiempoDesdeUltimoDisparo = 0f;
     private boolean destruido = false;

@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import io.github.SpaceNav.Colisionable;
-import asteroides.Asteroid;
-import Enemigos.Mobs;
+import io.github.SpaceNav.asteroides.Asteroid;
+
 
 
 public class Bullet {

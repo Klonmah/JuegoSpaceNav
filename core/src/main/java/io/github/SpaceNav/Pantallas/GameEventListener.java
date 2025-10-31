@@ -1,4 +1,4 @@
-package Pantallas;
+package io.github.SpaceNav.Pantallas;
 
 
 

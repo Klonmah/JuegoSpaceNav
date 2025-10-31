@@ -1,4 +1,4 @@
-package Pantallas;
+package io.github.SpaceNav.Pantallas;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,17 +11,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
-import Enemigos.NaveEnemiga;
-import asteroides.Asteroid;
-import Enemigos.Mobs;
-import Enemigos.NaveCrasher;
-import asteroides.Ball;
-import asteroides.BallStrong;
+import io.github.SpaceNav.Enemigos.*;
+import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
 import io.github.SpaceNav.Armas.EnemyBullet;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.*;
+
 
 public class PantallaJuego implements Screen, GameEventListener {
 

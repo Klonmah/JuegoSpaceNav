@@ -7,9 +7,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import Pantallas.PantallaMenu;
-import Pantallas.PantallaAjustes;
-
+import io.github.SpaceNav.Pantallas.PantallaMenu;
+import io.github.SpaceNav.Pantallas.PantallaAjustes;
 
 
 public class SpaceNavigation extends Game {

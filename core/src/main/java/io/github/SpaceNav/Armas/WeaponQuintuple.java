@@ -1,10 +1,8 @@
 package io.github.SpaceNav.Armas;
 
 import com.badlogic.gdx.graphics.Texture;
-
-import Pantallas.GameEventListener;
-import Pantallas.PantallaJuego;
-import jugador.Nave;
+import io.github.SpaceNav.Pantallas.*;
+import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.AudioManager;
 
 public class WeaponQuintuple extends Weapon {

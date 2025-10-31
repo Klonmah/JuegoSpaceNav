@@ -10,12 +10,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
  
-    private Imagen imagen;
+    private Image imagen;
 
     @Override
     public void create() {
         this.batch = new SpriteBatch();
-        this.imagen = new Imagen("libgdx.png",140,210);
+        this.imagen = new Image("libgdx.png",140,210);
 
     }
 

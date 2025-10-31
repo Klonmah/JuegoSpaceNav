@@ -1,4 +1,4 @@
-package Enemigos;
+package io.github.SpaceNav.Enemigos;
 
 public interface Destructible {
  

@@ -1,4 +1,4 @@
-package Pantallas; 
+package io.github.SpaceNav.Pantallas; 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -6,13 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import io.github.SpaceNav.Imagen;
+import io.github.SpaceNav.Image;
 import io.github.SpaceNav.SpaceNavigation;
 
 public class PantallaMenu implements Screen {
     private final SpaceNavigation game;
     private final Stage stage;
-    private final Imagen logo;
+    private final Image logo;
     
     private TextButton botonJugar;
     private TextButton botonAjustes;
@@ -25,7 +25,7 @@ public class PantallaMenu implements Screen {
         this.stage = new Stage();
         
         
-        this.logo = new Imagen("../assets/LogoUniformUpscaled.png", 400, 400);
+        this.logo = new Image("../assets/LogoUniformUpscaled.png", 400, 400);
         
         EstilosUI.inicializar();
         Gdx.input.setInputProcessor(stage);

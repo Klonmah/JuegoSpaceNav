@@ -1,10 +1,9 @@
 package io.github.SpaceNav.Armas;
 
 import com.badlogic.gdx.graphics.Texture;
-import Pantallas.GameEventListener;
-import Pantallas.PantallaJuego;
+import io.github.SpaceNav.Pantallas.*;
 import io.github.SpaceNav.AudioManager;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 
 public abstract class Weapon {
     private Texture txBala;

@@ -1,4 +1,4 @@
-package Pantallas;
+package io.github.SpaceNav.Pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.SpaceNav.SpaceNavigation;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 
 public class PantallaPerks implements Screen {
 

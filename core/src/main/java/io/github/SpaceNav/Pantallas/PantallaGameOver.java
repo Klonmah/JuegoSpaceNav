@@ -1,4 +1,4 @@
-package Pantallas;
+package io.github.SpaceNav.Pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

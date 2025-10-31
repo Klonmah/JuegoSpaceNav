@@ -1,4 +1,4 @@
-package asteroides;
+package io.github.SpaceNav.asteroides;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

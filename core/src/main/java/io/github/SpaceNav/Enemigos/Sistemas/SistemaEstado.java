@@ -1,4 +1,4 @@
-package Enemigos.Sistemas;
+package io.github.SpaceNav.Enemigos.Sistemas;
 
 public class SistemaEstado {
     private boolean activa = true;

@@ -1,4 +1,4 @@
-package jugador;
+package io.github.SpaceNav.jugador;
 
 
 
@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import Pantallas.GameEventListener;
-
-import Pantallas.PantallaJuego;
+import io.github.SpaceNav.Pantallas.*;
 
 
 import io.github.SpaceNav.Armas.Weapon;

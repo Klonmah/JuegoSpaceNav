@@ -1,9 +1,8 @@
-package Enemigos;
+package io.github.SpaceNav.Enemigos;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SpaceNav.Colisionable;
-import jugador.Nave;
-
+import io.github.SpaceNav.jugador.*;
 
 public interface Mobs extends Colisionable, Destructible {
     void update(float deltaTime, Nave jugador);

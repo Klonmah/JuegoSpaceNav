@@ -1,4 +1,4 @@
-package Enemigos.Sistemas;
+package io.github.SpaceNav.Enemigos.Sistemas;
 
 import com.badlogic.gdx.graphics.Texture;
 import java.util.Random;

@@ -1,11 +1,11 @@
-package Enemigos;
+package io.github.SpaceNav.Enemigos;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import jugador.Nave;
+import io.github.SpaceNav.jugador.*;
 import java.util.Random;
 
 public class NaveCrasher implements Mobs {
