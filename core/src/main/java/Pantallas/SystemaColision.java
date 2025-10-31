@@ -12,35 +12,35 @@ import io.github.SpaceNav.AudioManager;
 
 public class SystemaColision {
     
-    public static void checkBulletAsteroidCollisions(List<Bullet> balas, List<Asteroid> asteroids, PantallaJuego pantalla) {
+    public static void revisarColisionBalaAsteroide(List<Bullet> balas, List<Asteroid> asteroids, PantallaJuego pantalla) {
         for (int i = 0; i < balas.size(); i++) {
             Bullet b = balas.get(i);
             for (int j = 0; j < asteroids.size(); j++) {
                 Asteroid asteroide = asteroids.get(j);
                 if (b.checkCollision(asteroide)) {
                     AudioManager.getInstance().reproducirSonido("explosion");
-                    handleDestructibleCollision(asteroide, asteroids, j, pantalla);
+                    manejarColisionDestructible(asteroide, asteroids, j, pantalla);
                     j--;
                 }
             }
         }
     }
     
-    public static void checkBulletEnemyCollisions(List<Bullet> balas, List<Mobs> enemies, PantallaJuego pantalla) {
+    public static void revisarColisionBalaEnemigo(List<Bullet> balas, List<Mobs> enemies, PantallaJuego pantalla) {
         for (int i = 0; i < balas.size(); i++) {
             Bullet b = balas.get(i);
             for (int j = 0; j < enemies.size(); j++) {
                 Mobs mob = enemies.get(j);
                 if (b.checkCollision(mob)) {
                     AudioManager.getInstance().reproducirSonido("explosion");
-                    handleDestructibleCollision(mob, enemies, j, pantalla);
+                    manejarColisionDestructible(mob, enemies, j, pantalla);
                     j--;
                 }
             }
         }
     }
     
-    public static void checkBombCollisions(List<Bomb> bombs, List<Asteroid> asteroids, List<Mobs> enemies, PantallaJuego pantalla) {
+    public static void revisarColisionesDeBombas(List<Bomb> bombs, List<Asteroid> asteroids, List<Mobs> enemies, PantallaJuego pantalla) {
         for (int i = 0; i < bombs.size(); i++) {
             Bomb b = bombs.get(i);
             
@@ -49,7 +49,7 @@ public class SystemaColision {
                 Asteroid asteroide = asteroids.get(j);
                 if (b.checkCollision(asteroide)) {
                     AudioManager.getInstance().reproducirSonido("explosion");
-                    handleDestructibleCollision(asteroide, asteroids, j, pantalla);
+                    manejarColisionDestructible(asteroide, asteroids, j, pantalla);
                     j--;
                 }
             }
@@ -59,14 +59,14 @@ public class SystemaColision {
                 Mobs mob = enemies.get(j);
                 if (b.checkCollision(mob)) {
                     AudioManager.getInstance().reproducirSonido("explosion");
-                    handleDestructibleCollision(mob, enemies, j, pantalla);
+                    manejarColisionDestructible(mob, enemies, j, pantalla);
                     j--;
                 }
             }
         }
     }
     
-    public static void checkAsteroidCollisions(List<Asteroid> asteroids) {
+    public static void revisarColisionesDeAsteroides(List<Asteroid> asteroids) {
         for (int i = 0; i < asteroids.size(); i++) {
             Asteroid ball1 = asteroids.get(i);
             for (int j = i + 1; j < asteroids.size(); j++) {
@@ -76,7 +76,7 @@ public class SystemaColision {
         }
     }
     
-    public static void checkPlayerCollisions(Nave nave, List<Asteroid> asteroids, List<Mobs> enemies, List<EnemyBullet> enemyBullets) {
+    public static void revisarColisionesDeJugador(Nave nave, List<Asteroid> asteroids, List<Mobs> enemies, List<EnemyBullet> enemyBullets) {
         // Colisión con asteroides
         for (int i = 0; i < asteroids.size(); i++) {
             Asteroid b = asteroids.get(i);
@@ -105,32 +105,12 @@ public class SystemaColision {
         }
     }
     
-    private static void handleDestructibleCollision(Enemigos.Destructible target, List<?> list, int index, PantallaJuego pantalla) {
+    private static void manejarColisionDestructible(Enemigos.Destructible target, List<?> list, int index, PantallaJuego pantalla) {
         target.takeDamage(1);
         if (target.isDestroyed()) {
             list.remove(index);
             pantalla.addScore(target.getScoreValue());
         }
     }
-    public static void checkBulletAsteroidCollisions(List<Bullet> balas, List<Asteroid> asteroids, GameEventListener listener) {
-        for (int i = 0; i < balas.size(); i++) {
-            Bullet b = balas.get(i);
-            for (int j = 0; j < asteroids.size(); j++) {
-                Asteroid asteroide = asteroids.get(j);
-                if (b.checkCollision(asteroide)) {
-                    listener.onEntityDestroyed(); // ✅ Sonido de explosión
-                    
-                    asteroide.takeDamage(1);
-                    if (asteroide.isDestroyed()) {
-                        asteroids.remove(j);
-                        listener.onScoreChanged(asteroide.getScoreValue()); // ✅ Actualizar score
-                        j--;
-                    }
-                    // Marcar bala para destrucción
-                    // (podrías agregar un método onBulletDestroyed si necesitas)
-                    break;
-                }
-            }
-        }
-    }
+
 }
