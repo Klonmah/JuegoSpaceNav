@@ -46,6 +46,11 @@ public class Nave {
     private float velocidadMax = 6f;
     private Weapon weapon; // arma actual
     
+    private habilidadesDanio habilidadDanio = new danioNormal();
+    //private habilidadesDanio habilidadDanio = new danioEscudado();
+    //private habilidadesDanio habilidadDanio = new danioInvencible();
+
+    
 
 
 
@@ -165,16 +170,24 @@ public class Nave {
     }
     
     private void aplicarDanio() {
-        vidas--;
-        herido = true;
-        tiempoHerido = tiempoHeridoMax;
-        Iframes = 120;
-        AudioManager.getInstance().reproducirSonido("herido");
+    	if (habilidadDanio != null) {
+            habilidadDanio.applyDamage(this);
+        }
+    }
+    
+    public void decrementarVida(int cantidad) {
+        vidas -= cantidad;
         if (vidas <= 0) {
             destruida = true;
         }
     }
     
+    public void activarEfectoHerido() {
+        herido = true;
+        tiempoHerido = tiempoHeridoMax;
+        Iframes = 120;
+        AudioManager.getInstance().reproducirSonido("herido");
+    }
     
     public boolean estaDestruido() {
        return !herido && destruida;
@@ -205,6 +218,10 @@ public class Nave {
     }
 	public void destruir() {
 		this.destruida = true;
+	}
+	
+	public void setHabilidadDanio(habilidadesDanio habilidad) {
+	    this.habilidadDanio = habilidad;
 	}
 	
 }
