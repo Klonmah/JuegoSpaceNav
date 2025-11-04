@@ -5,14 +5,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
 import io.github.SpaceNav.jugador.*;
 import java.util.Random;
 
+
 public class NaveCrasher implements Mobs {
     
-    private int x;
-    private int y;
-    private float velocidadX;
+    private float x;
+    private float y;
+    private float velocidad;
     private Sprite spr;
     private float cadencia;
     private float pitch;
@@ -20,8 +23,9 @@ public class NaveCrasher implements Mobs {
     private boolean destruida = false;
     private int vida = 3;
     private int valorPuntos = 25;
+    private ComportamientoEnemigo comportamiento;
 
-    public NaveCrasher(int x, int y, int size, int velocidadX, Texture tx) {
+    public NaveCrasher(int x, int y, int size, int velocidad, Texture tx) {
         Random r = new Random();
         this.cadencia = 4.0f + r.nextFloat();
         pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
@@ -30,42 +34,69 @@ public class NaveCrasher implements Mobs {
         spr.setSize(size * 2, size * 2);
         spr.setOriginCenter();
 
-        int ancho = (int) spr.getWidth();
-        int alto = (int) spr.getHeight();
+        float ancho = spr.getWidth();
+        float alto = spr.getHeight();
 
-        // Corrección de posición
+        // Corrección de posición - coordenadas LibGDX (0,0 abajo-izquierda)
         if (x < 0) x = 0;
-        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
-        if (y < 0) y = Gdx.graphics.getHeight() - 20;
-        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
-        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - (int)ancho;
+        if (y < 0) y = (int)alto;
+        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - (int)alto;
 
         this.x = x;
         this.y = y;
         spr.setPosition(this.x, this.y);
-        this.velocidadX = velocidadX;
+        this.velocidad = velocidad; // Cambiado de velocidadX a velocidad
     }
     
     @Override
     public void update(float deltaTime, Nave jugador) {
         if (!activa || destruida) return;
         
-        if (this.getX() < jugador.getX()) {
-            x += velocidadX/4;
+        // Calcular dirección hacia el jugador
+        float direccionX = jugador.getX() - this.x;
+        float direccionY = jugador.getY() - this.y;
+        
+        // Normalizar la dirección (vector unitario)
+        float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
+        
+        if (magnitud > 0) {
+            // Normalizar y aplicar velocidad
+            direccionX /= magnitud;
+            direccionY /= magnitud;
+            
+            // Mover hacia el jugador
+            x += direccionX * velocidad * deltaTime;
+            y += direccionY * velocidad * deltaTime;
         }
-        if (this.getX() > jugador.getX()) {
-            x -= velocidadX/4;
-        }
-        if (this.getY() < jugador.getY()) {
-            y += velocidadX/4;
-        }
-        if (this.getY() > jugador.getY()) {
-            y -= velocidadX/4;
-        }
+        
+        // Mantener dentro de los límites de la pantalla
+        float ancho = spr.getWidth();
+        float alto = spr.getHeight();
+        
+        if (x < 0) x = 0;
+        if (x > Gdx.graphics.getWidth() - ancho) x = Gdx.graphics.getWidth() - ancho;
+        if (y < 0) y = 0;
+        if (y > Gdx.graphics.getHeight() - alto) y = Gdx.graphics.getHeight() - alto;
         
         spr.setPosition(x, y);
     }
     
+    public void setComportamiento(ComportamientoEnemigo comportamiento) {
+        if (this.comportamiento != null) {
+            this.comportamiento.iniciar(this);
+        }
+        this.comportamiento = comportamiento;
+        this.comportamiento.iniciar(this);
+    }
+    
+    
+    public void setVelocidad(float velocidad) {
+    	this.velocidad = velocidad;
+    }
+    public float getVelocidad() {
+    	return this.velocidad;
+    }
     @Override
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
@@ -97,6 +128,13 @@ public class NaveCrasher implements Mobs {
     public float getY() {
         return this.y;
     }
+    @Override
+    public void setX(float x) {
+    	this.x =x;
+    }
+    public void setY(float y) {
+    	this.y =y;
+    }
     
     @Override
     public float getWidth() {
@@ -109,19 +147,19 @@ public class NaveCrasher implements Mobs {
     }
     
     public void setPosition(float x, float y) {
-        this.x = (int) x;
-        this.y = (int) y;
+        this.x = x;
+        this.y = y;
         spr.setPosition(x, y);
     }
     
     @Override
     public float getXSpeed() {
-        return velocidadX;
+        return velocidad;
     }
     
     @Override
-    public void setXSpeed(float velocidadX) {
-        this.velocidadX = velocidadX;
+    public void setXSpeed(float velocidad) {
+        this.velocidad = velocidad;
     }
     
     public void setActiva(boolean activa) {
@@ -160,4 +198,6 @@ public class NaveCrasher implements Mobs {
     public int getMaxHp() {
         return 3;
     }
+
+
 }

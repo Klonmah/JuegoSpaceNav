@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 import io.github.SpaceNav.Enemigos.*;
+import io.github.SpaceNav.Enemigos.Comportamiento.PerseguirAgresivo;
 import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
@@ -179,6 +180,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         for(int i = 0; i < cantMobs; i++) {
             Mobs enemigo = crearNaveCrasher(r);
             enemies.add(enemigo);
+            enemigo.setComportamiento(new PerseguirAgresivo(nave));
         }
     }
     

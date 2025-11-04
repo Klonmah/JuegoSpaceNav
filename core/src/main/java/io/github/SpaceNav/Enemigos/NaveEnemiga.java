@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.SpaceNav.jugador.*;
-
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
 import io.github.SpaceNav.Enemigos.Sistemas.*;
 import io.github.SpaceNav.Armas.EnemyBullet;
 
 public class NaveEnemiga implements Mobs, ShooterEnemigo {
-    
     private SistemaMovimiento movimiento;
     private SistemaDisparos disparos;
     private SistemaEstado estado;
+   
     private Sprite sprite;
     private int vida = 1;
     private int valorPuntos = 15;
@@ -158,6 +158,24 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
     
     @Override
     public int getMaxHp() {
-        return 1;
+        return vida;
     }
+
+	@Override
+	public float getVelocidad() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setX(float x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setComportamiento(ComportamientoEnemigo comportamiento) {
+		// TODO Auto-generated method stub
+		
+	}
 }
