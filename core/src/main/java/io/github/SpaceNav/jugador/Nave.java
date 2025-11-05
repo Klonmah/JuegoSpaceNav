@@ -46,9 +46,9 @@ public class Nave {
     private float velocidadMax = 6f;
     private Weapon weapon; // arma actual
     
-    private habilidadesDanio habilidadDanio = new danioNormal();
-    //private habilidadesDanio habilidadDanio = new danioEscudado();
-    //private habilidadesDanio habilidadDanio = new danioInvencible();
+    private HabilidadesDanioSelf habilidadDanio = new DanioSelfNormal();
+    //private HabilidadesDanioSelf habilidadDanio = new DanioSelfEscudado();
+    //private HabilidadesDanioSelf habilidadDanio = new DanioSelfInvencible();
 
     
 
@@ -220,7 +220,7 @@ public class Nave {
 		this.destruida = true;
 	}
 	
-	public void setHabilidadDanio(habilidadesDanio habilidad) {
+	public void setHabilidadDanio(HabilidadesDanioSelf habilidad) {
 	    this.habilidadDanio = habilidad;
 	}
 	
