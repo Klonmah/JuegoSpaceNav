@@ -50,6 +50,8 @@ public class PantallaJuego implements Screen, GameEventListener {
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
+    private ArrayList<Portal> DiegoPortales = new ArrayList<>();
+    private int SeCreoPortal = 0;
     
 
     private Texture texturaAsteroide;
@@ -60,6 +62,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     private Texture texturaNave;
     private Texture texturaRocket;
     private Texture texturaBomb;
+    private Texture texturaPortal;
     private boolean texturasCargadas = false;
     private Texture texturaFondo;
     
@@ -75,6 +78,7 @@ public class PantallaJuego implements Screen, GameEventListener {
             texturaNave = new Texture(Gdx.files.internal("../assets/MainShip3.png"));
         	texturaRocket = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
         	texturaBomb = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
+        	texturaPortal = new Texture(Gdx.files.internal("../assets/PortalTriste.png"));
             texturasCargadas = true;
         }
     }
@@ -226,7 +230,7 @@ public class PantallaJuego implements Screen, GameEventListener {
             SystemaColision.revisarColisionBalaEnemigo(balas, enemies, this);
             SystemaColision.revisarColisionesDeBombas(bombs, asteroids, enemies, this);
             SystemaColision.revisarColisionesDeAsteroides(asteroids);
-            SystemaColision.revisarColisionesDeJugador(nave, asteroids, enemies, enemyBullets);
+            SystemaColision.revisarColisionesDeJugador(nave, asteroids, enemies, enemyBullets, DiegoPortales);
             
             actualizarMovimientos(delta);
             limpiarProyectilesDestruidos();
@@ -316,6 +320,11 @@ public class PantallaJuego implements Screen, GameEventListener {
         for (int i = 0; i < enemies.size(); i++) {
             enemies.get(i).draw(batch);
         }
+
+        // Dibujar enemigos 
+        for (int i = 0; i < DiegoPortales.size(); i++) {
+        	DiegoPortales.get(i).draw(batch);
+        }
         
         batch.end();
     }
@@ -356,6 +365,20 @@ public class PantallaJuego implements Screen, GameEventListener {
     }
 
 
+    private Portal crearPortalFinDelJuego() {
+    	SeCreoPortal = 1;
+        Random r = new Random();
+        int size = tamanioAsteroide + r.nextInt(variacionTamanioAsteroide);
+        int[] posicion = calcularPosicionCentrada(dispersionAsteroideNormal, r);
+        
+        int velX = velXAsteroides + r.nextInt(variacionVelocidad);
+        int velY = velYAsteroides + r.nextInt(variacionVelocidad);
+        
+        return new Portal(
+            posicion[0], posicion[1], size, velX, velY, texturaPortal
+        );
+    }
+    
     private void verificarFinDeJuego() {
         if (nave.estaDestruido()) {
             if (score > game.getHighScore()) {
@@ -365,7 +388,9 @@ public class PantallaJuego implements Screen, GameEventListener {
             gameOverScreen.resize(1200, 800);
             game.setScreen(gameOverScreen);
             dispose();
-        } else if (asteroids.isEmpty()) {
+        } else if (asteroids.isEmpty() && SeCreoPortal == 0) {
+        	DiegoPortales.add(crearPortalFinDelJuego());
+        } else if (Nave.getEnPortal() == 1){
             game.setScreen(new PantallaPerks(game, this, nave, ronda, score, 
                 velXAsteroides, velYAsteroides, cantAsteroides, cantMobs));
             dispose();
@@ -402,6 +427,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         balas.clear();
         bombs.clear();
         enemyBullets.clear();
+        DiegoPortales.clear();
         
         // LIBERAR texturas
         if (texturaNave != null) {

@@ -47,6 +47,7 @@ public class Nave {
     private Weapon weapon; // arma actual
     
     private HabilidadesDanioSelf habilidadDanio = new DanioSelfNormal();
+	private static int EnPortal = 0;
     //private HabilidadesDanioSelf habilidadDanio = new DanioSelfEscudado();
     //private HabilidadesDanioSelf habilidadDanio = new DanioSelfInvencible();
 
@@ -78,6 +79,7 @@ public class Nave {
     	spr.setBounds(x, y, 45, 45);
     	this.largoNave =  spr.getHeight();
     	this.anchoNave= this.spr.getWidth();
+    	EnPortal = 0;
     	
     	this.weapon = new WeaponQuintuple(txBala, txBomb, 0.3f); // 0.3s entre disparos
     }
@@ -222,6 +224,13 @@ public class Nave {
 	
 	public void setHabilidadDanio(HabilidadesDanioSelf habilidad) {
 	    this.habilidadDanio = habilidad;
+	}
+
+	public static int getEnPortal() {
+		return EnPortal;
+	}
+	public void setEnPortal(int i) {
+		EnPortal  = i;
 	}
 	
 }

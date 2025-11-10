@@ -76,14 +76,23 @@ public class SystemaColision {
             }
         }
     }
+
     
-    public static void revisarColisionesDeJugador(Nave nave, List<Asteroid> asteroids, List<Mobs> enemies, List<EnemyBullet> enemyBullets) {
+    public static void revisarColisionesDeJugador(Nave nave, List<Asteroid> asteroids, List<Mobs> enemies, List<EnemyBullet> enemyBullets, List<Portal> DiegoPortales) {
         // Colisión con asteroides
         for (int i = 0; i < asteroids.size(); i++) {
             Asteroid b = asteroids.get(i);
             if (nave.checkCollision(b)) {
                 asteroids.remove(i);
                 i--;
+            }
+        }
+        
+        // Colisión el Portal
+        for (int i = 0; i < DiegoPortales.size(); i++) {
+            Portal b = DiegoPortales.get(i);
+            if (nave.checkCollision(b)) {
+            	nave.setEnPortal(1);
             }
         }
         
