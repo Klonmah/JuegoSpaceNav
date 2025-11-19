@@ -20,9 +20,11 @@ public class PantallaPerks implements Screen {
     private int velXAsteroides;
     private int velYAsteroides;
     private int cantAsteroides;
-
     private int cantMobs;
     
+    // 🔥 AGREGAR: Cámara para esta pantalla
+    private com.badlogic.gdx.graphics.OrthographicCamera camera;
+
     public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, 
                         int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
         this.game = game;
@@ -34,10 +36,12 @@ public class PantallaPerks implements Screen {
         this.velXAsteroides = velXAsteroides;
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
-   
         this.cantMobs = cantMobs;
+        
+        //Se ajusta la pantalla para la camara
+        this.camera = new com.badlogic.gdx.graphics.OrthographicCamera();
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -46,8 +50,10 @@ public class PantallaPerks implements Screen {
         // Dibujar el juego de fondo
         this.juego.dibujarJuego();
 
-        // Dibujar menú de perks
+        //CONFIGURAR BATCH CON LA CÁMARA DE ESTA PANTALLA
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        
         game.getFont().getData().setScale(3f);
         game.getFont().draw(batch, "ELIGE TUS PERKS",
                 Gdx.graphics.getWidth() / 2 - 150,
@@ -92,7 +98,12 @@ public class PantallaPerks implements Screen {
     }
 
     @Override public void show() {}
-    @Override public void resize(int width, int height) {}
+    @Override 
+    public void resize(int width, int height) {
+        //Se actualiza la camara para redimensionar
+        camera.setToOrtho(false, width, height);
+        camera.update();
+    }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}

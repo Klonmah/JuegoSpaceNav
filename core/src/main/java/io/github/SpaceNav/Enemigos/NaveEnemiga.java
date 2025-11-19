@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import io.github.SpaceNav.jugador.*;
+import io.github.SpaceNav.jugador.Nave;
 import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
 import io.github.SpaceNav.Enemigos.Sistemas.*;
 import io.github.SpaceNav.Armas.EnemyBullet;
@@ -25,7 +25,7 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
     private float x;
     private float y;
     
-    public NaveEnemiga(int x, int y, int size, int xSpeed, Texture texturaNave, Texture balaTexture) {
+    public NaveEnemiga(int x, int y, int size, int xSpeed, Texture texturaNave, Texture balaTexture,Nave jugador) {
         this.sprite = new Sprite(texturaNave);
         this.sprite.setSize(size * 2, size * 2);
         this.sprite.setOriginCenter();
@@ -36,7 +36,7 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         this.velocidad = xSpeed;
         
         this.movimiento = new SistemaMovimiento(x, y, xSpeed, sprite);
-        this.disparos = new SistemaDisparos(4.0f, balaTexture);
+        this.disparos = new SistemaDisparos(4.0f, balaTexture,jugador);
         this.estado = new SistemaEstado();
         
         corregirPosicionInicial();
@@ -91,11 +91,22 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
             if (y > Gdx.graphics.getHeight() - alto) y = Gdx.graphics.getHeight() - alto;
         }
         
+    
+        apuntarAlJugador(jugador);
+        
         // CRUCIAL: Actualizar posición del sprite y sistemas
         sprite.setPosition(x, y);
         if (movimiento != null) {
             movimiento.setPosition((int)x, (int)y);
         }
+    }
+
+ 
+    private void apuntarAlJugador(Nave jugador) {
+        float dx = jugador.getX() - (x + sprite.getWidth() / 2);
+        float dy = jugador.getY() - (y + sprite.getHeight() / 2);
+        float angulo = (float) Math.atan2(dy, dx) * com.badlogic.gdx.math.MathUtils.radiansToDegrees;
+        sprite.setRotation(angulo + 90); // 
     }
     
     // Implementación de Shooter

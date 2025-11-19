@@ -16,10 +16,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 
 import io.github.SpaceNav.Enemigos.*;
-import io.github.SpaceNav.Pantallas.Utilidades.FabricaEntidadesJuego;
-import io.github.SpaceNav.Pantallas.Utilidades.GameEventListener;
-import io.github.SpaceNav.Pantallas.Utilidades.MapaManager;
-import io.github.SpaceNav.Pantallas.Utilidades.SystemaColision;
+import io.github.SpaceNav.Utilidades.AudioManager;
+import io.github.SpaceNav.Utilidades.FabricaEntidadesJuego;
+import io.github.SpaceNav.Utilidades.GameEventListener;
+import io.github.SpaceNav.Utilidades.MapaManager;
+import io.github.SpaceNav.Utilidades.SystemaColision;
 import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.SpaceNav.Pantallas.PantallaMenu;
+import io.github.SpaceNav.Utilidades.AudioManager;
 import io.github.SpaceNav.Pantallas.PantallaAjustes;
 
 

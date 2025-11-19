@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.github.SpaceNav.Enemigos.*;
-import io.github.SpaceNav.Pantallas.Utilidades.MapaManager;
+import io.github.SpaceNav.Utilidades.MapaManager;
 import io.github.SpaceNav.Colisionable;
 
 public abstract class Asteroid implements Colisionable, Destructible {

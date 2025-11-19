@@ -64,8 +64,8 @@ public class PerseguirAlrededor implements ComportamientoEnemigo {
                 
                 // Calcular nueva posición orbital
                 float nuevoAnguloRad = (float) Math.toRadians(anguloActual);
-                float targetX = jugador.getX() + (float) Math.cos(nuevoAnguloRad) * distanciaMax;
-                float targetY = jugador.getY() + (float) Math.sin(nuevoAnguloRad) * distanciaMax;
+                float targetX = jugador.getX() - (float) Math.cos(nuevoAnguloRad) * distanciaMax;
+                float targetY = jugador.getY() - (float) Math.sin(nuevoAnguloRad) * distanciaMax;
                 
                 // Mover directamente a la posición orbital
                 enemigo.setX(targetX);

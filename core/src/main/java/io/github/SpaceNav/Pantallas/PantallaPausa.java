@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import io.github.SpaceNav.SpaceNavigation;
-import io.github.SpaceNav.Pantallas.Utilidades.BotonListener;
-import io.github.SpaceNav.Pantallas.Utilidades.EstilosUI;
+import io.github.SpaceNav.Utilidades.BotonListener;
+import io.github.SpaceNav.Utilidades.EstilosUI;
 
 public class PantallaPausa implements Screen {
 

@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.SpaceNav.Pantallas.*;
-import io.github.SpaceNav.Pantallas.Utilidades.GameEventListener;
+import io.github.SpaceNav.Utilidades.AudioManager;
+import io.github.SpaceNav.Utilidades.GameEventListener;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
-import io.github.SpaceNav.AudioManager;
 import io.github.SpaceNav.Colisionable;
 
 

@@ -2,7 +2,7 @@ package io.github.SpaceNav.Armas;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.Pantallas.*;
-import io.github.SpaceNav.AudioManager;
+import io.github.SpaceNav.Utilidades.AudioManager;
 import io.github.SpaceNav.jugador.*;
 
 public class WeaponSingle extends Weapon {

@@ -1,4 +1,4 @@
-package io.github.SpaceNav.Pantallas.Utilidades;
+package io.github.SpaceNav.Utilidades;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -68,7 +68,7 @@ public class FabricaEntidadesJuego {
         
         // Naves Normales
         for(int i = 0; i < cantMobs; i++) {
-            Mobs enemigo = crearNaveNormal(velXAsteroides, naveJugador, r);
+            Mobs enemigo = crearNaveNormal(velXAsteroides, naveJugador, r,naveJugador);
             enemies.add(enemigo);
         }
         
@@ -106,13 +106,13 @@ public class FabricaEntidadesJuego {
         );
     }
     
-    private Mobs crearNaveNormal(int velXAsteroides, Nave naveJugador, Random r) {
+    private Mobs crearNaveNormal(int velXAsteroides, Nave naveJugador, Random r,Nave jugador) {
         int size = tamanioEnemigo;
         int x = r.nextInt(Gdx.graphics.getWidth() - spawnEnemigoX);
         int vel = velXAsteroides + r.nextInt(variacionVelocidad);
         
         NaveEnemiga enemigo = new NaveEnemiga(
-            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga
+            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga, jugador
         );
         PerseguirAlrededor comportamiento = new PerseguirAlrededor(naveJugador);
         enemigo.setComportamiento(comportamiento);

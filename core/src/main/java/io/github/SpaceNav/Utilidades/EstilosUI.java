@@ -1,4 +1,4 @@
-package io.github.SpaceNav.Pantallas.Utilidades;
+package io.github.SpaceNav.Utilidades;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
