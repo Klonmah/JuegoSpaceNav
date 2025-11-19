@@ -83,7 +83,7 @@ public class Nave {
     	
     	this.weapon = new WeaponQuintuple(txBala, txBomb, 0.3f); // 0.3s entre disparos
     }
-    public void update(boolean pausa) {  
+    public void update(boolean pausa, float mapWidth, float mapHeight) {  
         if (pausa) return;
         if (Iframes > 0) {
             Iframes--;
@@ -132,8 +132,18 @@ public class Nave {
             }
 
             // Mover nave
-            float x = MathUtils.clamp(spr.getX() + velX, 0, Gdx.graphics.getWidth() - spr.getWidth());
-            float y = MathUtils.clamp(spr.getY() + velY, 0, Gdx.graphics.getHeight() - spr.getHeight());
+            float x = MathUtils.clamp(
+                    spr.getX() + velX,
+                    0,
+                    mapWidth - spr.getWidth()
+            );
+
+            float y = MathUtils.clamp(
+                    spr.getY() + velY,
+                    0,
+                    mapHeight - spr.getHeight()
+            );
+
             spr.setPosition(x, y);
             spr.setRotation(rotacion);
 

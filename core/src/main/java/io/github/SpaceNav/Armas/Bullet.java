@@ -32,20 +32,23 @@ public class Bullet {
 	    	this.anguloRad= (rotacion - 90) * MathUtils.degreesToRadians;
 	     
 	    }
-	    public void update() {
-	    	x -= Math.cos(anguloRad) * xSpeed;
-    	    y -= Math.sin(anguloRad) * ySpeed;
+	    public void update(float mapWidth, float mapHeight) {
+
+	        x -= Math.cos(anguloRad) * xSpeed;
+	        y -= Math.sin(anguloRad) * ySpeed;
+
 	        spr.setPosition(x, y);
 	        spr.setRotation(rotacion);
-	        if (spr.getX() < 0 || spr.getX()+spr.getWidth() > Gdx.graphics.getWidth()) {
+
+	        if (spr.getX() < 0 || spr.getX() + spr.getWidth() > mapWidth) {
 	            destroyed = true;
 	        }
-	        if (spr.getY() < -10 || spr.getY()-spr.getHeight() > Gdx.graphics.getHeight()) {
-	        	destroyed = true;
+
+	        if (spr.getY() < 0 || spr.getY() + spr.getHeight() > mapHeight) {
+	            destroyed = true;
 	        }
-	        
 	    }
-	    
+
 	    public void draw(SpriteBatch batch) {
 	    	spr.draw(batch);
 	    }

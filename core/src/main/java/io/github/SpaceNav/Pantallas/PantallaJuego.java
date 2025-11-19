@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -56,8 +57,9 @@ public class PantallaJuego implements Screen, GameEventListener {
     private Texture texturaRocket;
     private Texture texturaBomb;
   
-    private Texture texturaFondo;
     private FabricaEntidadesJuego fabricaEntidades;
+	private float mapWidth;
+	private float mapHeight;
  
 
 
@@ -102,7 +104,6 @@ public class PantallaJuego implements Screen, GameEventListener {
 
 
     private void cargarTexturasPropias() {
-        texturaFondo = new Texture(Gdx.files.internal("../assets/fondo.jpg"));
         texturaNave = new Texture(Gdx.files.internal("../assets/MainShip3.png"));
         texturaRocket = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
         texturaBomb = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
@@ -119,7 +120,7 @@ public class PantallaJuego implements Screen, GameEventListener {
 
     
     public void actualizarJuego(float delta) {
-        nave.update(pausa);  
+        nave.update(pausa, mapWidth, mapHeight );  
 
         if (pausa) return;
         
@@ -142,7 +143,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     private void actualizarProyectiles(float delta) {
 
         for (int i = 0; i < balas.size(); i++) {
-            balas.get(i).update();
+            balas.get(i).update(mapWidth,mapHeight);
         }
         for (int i = 0; i < bombs.size(); i++) {
             bombs.get(i).update(delta);
@@ -194,7 +195,6 @@ public class PantallaJuego implements Screen, GameEventListener {
     public void dibujarJuego() {
         batch.begin();
         
-        batch.draw(texturaFondo, 0, 0, Gdx.graphics.getWidth()*1.5f, Gdx.graphics.getHeight()*1.5f);
         dibujaEncabezado();
         
         
@@ -246,11 +246,22 @@ public class PantallaJuego implements Screen, GameEventListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Actualizacion de camara
         camera.update();
-        // Renderizacion del mapa
+
+        // DIBUJAR MAPA PRIMERO
+        renderer.setView(camera);
+        // --- HACER QUE LA CÁMARA SIGA AL JUGADOR ---
+        camera.position.set(
+                nave.getX(),
+                nave.getY(),
+                0
+        );
+        camera.update();
+
+        // --- RENDER MAPA ---
         renderer.setView(camera);
         renderer.render();
+
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             if (!pausa) {
                 game.setScreen(new PantallaPausa(game, this));
@@ -260,14 +271,18 @@ public class PantallaJuego implements Screen, GameEventListener {
             }
         }
 
+        // LUEGO actualizas tu juego
         actualizarJuego(delta);
-        dibujarJuego();
 
+        // Finalmente dibujas los sprites
+        batch.setProjectionMatrix(camera.combined);
+        dibujarJuego();
 
         if (!pausa) {
             verificarFinDeJuego();
         }
     }
+
 
 
     private Portal crearPortalFinDelJuego() {
@@ -310,15 +325,31 @@ public class PantallaJuego implements Screen, GameEventListener {
         this.score += points;
     }
 
-    @Override public void show() {
-    	mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx");
-    	
+    @Override
+    public void show() {
+
+        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
+        params.textureMinFilter = Texture.TextureFilter.Nearest;
+        params.textureMagFilter = Texture.TextureFilter.Nearest;
+
+        mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx", params);
+
         renderer = new OrthogonalTiledMapRenderer(mapa);
+
+        MapProperties props = mapa.getProperties();
+
+        int tileWidth = props.get("tilewidth", Integer.class);
+        int tileHeight = props.get("tileheight", Integer.class);
+        int mapWidthInTiles = props.get("width", Integer.class);
+        int mapHeightInTiles = props.get("height", Integer.class);
+
+        mapWidth = mapWidthInTiles * tileWidth;
+        mapHeight = mapHeightInTiles * tileHeight;
         
-     
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, 800, 640);
     }
+
     
 
     public void resize(int width, int height) {
@@ -353,8 +384,8 @@ public class PantallaJuego implements Screen, GameEventListener {
             texturaBomb = null;
         }
         
-        mapa.dispose();
-        renderer.dispose();
+        if (mapa != null) mapa.dispose();
+        if (renderer != null) renderer.dispose();
     }
 
 
