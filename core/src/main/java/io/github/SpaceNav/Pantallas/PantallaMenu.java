@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.SpaceNav.Image;
 import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Pantallas.Utilidades.BotonListener;
+import io.github.SpaceNav.Pantallas.Utilidades.EstilosUI;
 
 public class PantallaMenu implements Screen {
     private final SpaceNavigation game;

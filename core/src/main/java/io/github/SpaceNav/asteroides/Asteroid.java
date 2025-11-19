@@ -1,13 +1,13 @@
 package io.github.SpaceNav.asteroides;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.github.SpaceNav.Enemigos.*;
+import io.github.SpaceNav.Pantallas.Utilidades.MapaManager;
 import io.github.SpaceNav.Colisionable;
 
 public abstract class Asteroid implements Colisionable, Destructible {
@@ -16,8 +16,6 @@ public abstract class Asteroid implements Colisionable, Destructible {
     private int xSpeed;
     private int ySpeed;
     private Sprite spr;
-    private float cadencia;
-    private float tiempoDesdeUltimoDisparo = 0f;
     private boolean destruido = false;
     private int vida;
     private int vidaMaxima;
@@ -35,12 +33,16 @@ public abstract class Asteroid implements Colisionable, Destructible {
         int ancho = (int) spr.getWidth();
         int alto = (int) spr.getHeight();
 
-        // Corrección de posición
+        // Obtener dimensiones del mapa desde el Singleton
+        int mapWidth = MapaManager.getInstance().getMapWidth();
+        int mapHeight = MapaManager.getInstance().getMapHeight();
+
+        // Corrección de posición usando MAPA
         if (x < 0) x = 0;
-        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
-        if (y < 0) y = Gdx.graphics.getHeight() - 20;
-        if (y > 0 && y < Gdx.graphics.getHeight() - 40) y = Gdx.graphics.getHeight() - 20;
-        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
+        if (x > mapWidth) x = mapWidth - ancho;
+        if (y < 0) y = mapHeight - 20;
+        if (y > 0 && y < mapHeight - 40) y = mapHeight - 20;
+        if (y > mapHeight) y = mapHeight - alto;
 
         this.x = x;
         this.y = y;
@@ -88,29 +90,32 @@ public abstract class Asteroid implements Colisionable, Destructible {
 
         float ancho = spr.getWidth();
         float alto = spr.getHeight();
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        
+        // Obtener dimensiones del mapa desde el Singleton
+        int mapWidth = MapaManager.getInstance().getMapWidth();
+        int mapHeight = MapaManager.getInstance().getMapHeight();
 
-        // --- Rebote horizontal ---
+        //Rebote horizontal 
         if (x < 0) {
             x = 0;
-            xSpeed = Math.abs(xSpeed); // rebota hacia la derecha
-        } else if (x + ancho > screenWidth) {
-            x = (int) (screenWidth - ancho);
-            xSpeed = -Math.abs(xSpeed); // rebota hacia la izquierda
+            xSpeed = Math.abs(xSpeed);
+        } else if (x + ancho > mapWidth) {
+            x = (int) (mapWidth - ancho);
+            xSpeed = -Math.abs(xSpeed);
         }
 
-        // --- Rebote vertical ---
+        //Rebote vertical
         if (y < 0) {
             y = 0;
-            ySpeed = Math.abs(ySpeed); // rebota hacia arriba
-        } else if (y + alto > screenHeight) {
-            y = (int) (screenHeight - alto);
-            ySpeed = -Math.abs(ySpeed); // rebota hacia abajo
+            ySpeed = Math.abs(ySpeed);
+        } else if (y + alto > mapHeight) {
+            y = (int) (mapHeight - alto);
+            ySpeed = -Math.abs(ySpeed);
         }
 
         spr.setPosition(x, y);
     }
+    
 
     @Override
     public Rectangle getArea() {

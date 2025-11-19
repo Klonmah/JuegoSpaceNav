@@ -1,4 +1,4 @@
-package io.github.SpaceNav.Pantallas;
+package io.github.SpaceNav.Pantallas.Utilidades;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,13 +48,11 @@ public class FabricaEntidadesJuego {
         ArrayList<Asteroid> asteroids = new ArrayList<>();
         Random r = new Random();
         
-        // Asteroides normales
         for (int i = 0; i < cantAsteroides; i++) {
             Asteroid asteroid = crearAsteroideNormal(velXAsteroides, velYAsteroides, r);
             asteroids.add(asteroid);
         }
 
-        // Asteroides fuertes
         for (int i = 0; i < cantAsteroides / 4; i++) {
             Asteroid asteroid = crearAsteroideFuerte(velXAsteroides, velYAsteroides, r);
             asteroids.add(asteroid);
@@ -147,8 +145,12 @@ public class FabricaEntidadesJuego {
     
     // Método auxiliar para calcular posición
     private int[] calcularPosicionCentrada(int dispersion, Random r) {
-        int centerX = Gdx.graphics.getWidth() / 2;
-        int centerY = Gdx.graphics.getHeight() / 2;
+        // Usar el Singleton para obtener el centro del mapa
+        int mapWidth = MapaManager.getInstance().getMapWidth();
+        int mapHeight = MapaManager.getInstance().getMapHeight();
+        
+        int centerX = mapWidth / 2;
+        int centerY = mapHeight / 2;
         
         int x = centerX + r.nextInt(dispersion * 2) - dispersion;
         int y = centerY + r.nextInt(dispersion * 2) - dispersion;

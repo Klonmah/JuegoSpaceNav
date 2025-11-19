@@ -2,6 +2,7 @@ package io.github.SpaceNav.Armas;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.Pantallas.*;
+import io.github.SpaceNav.Pantallas.Utilidades.GameEventListener;
 import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.AudioManager;
 

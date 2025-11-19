@@ -1,4 +1,4 @@
-package io.github.SpaceNav.Pantallas;
+package io.github.SpaceNav.Pantallas.Utilidades;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;

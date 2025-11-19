@@ -1,4 +1,4 @@
-package io.github.SpaceNav.Pantallas;
+package io.github.SpaceNav.Pantallas.Utilidades;
 
 
 import java.util.List;
@@ -10,6 +10,7 @@ import io.github.SpaceNav.Armas.EnemyBullet;
 import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.AudioManager;
 import io.github.SpaceNav.Enemigos.Destructible;
+import io.github.SpaceNav.Pantallas.PantallaJuego;
 
 public class SystemaColision {
     

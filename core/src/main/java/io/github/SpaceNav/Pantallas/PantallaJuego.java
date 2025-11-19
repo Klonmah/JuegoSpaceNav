@@ -16,7 +16,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 
 import io.github.SpaceNav.Enemigos.*;
-
+import io.github.SpaceNav.Pantallas.Utilidades.FabricaEntidadesJuego;
+import io.github.SpaceNav.Pantallas.Utilidades.GameEventListener;
+import io.github.SpaceNav.Pantallas.Utilidades.MapaManager;
+import io.github.SpaceNav.Pantallas.Utilidades.SystemaColision;
 import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
@@ -64,7 +67,7 @@ public class PantallaJuego implements Screen, GameEventListener {
 
 
 
-    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
+	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
             int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
         this.game = game;
         this.ronda = ronda;
@@ -76,30 +79,24 @@ public class PantallaJuego implements Screen, GameEventListener {
 
         batch = game.getBatch();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 640);
-
-        // Cargar texturas de la nave y fondo
-        cargarTexturasPropias();
         
-        // Inicializar fábrica
-        fabricaEntidades = new FabricaEntidadesJuego();
+        // TEMPORAL: usar valores por defecto hasta que show() se ejecute
+        camera.setToOrtho(false, 800, 640);
+        this.mapWidth = 800;
+        this.mapHeight = 640;
 
-        // Efectos de sonido
+        cargarTexturasPropias();
+        fabricaEntidades = new FabricaEntidadesJuego();
         AudioManager.getInstance().cargarSonido("explosion", "../assets/explosion.ogg");
 
-        // Crear nave con las texturas propias
         nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
-                texturaNave,
-                texturaRocket,
-                texturaBomb
+                texturaNave, texturaRocket, texturaBomb
         );
         nave.setVidas(vidas);
         nave.setBombs(bombs);
         nave.setEventListener(this);
 
-        // Crear asteroides y enemigos usando la fábrica
-        asteroids = fabricaEntidades.crearAsteroides(cantAsteroides, velXAsteroides, velYAsteroides);
-        enemies = fabricaEntidades.crearEnemigos(cantMobs, velXAsteroides, nave);
+  
     }
 
 
@@ -118,17 +115,17 @@ public class PantallaJuego implements Screen, GameEventListener {
     	this.pausa = pausa;
     }
 
-    
     public void actualizarJuego(float delta) {
-        nave.update(pausa, mapWidth, mapHeight );  
+        if (nave != null) {
+            nave.update(pausa, mapWidth, mapHeight);  
+        }
 
         if (pausa) return;
         
-        if (!nave.estaHerido()) {
+        if (nave != null && !nave.estaHerido()) {
             actualizarProyectiles(delta);
             actualizarBalasEnemigas(delta);
             
-  
             SystemaColision.revisarColisionBalaAsteroide(balas, asteroids, this);
             SystemaColision.revisarColisionBalaEnemigo(balas, enemies, this);
             SystemaColision.revisarColisionesDeBombas(bombs, asteroids, enemies, this);
@@ -139,11 +136,9 @@ public class PantallaJuego implements Screen, GameEventListener {
             limpiarProyectilesDestruidos();
         }
     }
-
     private void actualizarProyectiles(float delta) {
-
         for (int i = 0; i < balas.size(); i++) {
-            balas.get(i).update(mapWidth,mapHeight);
+            balas.get(i).update(mapWidth, mapHeight);
         }
         for (int i = 0; i < bombs.size(); i++) {
             bombs.get(i).update(delta);
@@ -152,6 +147,7 @@ public class PantallaJuego implements Screen, GameEventListener {
             enemyBullets.get(i).update();
         }
     }
+
 
     private void actualizarBalasEnemigas(float delta) {
       
@@ -246,19 +242,17 @@ public class PantallaJuego implements Screen, GameEventListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-
-        // DIBUJAR MAPA PRIMERO
-        renderer.setView(camera);
-        // --- HACER QUE LA CÁMARA SIGA AL JUGADOR ---
-        camera.position.set(
-                nave.getX(),
-                nave.getY(),
+        // ACTUALIZAR CÁMARA - solo una vez
+        if (nave != null) {
+            camera.position.set(
+                Math.max(camera.viewportWidth/2, Math.min(nave.getX(), mapWidth - camera.viewportWidth/2)),
+                Math.max(camera.viewportHeight/2, Math.min(nave.getY(), mapHeight - camera.viewportHeight/2)),
                 0
-        );
+            );
+        }
         camera.update();
 
-        // --- RENDER MAPA ---
+        // RENDER MAPA
         renderer.setView(camera);
         renderer.render();
 
@@ -271,10 +265,9 @@ public class PantallaJuego implements Screen, GameEventListener {
             }
         }
 
-        // LUEGO actualizas tu juego
         actualizarJuego(delta);
 
-        // Finalmente dibujas los sprites
+        // DIBUJAR JUEGO
         batch.setProjectionMatrix(camera.combined);
         dibujarJuego();
 
@@ -282,7 +275,6 @@ public class PantallaJuego implements Screen, GameEventListener {
             verificarFinDeJuego();
         }
     }
-
 
 
     private Portal crearPortalFinDelJuego() {
@@ -325,32 +317,30 @@ public class PantallaJuego implements Screen, GameEventListener {
         this.score += points;
     }
 
-    @Override
+    @Override 
     public void show() {
-
-        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
-        params.textureMinFilter = Texture.TextureFilter.Nearest;
-        params.textureMagFilter = Texture.TextureFilter.Nearest;
-
-        mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx", params);
-
+        mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx");
         renderer = new OrthogonalTiledMapRenderer(mapa);
-
-        MapProperties props = mapa.getProperties();
-
-        int tileWidth = props.get("tilewidth", Integer.class);
-        int tileHeight = props.get("tileheight", Integer.class);
-        int mapWidthInTiles = props.get("width", Integer.class);
-        int mapHeightInTiles = props.get("height", Integer.class);
-
-        mapWidth = mapWidthInTiles * tileWidth;
-        mapHeight = mapHeightInTiles * tileHeight;
         
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 640);
+        // Obtener dimensiones del mapa
+        int tileWidth = (int)mapa.getProperties().get("tilewidth");
+        int tileHeight = (int)mapa.getProperties().get("tileheight");
+        int tilesX = (int)mapa.getProperties().get("width");
+        int tilesY = (int)mapa.getProperties().get("height");
+        
+        this.mapWidth = tileWidth * tilesX;
+        this.mapHeight = tileHeight * tilesY;
+        
+        // Configurar el singleton
+        MapaManager.getInstance().setMapDimensions((int)mapWidth, (int)mapHeight, tileWidth, tileHeight);
+        
+        // Configurar cámara con dimensiones reales del mapa
+        camera.setToOrtho(false, mapWidth, mapHeight);
+        
+        // Debido a que se buguea el juego si se crean los asteroides en el constructor, ahora se crean aca
+        asteroids = fabricaEntidades.crearAsteroides(cantAsteroides, velXAsteroides, velYAsteroides);
+        enemies = fabricaEntidades.crearEnemigos(cantMobs, velXAsteroides, nave);
     }
-
-    
 
     public void resize(int width, int height) {
     	camera.viewportWidth = width;

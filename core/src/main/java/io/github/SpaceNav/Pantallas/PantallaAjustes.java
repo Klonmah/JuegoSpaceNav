@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Pantallas.Utilidades.BotonListener;
+import io.github.SpaceNav.Pantallas.Utilidades.EstilosUI;
 import io.github.SpaceNav.AudioManager;
 
 public class PantallaAjustes implements Screen {
