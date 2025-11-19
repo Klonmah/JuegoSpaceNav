@@ -28,7 +28,7 @@ public class NaveCrasher implements Mobs {
     public NaveCrasher(int x, int y, int size, int velocidad, Texture tx) {
         Random r = new Random();
         this.cadencia = 4.0f + r.nextFloat();
-        pitch = 0.7f + (float)Math.random() * (1.3f - 0.7f);
+    
         
         spr = new Sprite(tx);
         spr.setSize(size * 2, size * 2);
@@ -47,27 +47,29 @@ public class NaveCrasher implements Mobs {
         this.y = y;
         spr.setPosition(this.x, this.y);
         this.velocidad = velocidad; // Cambiado de velocidadX a velocidad
+        
     }
     
     @Override
     public void update(float deltaTime, Nave jugador) {
         if (!activa || destruida) return;
         
-        // Calcular dirección hacia el jugador
-        float direccionX = jugador.getX() - this.x;
-        float direccionY = jugador.getY() - this.y;
-        
-        // Normalizar la dirección (vector unitario)
-        float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
-        
-        if (magnitud > 0) {
-            // Normalizar y aplicar velocidad
-            direccionX /= magnitud;
-            direccionY /= magnitud;
+        // Usar el comportamiento si está asignado
+        if (comportamiento != null) {
+            comportamiento.actualizar(this, deltaTime);
+        } else {
+            // Comportamiento por defecto (backup)
+            float direccionX = jugador.getX() - this.x;
+            float direccionY = jugador.getY() - this.y;
+            float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
             
-            // Mover hacia el jugador
-            x += direccionX * velocidad * deltaTime;
-            y += direccionY * velocidad * deltaTime;
+            if (magnitud > 0) {
+                direccionX /= magnitud;
+                direccionY /= magnitud;
+                
+                x += direccionX * velocidad * deltaTime;
+                y += direccionY * velocidad * deltaTime;
+            }
         }
         
         // Mantener dentro de los límites de la pantalla
@@ -83,11 +85,10 @@ public class NaveCrasher implements Mobs {
     }
     
     public void setComportamiento(ComportamientoEnemigo comportamiento) {
+        this.comportamiento = comportamiento;
         if (this.comportamiento != null) {
             this.comportamiento.iniciar(this);
         }
-        this.comportamiento = comportamiento;
-        this.comportamiento.iniciar(this);
     }
     
     
@@ -152,10 +153,7 @@ public class NaveCrasher implements Mobs {
         spr.setPosition(x, y);
     }
     
-    @Override
-    public float getXSpeed() {
-        return velocidad;
-    }
+
     
     @Override
     public void setXSpeed(float velocidad) {
@@ -197,6 +195,12 @@ public class NaveCrasher implements Mobs {
     @Override
     public int getMaxHp() {
         return 3;
+    }
+    public Sprite getSprite() {
+    	return this.spr;
+    }
+    public void setSprite(Sprite spr) {
+    	this.spr = spr;
     }
 
 

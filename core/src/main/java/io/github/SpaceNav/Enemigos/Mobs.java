@@ -1,5 +1,6 @@
 package io.github.SpaceNav.Enemigos;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SpaceNav.Colisionable;
 import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
@@ -11,10 +12,12 @@ public interface Mobs extends Colisionable, Destructible  {
     boolean isActive();
     float getX();
     void setX(float x);
+    void setY(float y);
     float getY();
+    Sprite getSprite();
+    void setSprite(Sprite spr);
     float getWidth();
     float getHeight();
-    float getXSpeed();
     void setXSpeed(float xSpeed);
     float getVelocidad();
     public void setComportamiento(ComportamientoEnemigo comportamiento);

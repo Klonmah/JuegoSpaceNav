@@ -34,6 +34,12 @@ public class SistemaMovimiento {
     public void setXSpeed(float xSpeed) {
     	this.xSpeed = xSpeed;
     }
+    public void setX(float x) {
+    	this.x = (int) x;
+    }
+    public void setY(float y) {
+    	this.y = (int) y;
+    }
     public void setPosition(int x, int y) { 
         this.x = x; 
         this.y = y; 

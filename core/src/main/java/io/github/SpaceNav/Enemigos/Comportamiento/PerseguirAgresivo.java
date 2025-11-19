@@ -6,7 +6,7 @@ import io.github.SpaceNav.jugador.Nave;
 public class PerseguirAgresivo implements ComportamientoEnemigo{
 	private Nave jugador;
 	private float distanciaPersecusion = 300f; //Distancia Minima Para que enemigo persiga
-	private float velocidadEnemigo = 100f;
+	private float velocidadEnemigo = 150f;
 	
     public PerseguirAgresivo(Nave jugador) {
         this.jugador = jugador;
@@ -19,18 +19,20 @@ public class PerseguirAgresivo implements ComportamientoEnemigo{
     
     @Override
     public void actualizar(Mobs enemigo, float delta) {
-        float dx = jugador.getX() - enemigo.getX();
-        float dy = jugador.getY() - enemigo.getY();
-        float distancia = (float) Math.sqrt(dx * dx + dy * dy);
+        float direccionX = jugador.getX() - enemigo.getX();
+        float direccionY = jugador.getY() - enemigo.getY();
+        float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
         
-        if (distancia < distanciaPersecusion && distancia > 20f) {
-            // Normalizar dirección y mover
-            dx /= distancia;
-            dy /= distancia;
+        if (magnitud > 0) {
+            direccionX /= magnitud;
+            direccionY /= magnitud;
             
-            enemigo.setX(enemigo.getX()+dx * enemigo.getVelocidad() * delta);
-            enemigo.setX(enemigo.getY()+dy * enemigo.getVelocidad() * delta);
         }
+            
+            enemigo.setX(enemigo.getX()+direccionX * enemigo.getVelocidad() * delta);
+            enemigo.setY(enemigo.getY()+direccionY * enemigo.getVelocidad() * delta);
+        
+        enemigo.getSprite().setPosition(direccionX, direccionY);
     }
 
 	@Override

@@ -9,5 +9,7 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-desktop"
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+    
   }
+  implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 }

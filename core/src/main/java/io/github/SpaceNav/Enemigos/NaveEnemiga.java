@@ -14,47 +14,94 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
     private SistemaMovimiento movimiento;
     private SistemaDisparos disparos;
     private SistemaEstado estado;
+    private ComportamientoEnemigo comportamiento;
    
     private Sprite sprite;
     private int vida = 1;
     private int valorPuntos = 15;
+    private float velocidad = 150f;
+    
+    // Posiciones directas para el movimiento como NaveCrasher
+    private float x;
+    private float y;
     
     public NaveEnemiga(int x, int y, int size, int xSpeed, Texture texturaNave, Texture balaTexture) {
         this.sprite = new Sprite(texturaNave);
         this.sprite.setSize(size * 2, size * 2);
         this.sprite.setOriginCenter();
         
+        // Inicializar posiciones directas
+        this.x = x;
+        this.y = y;
+        this.velocidad = xSpeed;
+        
         this.movimiento = new SistemaMovimiento(x, y, xSpeed, sprite);
         this.disparos = new SistemaDisparos(4.0f, balaTexture);
         this.estado = new SistemaEstado();
         
         corregirPosicionInicial();
+        // Posicionar sprite inicialmente
+        this.sprite.setPosition(this.x, this.y);
     }
     
     private void corregirPosicionInicial() {
-        int ancho = (int) sprite.getWidth();
-        int alto = (int) sprite.getHeight();
-        int x = movimiento.getX();
-        int y = movimiento.getY();
+        float ancho = sprite.getWidth();
+        float alto = sprite.getHeight();
         
         if (x < 0) x = 0;
         if (x + ancho > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - ancho;
         if (y < 0) y = 0;
         if (y + alto > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - alto;
         
-        movimiento.setPosition(x, y);
+   
+        if (movimiento != null) {
+            movimiento.setPosition((int)x, (int)y);
+        }
     }
     
     @Override
     public void update(float deltaTime, Nave jugador) {
         if (!estado.isActive()) return;
-        movimiento.update(deltaTime);
+        
+        // Actualizar comportamiento si está asignado
+        if (comportamiento != null) {
+            comportamiento.actualizar(this, deltaTime);
+        } else {
+            // Comportamiento por defecto - perseguir como NaveCrasher
+            float direccionX = jugador.getX() - this.x;
+            float direccionY = jugador.getY() - this.y;
+            
+            float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
+            
+            if (magnitud > 0) {
+                direccionX /= magnitud;
+                direccionY /= magnitud;
+                
+                x += direccionX * velocidad * deltaTime;
+                y += direccionY * velocidad * deltaTime;
+            }
+            
+            // Mantener dentro de límites
+            float ancho = sprite.getWidth();
+            float alto = sprite.getHeight();
+            
+            if (x < 0) x = 0;
+            if (x > Gdx.graphics.getWidth() - ancho) x = Gdx.graphics.getWidth() - ancho;
+            if (y < 0) y = 0;
+            if (y > Gdx.graphics.getHeight() - alto) y = Gdx.graphics.getHeight() - alto;
+        }
+        
+        // CRUCIAL: Actualizar posición del sprite y sistemas
+        sprite.setPosition(x, y);
+        if (movimiento != null) {
+            movimiento.setPosition((int)x, (int)y);
+        }
     }
     
     // Implementación de Shooter
     @Override
     public EnemyBullet shoot(float delta) {
-        return getBala(delta); // Reutiliza tu método existente
+        return getBala(delta);
     }
     
     @Override
@@ -62,7 +109,6 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         return estado.isActive() && disparos != null;
     }
     
-    // Mantener método existente para compatibilidad
     public EnemyBullet getBala(float delta) {
         if (!estado.isActive() || disparos == null) return null;
         
@@ -93,14 +139,15 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         return estado.isActive();
     }
     
+    // Getters y Setters corregidos para usar posiciones directas
     @Override
     public float getX() {
-        return movimiento.getX();
+        return x;
     }
     
     @Override
     public float getY() {
-        return movimiento.getY();
+        return y;
     }
     
     @Override
@@ -113,13 +160,39 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         return sprite.getHeight();
     }
     
-    @Override
+ 
     public float getXSpeed() {
-        return movimiento.getXSpeed();
+        return velocidad;
     }
     
     public void setXSpeed(float xSpeed) {
-    	this.movimiento.setXSpeed(xSpeed);
+        this.velocidad = xSpeed;
+        if (movimiento != null) {
+            movimiento.setXSpeed((int)xSpeed);
+        }
+    }
+
+    @Override
+    public void setX(float x) {
+        this.x = x;
+        if (movimiento != null) {
+            movimiento.setX((int)x);
+        }
+        sprite.setX(x);
+    }
+
+    @Override
+    public void setY(float y) {
+        this.y = y;
+        if (movimiento != null) {
+            movimiento.setY((int)y);
+        }
+        sprite.setY(y);
+    }
+    
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y);
     }
 
     public void setDisparosActivos(boolean activos) {
@@ -161,21 +234,44 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         return vida;
     }
 
-	@Override
-	public float getVelocidad() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public float getVelocidad() {
+        return velocidad;
+    }
+    
+    public void setVelocidad(float velocidad) {
+        this.velocidad = velocidad;
+    }
+
+    @Override
+    public void setComportamiento(ComportamientoEnemigo comportamiento) {
+        this.comportamiento = comportamiento;
+        if (comportamiento != null) {
+            comportamiento.iniciar(this);
+        }
+    }
+    
+    public boolean isComportamientoCompletado() {
+        return comportamiento != null && comportamiento.estaCompletado();
+    }
+    
+    public void clearComportamiento() {
+        this.comportamiento = null;
+    }
+    
+    public ComportamientoEnemigo getComportamiento() {
+        return comportamiento;
+    }
 
 	@Override
-	public void setX(float x) {
-		// TODO Auto-generated method stub
+	public Sprite getSprite() {
 		
+		return this.sprite;
 	}
 
 	@Override
-	public void setComportamiento(ComportamientoEnemigo comportamiento) {
-		// TODO Auto-generated method stub
+	public void setSprite(Sprite spr) {
+		this.sprite = spr;
 		
 	}
 }

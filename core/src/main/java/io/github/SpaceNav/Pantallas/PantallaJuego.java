@@ -1,7 +1,7 @@
 package io.github.SpaceNav.Pantallas;
 
 import java.util.ArrayList;
-import java.util.Random;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,10 +9,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+
 
 import io.github.SpaceNav.Enemigos.*;
-import io.github.SpaceNav.Enemigos.Comportamiento.PerseguirAgresivo;
+
 import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
@@ -26,7 +29,9 @@ public class PantallaJuego implements Screen, GameEventListener {
     private SpaceNavigation game;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    
+    private TiledMap mapa;
+    private OrthogonalTiledMapRenderer renderer;
+
     private boolean pausa = false;
     private int score;
     private int ronda;
@@ -34,15 +39,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     private int velYAsteroides;
     private int cantAsteroides;
     private int cantMobs;
-
-    private int tamanioAsteroide = 20;
-    private int variacionTamanioAsteroide = 10;
-    private int tamanioEnemigo = 25;
-    private int spawnEnemigoX = 50;
-    //private int spawnEnemigoY = 50;
-    private int dispersionAsteroideNormal = 200;
-    private int dispersionAsteroideStrong = 300;
-    private int variacionVelocidad = 4;
+  
     
     private Nave nave;
     private ArrayList<Asteroid> asteroids = new ArrayList<>();
@@ -54,161 +51,66 @@ public class PantallaJuego implements Screen, GameEventListener {
     private int SeCreoPortal = 0;
     
 
-    private Texture texturaAsteroide;
-    private Texture texturaAsteroideStrong;
-    private Texture texturaEnemigo1;
-    private Texture texturaEnemigoCrusher;
-    private Texture texturaBalaEnemiga;
+
     private Texture texturaNave;
     private Texture texturaRocket;
     private Texture texturaBomb;
-    private Texture texturaPortal;
-    private boolean texturasCargadas = false;
+  
     private Texture texturaFondo;
-    
+    private FabricaEntidadesJuego fabricaEntidades;
  
-    private void cargarTexturas() {
-        if (!texturasCargadas) {
-        	texturaFondo = new Texture(Gdx.files.internal("../assets/fondo.jpg"));
-            texturaAsteroide = new Texture(Gdx.files.internal("../assets/aGreyMedium4.png"));
-            texturaAsteroideStrong = new Texture(Gdx.files.internal("../assets/aGreyMedium4Red.png"));
-            texturaEnemigo1 = new Texture(Gdx.files.internal("../assets/EnemyShip1.png"));
-            texturaEnemigoCrusher = new Texture(Gdx.files.internal("../assets/EnemyShip2.png"));
-            texturaBalaEnemiga = new Texture(Gdx.files.internal("../assets/EnemyBullet.png"));
-            texturaNave = new Texture(Gdx.files.internal("../assets/MainShip3.png"));
-        	texturaRocket = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
-        	texturaBomb = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
-        	texturaPortal = new Texture(Gdx.files.internal("../assets/PortalTriste.png"));
-            texturasCargadas = true;
-        }
-    }
+
+
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
-            	int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
-    	this.game = game;
-    	this.ronda = ronda;
-    	this.score = score;
-    	this.velXAsteroides = velXAsteroides;
-    	this.velYAsteroides = velYAsteroides;
-    	this.cantAsteroides = cantAsteroides;
-    	this.cantMobs = cantMobs;
+            int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
+        this.game = game;
+        this.ronda = ronda;
+        this.score = score;
+        this.velXAsteroides = velXAsteroides;
+        this.velYAsteroides = velYAsteroides;
+        this.cantAsteroides = cantAsteroides;
+        this.cantMobs = cantMobs;
 
-    	batch = game.getBatch();
-    	camera = new OrthographicCamera();
-    	camera.setToOrtho(false, 800, 640);
+        batch = game.getBatch();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 640);
 
-    	cargarTexturas();
-
-    	// Efectos de sonido
-    	AudioManager.getInstance().cargarSonido("explosion", "../assets/explosion.ogg");
-
-    	
-    	
-
-    	nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
-    			texturaNave,
-    			texturaRocket,
-    			texturaBomb
-    			);
-    	nave.setVidas(vidas);
-    	nave.setBombs(bombs);
-    	nave.setEventListener(this);
-
-    	crearAsteroides();
-    	crearEnemigos();
-    }
-    private void crearAsteroides() {
-        Random r = new Random();
+        // Cargar texturas de la nave y fondo
+        cargarTexturasPropias();
         
-        // Asteroides normales
-        for (int i = 0; i < cantAsteroides; i++) {
-            Asteroid asteroid = crearAsteroideNormal(r);
-            asteroids.add(asteroid);
-        }
+        // Inicializar fábrica
+        fabricaEntidades = new FabricaEntidadesJuego();
 
-        // Asteroides fuertes
-        for (int i = 0; i < cantAsteroides / 4; i++) {
-            Asteroid asteroid = crearAsteroideFuerte(r);
-            asteroids.add(asteroid);
-        }
-    }
-    
+        // Efectos de sonido
+        AudioManager.getInstance().cargarSonido("explosion", "../assets/explosion.ogg");
 
-    private Asteroid crearAsteroideNormal(Random r) {
-        int size = tamanioAsteroide + r.nextInt(variacionTamanioAsteroide);
-        int[] posicion = calcularPosicionCentrada(dispersionAsteroideNormal, r);
-        
-        int velX = velXAsteroides + r.nextInt(variacionVelocidad);
-        int velY = velYAsteroides + r.nextInt(variacionVelocidad);
-        
-        return new Ball(
-            posicion[0], posicion[1], size, velX, velY, texturaAsteroide
+        // Crear nave con las texturas propias
+        nave = new Nave(Gdx.graphics.getWidth()/2-50, 30,
+                texturaNave,
+                texturaRocket,
+                texturaBomb
         );
-    }
-    
-   
-    private Asteroid crearAsteroideFuerte(Random r) {
-        int size = tamanioAsteroide + r.nextInt(variacionTamanioAsteroide);
-        int[] posicion = calcularPosicionCentrada(dispersionAsteroideStrong, r);
-        
-        int velX = velXAsteroides + r.nextInt(variacionVelocidad);
-        int velY = velYAsteroides + r.nextInt(variacionVelocidad);
-        
-        return new BallStrong(
-            posicion[0], posicion[1], size, velX, velY, texturaAsteroideStrong
-        );
-    }
-    
+        nave.setVidas(vidas);
+        nave.setBombs(bombs);
+        nave.setEventListener(this);
 
-    private int[] calcularPosicionCentrada(int dispersion, Random r) {
-        int centerX = Gdx.graphics.getWidth() / 2;
-        int centerY = Gdx.graphics.getHeight() / 2;
-        
-        int x = centerX + r.nextInt(dispersion * 2) - dispersion;
-        int y = centerY + r.nextInt(dispersion * 2) - dispersion;
-        
-        return new int[]{x, y};
+        // Crear asteroides y enemigos usando la fábrica
+        asteroids = fabricaEntidades.crearAsteroides(cantAsteroides, velXAsteroides, velYAsteroides);
+        enemies = fabricaEntidades.crearEnemigos(cantMobs, velXAsteroides, nave);
     }
-    
 
-    private void crearEnemigos() {
-        Random r = new Random();
-        
-        // Naves Normales
-        for(int i = 0; i < cantMobs; i++) {
-            Mobs enemigo = crearNaveNormal(r);
-            enemies.add(enemigo);
-        }
-        
-        // Naves Crashers
-        for(int i = 0; i < cantMobs; i++) {
-            Mobs enemigo = crearNaveCrasher(r);
-            enemies.add(enemigo);
-            enemigo.setComportamiento(new PerseguirAgresivo(nave));
-        }
-    }
-    
 
-    private Mobs crearNaveNormal(Random r) {
-        int size = tamanioEnemigo;
-        int x = r.nextInt(Gdx.graphics.getWidth() - spawnEnemigoX);
-        int vel = velXAsteroides + r.nextInt(variacionVelocidad);
-        
-        return new NaveEnemiga(
-            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga
-        );
+    private void cargarTexturasPropias() {
+        texturaFondo = new Texture(Gdx.files.internal("../assets/fondo.jpg"));
+        texturaNave = new Texture(Gdx.files.internal("../assets/MainShip3.png"));
+        texturaRocket = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
+        texturaBomb = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
     }
-    
 
-    private Mobs crearNaveCrasher(Random r) {
-        int size = tamanioEnemigo;
-        int x = r.nextInt(Gdx.graphics.getWidth() - spawnEnemigoX);
-        int vel = velXAsteroides + r.nextInt(variacionVelocidad);
-        
-        return new NaveCrasher(
-            x, 800, size, vel, texturaEnemigoCrusher
-        );
-    }
+
+
+
 
     
     public void setPausa(boolean pausa) {
@@ -296,7 +198,6 @@ public class PantallaJuego implements Screen, GameEventListener {
         dibujaEncabezado();
         
         
-        
         // Dibujar todos los proyectiles primero 
         for (int i = 0; i < balas.size(); i++) {
             balas.get(i).draw(batch);
@@ -345,7 +246,11 @@ public class PantallaJuego implements Screen, GameEventListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-  
+        // Actualizacion de camara
+        camera.update();
+        // Renderizacion del mapa
+        renderer.setView(camera);
+        renderer.render();
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             if (!pausa) {
                 game.setScreen(new PantallaPausa(game, this));
@@ -366,17 +271,8 @@ public class PantallaJuego implements Screen, GameEventListener {
 
 
     private Portal crearPortalFinDelJuego() {
-    	SeCreoPortal = 1;
-        Random r = new Random();
-        int size = tamanioAsteroide + r.nextInt(variacionTamanioAsteroide);
-        int[] posicion = calcularPosicionCentrada(dispersionAsteroideNormal, r);
-        
-        int velX = velXAsteroides + r.nextInt(variacionVelocidad);
-        int velY = velYAsteroides + r.nextInt(variacionVelocidad);
-        
-        return new Portal(
-            posicion[0], posicion[1], size, velX, velY, texturaPortal
-        );
+        SeCreoPortal = 1;
+        return fabricaEntidades.crearPortal(velXAsteroides, velYAsteroides);
     }
     
     private void verificarFinDeJuego() {
@@ -414,8 +310,22 @@ public class PantallaJuego implements Screen, GameEventListener {
         this.score += points;
     }
 
-    @Override public void show() {}
-    @Override public void resize(int width, int height) {}
+    @Override public void show() {
+    	mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx");
+    	
+        renderer = new OrthogonalTiledMapRenderer(mapa);
+        
+     
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+    }
+    
+
+    public void resize(int width, int height) {
+    	camera.viewportWidth = width;
+    	camera.viewportHeight = height;
+    	camera.update();
+    }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
@@ -442,6 +352,9 @@ public class PantallaJuego implements Screen, GameEventListener {
             texturaBomb.dispose();
             texturaBomb = null;
         }
+        
+        mapa.dispose();
+        renderer.dispose();
     }
 
 
