@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.SpaceNav.Colisionable;
 import io.github.SpaceNav.jugador.Nave;
+import io.github.SpaceNav.Utilidades.MapaManager;
 
 public class EnemyBullet implements Colisionable {
     private float x;
@@ -19,7 +20,7 @@ public class EnemyBullet implements Colisionable {
     // Variables para apuntar al jugador
     private float direccionX = 0f;
     private float direccionY = -1f;
-    private Nave jugador; // Referencia al jugador
+    private Nave jugador;
     
     public EnemyBullet(float x, float y, Texture tx, Nave jugador) {
         this.x = x;
@@ -30,7 +31,6 @@ public class EnemyBullet implements Colisionable {
         spr.setOriginCenter();
         spr.setPosition(x, y);
         
-        // Calcular dirección hacia el jugador
         calcularDireccionAlJugador();
     }
     
@@ -45,9 +45,13 @@ public class EnemyBullet implements Colisionable {
         float angulo = (float) Math.atan2(direccionY, direccionX) * MathUtils.radiansToDegrees;
         spr.setRotation(angulo - 90);
         
-        // Destruir si sale de pantalla
-        if (y + spr.getHeight() < -30 || y > Gdx.graphics.getHeight() + 30 ||
-            x + spr.getWidth() < -30 || x > Gdx.graphics.getWidth() + 30) {
+
+        int mapWidth = MapaManager.getInstance().getMapWidth();
+        int mapHeight = MapaManager.getInstance().getMapHeight();
+        
+        // Destruir si sale del MAPA (no de la pantalla)
+        if (y + spr.getHeight() < -30 || y > mapHeight + 30 ||
+            x + spr.getWidth() < -30 || x > mapWidth + 30) {
             destroyed = true;
         }
     }
@@ -63,7 +67,6 @@ public class EnemyBullet implements Colisionable {
             this.direccionY = dy / distancia;
         }
     }
-    
     public void draw(SpriteBatch batch) {
         spr.draw(batch);
     }
@@ -81,7 +84,7 @@ public class EnemyBullet implements Colisionable {
     
     @Override
     public void onColision() {
-        this.destroyed = true; // La bala enemiga puede ser destruida
+        this.destroyed = true;
     }
     
     @Override

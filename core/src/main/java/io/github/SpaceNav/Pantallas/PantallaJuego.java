@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -53,7 +52,6 @@ public class PantallaJuego implements Screen, GameEventListener {
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
     private ArrayList<Portal> DiegoPortales = new ArrayList<>();
-    private int SeCreoPortal = 0;
     
 
 
@@ -96,7 +94,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         nave.setVidas(vidas);
         nave.setBombs(bombs);
         nave.setEventListener(this);
-
+        DiegoPortales.add(fabricaEntidades.crearPortal(velXAsteroides, velYAsteroides));
   
     }
 
@@ -278,10 +276,7 @@ public class PantallaJuego implements Screen, GameEventListener {
     }
 
 
-    private Portal crearPortalFinDelJuego() {
-        SeCreoPortal = 1;
-        return fabricaEntidades.crearPortal(velXAsteroides, velYAsteroides);
-    }
+
     
     private void verificarFinDeJuego() {
         if (nave.estaDestruido()) {
@@ -292,13 +287,15 @@ public class PantallaJuego implements Screen, GameEventListener {
             gameOverScreen.resize(1200, 800);
             game.setScreen(gameOverScreen);
             dispose();
-        } else if (asteroids.isEmpty() && SeCreoPortal == 0) {
-        	DiegoPortales.add(crearPortalFinDelJuego());
-        } else if (Nave.getEnPortal() == 1){
+        } 
+        // 🔥 CAMBIAR: Ahora el portal ya existe desde el principio
+        else if (Nave.getEnPortal() == 1) {
             game.setScreen(new PantallaPerks(game, this, nave, ronda, score, 
                 velXAsteroides, velYAsteroides, cantAsteroides, cantMobs));
             dispose();
         }
+        // 🔥 ELIMINAR la condición de asteroides vacíos para crear portal
+        // else if (asteroids.isEmpty() && SeCreoPortal == 0) { ... }
     }
 
     public boolean agregarBala(Bullet bb) {
