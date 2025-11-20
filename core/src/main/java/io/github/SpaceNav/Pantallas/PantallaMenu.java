@@ -13,6 +13,7 @@ import io.github.SpaceNav.Armas.WeaponSingle;
 import io.github.SpaceNav.Armas.WeaponTriple;
 import io.github.SpaceNav.Utilidades.BotonListener;
 import io.github.SpaceNav.Utilidades.EstilosUI;
+import io.github.SpaceNav.jugador.DanioSelfNormal;
 
 public class PantallaMenu implements Screen {
     private final SpaceNavigation game;
@@ -55,7 +56,7 @@ public class PantallaMenu implements Screen {
                     tx,    // textura bala
                     tx2,    // textura bomb
                     0.3f
-                ),6f); 
+                ),6f, new DanioSelfNormal());
             ss.resize(1200, 800); 
             game.setScreen(ss); 
             dispose();

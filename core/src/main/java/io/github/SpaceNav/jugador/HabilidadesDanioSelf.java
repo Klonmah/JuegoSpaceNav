@@ -1,6 +1,6 @@
 package io.github.SpaceNav.jugador;
 
-abstract class HabilidadesDanioSelf {
+public abstract class HabilidadesDanioSelf {
 
 	public final void applyDamage(Nave nave) {
         if (puedeRecibirDanio(nave)) {

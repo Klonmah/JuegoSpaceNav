@@ -110,7 +110,8 @@ public class PantallaPerks implements Screen {
             cantMobs + 1,
             nave.getVelocidad(),
             nave.getWeapon(),
-            nave.getMaxVelocidad()
+            nave.getMaxVelocidad(),
+            nave.getHabilidadDanioSelf()
         );
         ss.resize(1200, 800);
         game.setScreen(ss);

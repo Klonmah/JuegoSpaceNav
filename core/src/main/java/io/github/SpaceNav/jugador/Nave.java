@@ -257,6 +257,11 @@ public class Nave {
 	public void setHabilidadDanio(HabilidadesDanioSelf habilidad) {
 	    this.habilidadDanio = habilidad;
 	}
+	
+	public HabilidadesDanioSelf getHabilidadDanioSelf()
+	{
+		return habilidadDanio;
+	}
 
 	public static int getEnPortal() {
 		return EnPortal;

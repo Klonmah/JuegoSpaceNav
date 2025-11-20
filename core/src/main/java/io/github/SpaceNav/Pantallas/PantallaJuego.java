@@ -70,7 +70,8 @@ public class PantallaJuego implements Screen, GameEventListener {
 
 
 	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
-            int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs, float velocidad, Weapon weapon, float velocidadMax) {
+            int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs, float velocidad, Weapon weapon, float velocidadMax,
+            HabilidadesDanioSelf habilidad) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
@@ -101,6 +102,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         nave.setEventListener(this);
         nave.setMaxVelocidad(velocidadMax);
         DiegoPortales.add(fabricaEntidades.crearPortal(velXAsteroides, velYAsteroides));
+        nave.setHabilidadDanio(habilidad);
   
     }
 

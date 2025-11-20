@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.SpaceNav.SpaceNavigation;
 import io.github.SpaceNav.Armas.WeaponSingle;
 import io.github.SpaceNav.Armas.WeaponTriple;
+import io.github.SpaceNav.jugador.DanioSelfNormal;
+import io.github.SpaceNav.jugador.HabilidadesDanioSelf;
 
 
 public class PantallaGameOver implements Screen {
@@ -49,7 +51,7 @@ public class PantallaGameOver implements Screen {
                     tx,    // textura bala
                     tx2,    // textura bomb
                     0.3f
-                ),6f); 
+                ),6f,new DanioSelfNormal()); 
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();

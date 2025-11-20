@@ -1,5 +1,6 @@
 package io.github.SpaceNav.Utilidades;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
 import io.github.SpaceNav.Armas.WeaponSingle;
 import io.github.SpaceNav.Armas.WeaponTriple;
+import io.github.SpaceNav.jugador.DanioSelfEscudado;
+
 import io.github.SpaceNav.jugador.Nave;
 
 import java.util.ArrayList;
@@ -91,6 +94,14 @@ public class PerkManager {
             public void aplicar(Nave nave) {
                 nave.setVelocidad(nave.getVelocidad() + 0.7f);
                 nave.setMaxVelocidad(nave.getMaxVelocidad() + 0.9f);
+            }
+        });
+        perks.add(new Perk("Armadura Reforzada")  {
+            @Override
+            public void aplicar(Nave nave) {
+            	System.out.println("a");
+                nave.setHabilidadDanio(new DanioSelfEscudado());
+                System.out.println("a2");
             }
         });
 
