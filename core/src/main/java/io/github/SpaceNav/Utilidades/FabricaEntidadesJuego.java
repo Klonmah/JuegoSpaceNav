@@ -18,8 +18,8 @@ public class FabricaEntidadesJuego {
     private int variacionTamanioAsteroide = 10;
     private int tamanioEnemigo = 25;
     private int spawnEnemigoX = 50;
-    private int dispersionAsteroideNormal = 200;
-    private int dispersionAsteroideStrong = 300;
+    private int dispersionAsteroideNormal = 600;
+    private int dispersionAsteroideStrong = 900;
     private int variacionVelocidad = 4;
     
     // Texturas

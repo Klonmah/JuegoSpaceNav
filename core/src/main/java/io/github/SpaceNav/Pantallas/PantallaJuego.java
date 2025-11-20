@@ -24,6 +24,7 @@ import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Armas.Bomb;
 import io.github.SpaceNav.Armas.Bullet;
 import io.github.SpaceNav.Armas.EnemyBullet;
+import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.jugador.*;
 import io.github.SpaceNav.*;
 
@@ -35,6 +36,8 @@ public class PantallaJuego implements Screen, GameEventListener {
     private SpriteBatch batch;
     private TiledMap mapa;
     private OrthogonalTiledMapRenderer renderer;
+    private OrthographicCamera hudCamera;
+
 
     private boolean pausa = false;
     private int score;
@@ -67,7 +70,7 @@ public class PantallaJuego implements Screen, GameEventListener {
 
 
 	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int bombs, int score,
-            int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
+            int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs, float velocidad, Weapon weapon, float velocidadMax) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
@@ -93,7 +96,10 @@ public class PantallaJuego implements Screen, GameEventListener {
         );
         nave.setVidas(vidas);
         nave.setBombs(bombs);
+        nave.setVelocidad(velocidad);
+        nave.setWeapon(weapon);
         nave.setEventListener(this);
+        nave.setMaxVelocidad(velocidadMax);
         DiegoPortales.add(fabricaEntidades.crearPortal(velXAsteroides, velYAsteroides));
   
     }
@@ -190,7 +196,6 @@ public class PantallaJuego implements Screen, GameEventListener {
     public void dibujarJuego() {
         batch.begin();
         
-        dibujaEncabezado();
         
         
         // Dibujar todos los proyectiles primero 
@@ -235,13 +240,16 @@ public class PantallaJuego implements Screen, GameEventListener {
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(),
                 Gdx.graphics.getWidth() / 2 - 100, 30);
     }
-
+    
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // ACTUALIZAR CÁMARA - solo una vez
+        // ACTUALIZAR CÁMARA
         if (nave != null) {
             camera.position.set(
                 Math.max(camera.viewportWidth/2, Math.min(nave.getX(), mapWidth - camera.viewportWidth/2)),
@@ -255,25 +263,51 @@ public class PantallaJuego implements Screen, GameEventListener {
         renderer.setView(camera);
         renderer.render();
 
+        // --- PAUSA ---
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             if (!pausa) {
-                game.setScreen(new PantallaPausa(game, this));
+
+                batch.setProjectionMatrix(camera.combined);
+
+                PantallaPausa pausado = new PantallaPausa(
+                    game,
+                    this,
+                    camera,
+                    renderer,
+                    batch
+                );
+
+                game.setScreen(pausado);
                 pausa = true;
+                return;   // <-- CLAVE: evitar que siga la lógica
             } else {
                 pausa = false;
             }
         }
 
-        actualizarJuego(delta);
+        // ------------------------------------
+        // ⚠️ LOGICA SOLO SI NO ESTÁ EN PAUSA
+        // ------------------------------------
+        if (!pausa) {
+            actualizarJuego(delta);
+        }
 
-        // DIBUJAR JUEGO
+        // Dibujar juego
         batch.setProjectionMatrix(camera.combined);
         dibujarJuego();
 
+        // HUD
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+        dibujaEncabezado();
+        batch.end();
+
+        // Fin del juego solo si no está en pausa
         if (!pausa) {
             verificarFinDeJuego();
         }
     }
+
 
 
 
@@ -319,6 +353,9 @@ public class PantallaJuego implements Screen, GameEventListener {
     public void show() {
         mapa = new TmxMapLoader().load("../assets/SpaceNavMapa.tmx");
         renderer = new OrthogonalTiledMapRenderer(mapa);
+        hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false, 800, 640);
+
         
         // Obtener dimensiones del mapa
         int tileWidth = (int)mapa.getProperties().get("tilewidth");

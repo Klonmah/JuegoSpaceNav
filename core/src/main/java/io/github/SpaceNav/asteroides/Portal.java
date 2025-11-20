@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Portal extends Asteroid {
+public class Portal extends Ball {
 
     public Portal(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
         // Ball tiene 1 de vida y da 10 puntos
-        super(x, y, size, xSpeed, ySpeed, tx, 1, 10);
+        super(x, y, size, xSpeed, ySpeed, tx);
         
         int ancho = (int) getSprite().getWidth();
         int alto = (int) getSprite().getHeight();

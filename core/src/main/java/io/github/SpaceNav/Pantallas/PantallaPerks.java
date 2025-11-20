@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Armas.Weapon;
+import io.github.SpaceNav.Utilidades.Perk;
+import io.github.SpaceNav.Utilidades.PerkManager;
 import io.github.SpaceNav.jugador.*;
 
 public class PantallaPerks implements Screen {
@@ -21,9 +24,13 @@ public class PantallaPerks implements Screen {
     private int velYAsteroides;
     private int cantAsteroides;
     private int cantMobs;
+    private Perk perk1;
+    private Perk perk2;
+    private Perk perk3;
+
     
-    // 🔥 AGREGAR: Cámara para esta pantalla
     private com.badlogic.gdx.graphics.OrthographicCamera camera;
+	private Weapon weapon;
 
     public PantallaPerks(SpaceNavigation game, PantallaJuego juego, Nave nave, int ronda, int score, 
                         int velXAsteroides, int velYAsteroides, int cantAsteroides, int cantMobs) {
@@ -37,6 +44,10 @@ public class PantallaPerks implements Screen {
         this.velYAsteroides = velYAsteroides;
         this.cantAsteroides = cantAsteroides;
         this.cantMobs = cantMobs;
+        perk1 = PerkManager.obtenerPerkAleatorio();
+        perk2 = PerkManager.obtenerPerkAleatorio();
+        perk3 = PerkManager.obtenerPerkAleatorio();
+
         
         //Se ajusta la pantalla para la camara
         this.camera = new com.badlogic.gdx.graphics.OrthographicCamera();
@@ -58,12 +69,10 @@ public class PantallaPerks implements Screen {
         game.getFont().draw(batch, "ELIGE TUS PERKS",
                 Gdx.graphics.getWidth() / 2 - 150,
                 Gdx.graphics.getHeight() / 2 + 100);
-        game.getFont().draw(batch, "Presiona O para mas vida.",
-                Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2);
-        game.getFont().draw(batch, "Presiona P para mas bombas.",
-                Gdx.graphics.getWidth() / 2 - 400,
-                Gdx.graphics.getHeight() / 2 - 75);
+        game.getFont().draw(batch, "1) " + perk1.getNombre(),  Gdx.graphics.getWidth()/2 - 400, Gdx.graphics.getHeight()/2);
+        game.getFont().draw(batch, "2) " + perk2.getNombre(),  Gdx.graphics.getWidth()/2 - 400, Gdx.graphics.getHeight()/2 - 75);
+        game.getFont().draw(batch, "3) " + perk3.getNombre(),  Gdx.graphics.getWidth()/2 - 400, Gdx.graphics.getHeight()/2 - 150);
+
         batch.end();
 
         // Control de volumen
@@ -74,23 +83,34 @@ public class PantallaPerks implements Screen {
         }
         
         // PERKS
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            crearSiguienteNivel(1, 0); // +1 vida
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            crearSiguienteNivel(0, 1); // +1 bomba
-        } 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            perk1.aplicar(nave);
+            crearSiguienteNivel();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            perk2.aplicar(nave);
+            crearSiguienteNivel();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            perk3.aplicar(nave);
+            crearSiguienteNivel();
+        }
+
     }
 
-    private void crearSiguienteNivel(int vidasExtra, int bombsExtra) {
+    private void crearSiguienteNivel() {
         Screen ss = new PantallaJuego(game, 
             ronda + 1, 
-            nave.getVidas() + vidasExtra, 
-            nave.getBombs() + bombsExtra, 
+            nave.getVidas() + 1, 
+            nave.getBombs(), 
             score, 
-            velXAsteroides + 1, 
-            velYAsteroides + 1, 
-            cantAsteroides + 6,  
-            cantMobs + 2
+            velXAsteroides, 
+            velYAsteroides, 
+            cantAsteroides + 2,  
+            cantMobs + 1,
+            nave.getVelocidad(),
+            nave.getWeapon(),
+            nave.getMaxVelocidad()
         );
         ss.resize(1200, 800);
         game.setScreen(ss);

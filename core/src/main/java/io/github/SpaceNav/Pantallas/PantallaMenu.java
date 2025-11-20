@@ -2,12 +2,15 @@ package io.github.SpaceNav.Pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.SpaceNav.Image;
 import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Armas.WeaponSingle;
+import io.github.SpaceNav.Armas.WeaponTriple;
 import io.github.SpaceNav.Utilidades.BotonListener;
 import io.github.SpaceNav.Utilidades.EstilosUI;
 
@@ -44,8 +47,15 @@ public class PantallaMenu implements Screen {
             (Gdx.graphics.getHeight() - this.botonJugar.getHeight()) / 2f -50
         );
 
+        Texture tx = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
+        Texture tx2 = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
+        
         botonJugar.addListener(new BotonListener(botonJugar, () -> {
-            Screen ss = new PantallaJuego(game, 1, 3, 3, 0, 1, 1, 10, 1); 
+            Screen ss = new PantallaJuego(game, 1, 3, 3, 0, 1, 1, 10, 1, 4f, new WeaponSingle(
+                    tx,    // textura bala
+                    tx2,    // textura bomb
+                    0.3f
+                ),6f); 
             ss.resize(1200, 800); 
             game.setScreen(ss); 
             dispose();

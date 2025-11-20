@@ -5,9 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.Armas.WeaponSingle;
+import io.github.SpaceNav.Armas.WeaponTriple;
 
 
 public class PantallaGameOver implements Screen {
@@ -38,9 +41,15 @@ public class PantallaGameOver implements Screen {
 		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
 	
 		game.getBatch().end();
-
+        Texture tx = new Texture(Gdx.files.internal("../assets/Rocket2.png"));
+        Texture tx2 = new Texture(Gdx.files.internal("../assets/BombLowScaled.png"));
+        
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,3,0,1,1,10,1);
+            Screen ss = new PantallaJuego(game, 1, 3, 3, 0, 1, 1, 10, 1, 4f, new WeaponSingle(
+                    tx,    // textura bala
+                    tx2,    // textura bomb
+                    0.3f
+                ),6f); 
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();

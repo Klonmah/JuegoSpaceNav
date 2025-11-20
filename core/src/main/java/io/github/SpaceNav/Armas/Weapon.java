@@ -63,4 +63,5 @@ public abstract class Weapon {
     public void firebomb(Nave nave, PantallaJuego juego, float puntaX, float puntaY) {
         this.firebomb(nave, puntaX, puntaY);
     }
+    
 }

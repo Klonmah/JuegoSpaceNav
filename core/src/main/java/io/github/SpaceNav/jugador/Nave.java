@@ -15,6 +15,7 @@ import io.github.SpaceNav.Utilidades.AudioManager;
 import io.github.SpaceNav.Utilidades.GameEventListener;
 import io.github.SpaceNav.Armas.Weapon;
 import io.github.SpaceNav.Armas.WeaponQuintuple;
+import io.github.SpaceNav.Armas.WeaponSingle;
 import io.github.SpaceNav.Colisionable;
 
 
@@ -39,7 +40,6 @@ public class Nave {
     private float anguloRad;
     private float velX = 0f;
     private float velY = 0f;
-    private float velocityfixed = 4f;
     private float aceleracion = 0.15f;
     private float friccion = 0.99f; // 0.99f
     private float velocidadMax = 6f;
@@ -57,6 +57,31 @@ public class Nave {
     public void setWeapon(Weapon w) {
         this.weapon = w;
     }
+
+
+	public Weapon getWeapon() {
+		return weapon;
+	}
+	
+	public float getWeaponCadencia() {
+		return weapon.getCadencia();
+	}
+
+	public float getVelocidad() {
+		return velocidad;
+	}
+
+	public void setVelocidad(float i) {
+		velocidad = i;
+	}
+
+	public void setMaxVelocidad(float i) {
+		velocidadMax = i;
+	}
+    
+	public float getMaxVelocidad() {
+		return velocidadMax;
+	}
     
     public float getRotacion() {
     	return this.rotacion;
@@ -79,8 +104,6 @@ public class Nave {
     	this.largoNave =  spr.getHeight();
     	this.anchoNave= this.spr.getWidth();
     	EnPortal = 0;
-    	
-    	this.weapon = new WeaponQuintuple(txBala, txBomb, 0.3f); // 0.3s entre disparos
     }
     public void update(boolean pausa, float mapWidth, float mapHeight) {  
         if (pausa) return;
