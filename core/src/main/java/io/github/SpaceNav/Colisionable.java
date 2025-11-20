@@ -6,3 +6,4 @@ public interface Colisionable {
 	    void onColision(); //Maneja lo que pasa al colisionar
 }
 
+	

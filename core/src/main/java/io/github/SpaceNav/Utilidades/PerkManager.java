@@ -99,9 +99,7 @@ public class PerkManager {
         perks.add(new Perk("Armadura Reforzada")  {
             @Override
             public void aplicar(Nave nave) {
-            	System.out.println("a");
-                nave.setHabilidadDanio(new DanioSelfEscudado());
-                System.out.println("a2");
+                nave.setHabilidadDanio(new DanioSelfEscudado(nave));
             }
         });
 

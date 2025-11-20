@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.SpaceNav.Pantallas.*;
@@ -268,6 +269,16 @@ public class Nave {
 	}
 	public void setEnPortal(int i) {
 		EnPortal  = i;
+	}
+	
+	public void setSprite(Sprite spr) {
+		this.spr=spr;
+	}
+
+
+	public Sprite getSprite() {
+		// TODO Auto-generated method stub
+		return spr;
 	}
 	
 }
