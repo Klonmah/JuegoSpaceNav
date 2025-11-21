@@ -17,7 +17,7 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
     private ComportamientoEnemigo comportamiento;
    
     private Sprite sprite;
-    private int vida = 1;
+    private int vida = 3;
     private int valorPuntos = 15;
     private float velocidad = 150f;
     
@@ -66,49 +66,11 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         // Actualizar comportamiento si está asignado
         if (comportamiento != null) {
             comportamiento.actualizar(this, deltaTime);
-        } else {
-            // Comportamiento por defecto - perseguir como NaveCrasher
-            float direccionX = jugador.getX() - this.x;
-            float direccionY = jugador.getY() - this.y;
-            
-            float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
-            
-            if (magnitud > 0) {
-                direccionX /= magnitud;
-                direccionY /= magnitud;
-                
-                x += direccionX * velocidad * deltaTime;
-                y += direccionY * velocidad * deltaTime;
-            }
-            
-            // Mantener dentro de límites
-            float ancho = sprite.getWidth();
-            float alto = sprite.getHeight();
-            
-            if (x < 0) x = 0;
-            if (x > Gdx.graphics.getWidth() - ancho) x = Gdx.graphics.getWidth() - ancho;
-            if (y < 0) y = 0;
-            if (y > Gdx.graphics.getHeight() - alto) y = Gdx.graphics.getHeight() - alto;
-        }
-        
-    
-        apuntarAlJugador(jugador);
-        
-        // CRUCIAL: Actualizar posición del sprite y sistemas
-        sprite.setPosition(x, y);
-        if (movimiento != null) {
-            movimiento.setPosition((int)x, (int)y);
         }
     }
 
  
-    private void apuntarAlJugador(Nave jugador) {
-        float dx = jugador.getX() - (x + sprite.getWidth() / 2);
-        float dy = jugador.getY() - (y + sprite.getHeight() / 2);
-        float angulo = (float) Math.atan2(dy, dx) * com.badlogic.gdx.math.MathUtils.radiansToDegrees;
-        sprite.setRotation(angulo + 90); // 
-    }
-    
+
     // Implementación de Shooter
     @Override
     public EnemyBullet shoot(float delta) {
@@ -142,7 +104,7 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
     
     @Override
     public void onColision() {
-        estado.destruir();
+    	takeDamage(1);
     }
     
     @Override
@@ -150,7 +112,7 @@ public class NaveEnemiga implements Mobs, ShooterEnemigo {
         return estado.isActive();
     }
     
-    // Getters y Setters corregidos para usar posiciones directas
+   
     @Override
     public float getX() {
         return x;

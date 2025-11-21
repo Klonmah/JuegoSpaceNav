@@ -19,6 +19,7 @@ public interface Mobs extends Colisionable, Destructible  {
     float getWidth();
     float getHeight();
     void setXSpeed(float xSpeed);
+    void setVelocidad(float velocidad);
     float getVelocidad();
     public void setComportamiento(ComportamientoEnemigo comportamiento);
 }

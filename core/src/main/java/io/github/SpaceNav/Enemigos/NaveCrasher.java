@@ -1,6 +1,6 @@
 package io.github.SpaceNav.Enemigos;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
 import io.github.SpaceNav.jugador.*;
 import java.util.Random;
-
+import io.github.SpaceNav.Utilidades.MapaManager;
 
 public class NaveCrasher implements Mobs {
     
@@ -37,49 +37,34 @@ public class NaveCrasher implements Mobs {
         float ancho = spr.getWidth();
         float alto = spr.getHeight();
 
-        // Corrección de posición - coordenadas LibGDX (0,0 abajo-izquierda)
+
         if (x < 0) x = 0;
-        if (x > Gdx.graphics.getWidth()) x = Gdx.graphics.getWidth() - (int)ancho;
+        if (x > MapaManager.getInstance().getMapWidth()) x =MapaManager.getInstance().getMapWidth() - (int)ancho;
         if (y < 0) y = (int)alto;
-        if (y > Gdx.graphics.getHeight()) y = Gdx.graphics.getHeight() - (int)alto;
+        if (y > MapaManager.getInstance().getMapHeight()) y = MapaManager.getInstance().getMapHeight() - (int)alto;
 
         this.x = x;
         this.y = y;
         spr.setPosition(this.x, this.y);
-        this.velocidad = velocidad; // Cambiado de velocidadX a velocidad
-        
+        this.velocidad = velocidad;
     }
     
     @Override
     public void update(float deltaTime, Nave jugador) {
         if (!activa || destruida) return;
         
-        // Usar el comportamiento si está asignado
+     
         if (comportamiento != null) {
             comportamiento.actualizar(this, deltaTime);
-        } else {
-            // Comportamiento por defecto (backup)
-            float direccionX = jugador.getX() - this.x;
-            float direccionY = jugador.getY() - this.y;
-            float magnitud = (float) Math.sqrt(direccionX * direccionX + direccionY * direccionY);
-            
-            if (magnitud > 0) {
-                direccionX /= magnitud;
-                direccionY /= magnitud;
-                
-                x += direccionX * velocidad * deltaTime;
-                y += direccionY * velocidad * deltaTime;
-            }
-        }
-        
+        } 
         // Mantener dentro de los límites de la pantalla
         float ancho = spr.getWidth();
         float alto = spr.getHeight();
         
         if (x < 0) x = 0;
-        if (x > Gdx.graphics.getWidth() - ancho) x = Gdx.graphics.getWidth() - ancho;
+        if (x > MapaManager.getInstance().getMapWidth() - ancho) x =MapaManager.getInstance().getMapWidth() - ancho;
         if (y < 0) y = 0;
-        if (y > Gdx.graphics.getHeight() - alto) y = Gdx.graphics.getHeight() - alto;
+        if (y > MapaManager.getInstance().getMapHeight() - alto) y = MapaManager.getInstance().getMapHeight() - alto;
         
         spr.setPosition(x, y);
     }

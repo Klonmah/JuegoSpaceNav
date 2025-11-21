@@ -1,35 +1,31 @@
 package io.github.SpaceNav.asteroides;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.SpaceNav.Utilidades.MapaManager; // 1. Importamos el Manager
 
 public class Portal extends Ball {
 
     public Portal(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-        // Ball tiene 1 de vida y da 10 puntos
+
         super(x, y, size, xSpeed, ySpeed, tx);
         
-        int ancho = (int) getSprite().getWidth();
-        int alto = (int) getSprite().getHeight();
-        int screenW = Gdx.graphics.getWidth();
-        int screenH = Gdx.graphics.getHeight();
 
-        // Ajuste inicial para no aparecer fuera de pantalla
-        if (x < 0) x = 0;
-        if (x > screenW - ancho) x = screenW - ancho;
-        if (y < 0) y = 0;
-        if (y > screenH - alto) y = screenH - alto;
+        MapaManager mapa = MapaManager.getInstance();
 
-        setX(x);
-        setY(y);
-        getSprite().setPosition(getX(), getY());
+  
+        int nuevoX = (int)mapa.arreglarX(x, getSprite().getWidth());
+        int nuevoY = (int)mapa.arreglarY(y, getSprite().getHeight());
+
+
+        this.setX(nuevoX);
+        this.setX(nuevoY);
+        getSprite().setPosition(nuevoX, nuevoY);
     }
     
-    @Override
-    public void update() {
-    }
+
+
     
     @Override
     public Rectangle getArea() {
@@ -51,4 +47,4 @@ public class Portal extends Ball {
     public void checkCollision(Asteroid another) {
         super.checkCollision(another);
     }
-} 
+}

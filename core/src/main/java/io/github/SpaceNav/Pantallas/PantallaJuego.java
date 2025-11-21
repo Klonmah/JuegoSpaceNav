@@ -281,15 +281,13 @@ public class PantallaJuego implements Screen, GameEventListener {
 
                 game.setScreen(pausado);
                 pausa = true;
-                return;   // <-- CLAVE: evitar que siga la lógica
+                return;  
             } else {
                 pausa = false;
             }
         }
 
-        // ------------------------------------
-        // ⚠️ LOGICA SOLO SI NO ESTÁ EN PAUSA
-        // ------------------------------------
+       
         if (!pausa) {
             actualizarJuego(delta);
         }
@@ -324,14 +322,12 @@ public class PantallaJuego implements Screen, GameEventListener {
             game.setScreen(gameOverScreen);
             dispose();
         } 
-        // 🔥 CAMBIAR: Ahora el portal ya existe desde el principio
+ 
         else if (Nave.getEnPortal() == 1) {
             game.setScreen(new PantallaPerks(game, this, nave, ronda, score, 
                 velXAsteroides, velYAsteroides, cantAsteroides, cantMobs));
             dispose();
         }
-        // 🔥 ELIMINAR la condición de asteroides vacíos para crear portal
-        // else if (asteroids.isEmpty() && SeCreoPortal == 0) { ... }
     }
 
     public boolean agregarBala(Bullet bb) {

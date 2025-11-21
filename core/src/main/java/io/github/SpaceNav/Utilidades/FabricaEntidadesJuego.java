@@ -6,8 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.asteroides.*;
 import io.github.SpaceNav.Enemigos.*;
-import io.github.SpaceNav.Enemigos.Comportamiento.PerseguirAgresivo;
-import io.github.SpaceNav.Enemigos.Comportamiento.PerseguirAlrededor;
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoEnemigo;
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoHuir;
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoSecuencial;
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoPerseguirAgresivo;
+import io.github.SpaceNav.Enemigos.Comportamiento.ComportamientoPerseguirAlrededor;
 import io.github.SpaceNav.jugador.Nave;
 import io.github.SpaceNav.asteroides.Portal;
 
@@ -68,7 +71,7 @@ public class FabricaEntidadesJuego {
         
         // Naves Normales
         for(int i = 0; i < cantMobs; i++) {
-            Mobs enemigo = crearNaveNormal(velXAsteroides, naveJugador, r,naveJugador);
+            Mobs enemigo = crearNaveNormal(velXAsteroides, naveJugador, r);
             enemies.add(enemigo);
         }
         
@@ -106,26 +109,38 @@ public class FabricaEntidadesJuego {
         );
     }
     
-    private Mobs crearNaveNormal(int velXAsteroides, Nave naveJugador, Random r,Nave jugador) {
+    private Mobs crearNaveNormal(int velXAsteroides, Nave naveJugador, Random r) {
         int size = tamanioEnemigo;
         int x = r.nextInt(Gdx.graphics.getWidth() - spawnEnemigoX);
         int vel = velXAsteroides + r.nextInt(variacionVelocidad);
         
         NaveEnemiga enemigo = new NaveEnemiga(
-            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga, jugador
+            x, 620, size, vel, texturaEnemigo1, texturaBalaEnemiga, naveJugador
         );
-        PerseguirAlrededor comportamiento = new PerseguirAlrededor(naveJugador);
-        enemigo.setComportamiento(comportamiento);
+        
+        // Creamos las estrategias individuales
+        ComportamientoEnemigo perseguir = new ComportamientoPerseguirAgresivo(naveJugador);
+        ComportamientoEnemigo orbitar = new ComportamientoPerseguirAlrededor(naveJugador);
+        ComportamientoEnemigo huir = new ComportamientoHuir(naveJugador);
+
+        // Inyectamos las estrategias en el orquestador secuencial
+        ComportamientoEnemigo comportamientoInteligente = new ComportamientoSecuencial(
+            naveJugador,
+            perseguir,  
+            orbitar,  
+            huir    
+        );
+        
+        enemigo.setComportamiento(comportamientoInteligente);
         return enemigo;
     }
-    
     private Mobs crearNaveCrasher(int velXAsteroides, Nave naveJugador, Random r) {
         int size = tamanioEnemigo;
         int x = r.nextInt(Gdx.graphics.getWidth() - spawnEnemigoX);
         int vel = velXAsteroides + r.nextInt(variacionVelocidad);
         
         Mobs enemigo = new NaveCrasher(x, 800, size, vel, texturaEnemigoCrusher);
-        enemigo.setComportamiento(new PerseguirAgresivo(naveJugador));
+        enemigo.setComportamiento(new ComportamientoPerseguirAgresivo(naveJugador));
         return enemigo;
     }
     
