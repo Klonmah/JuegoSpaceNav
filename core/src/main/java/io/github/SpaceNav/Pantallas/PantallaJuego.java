@@ -236,11 +236,10 @@ public class PantallaJuego implements Screen, GameEventListener {
         game.getFont().getData().setScale(2f);
         
 
+        System.out.println(score);
         game.getFont().draw(batch, "Bombas: " + nave.getBombs(), 10, 60);
         game.getFont().draw(batch, "Vidas: " + nave.getVidas() + " Ronda: " + ronda, 10, 30);
-        game.getFont().draw(batch, "Score:" + score, Gdx.graphics.getWidth() - 150, 30);
-        game.getFont().draw(batch, "HighScore:" + game.getHighScore(),
-                Gdx.graphics.getWidth() / 2 - 100, 30);
+        game.getFont().draw(batch, "Score:" + score, 600, 30);
     }
     
     public OrthographicCamera getCamera() {
