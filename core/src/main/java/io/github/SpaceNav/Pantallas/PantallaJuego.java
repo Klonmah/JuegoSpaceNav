@@ -189,7 +189,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         bombs.removeIf(Bomb::isDestroyed);
         enemyBullets.removeIf(bala -> bala != null && bala.isDestroyed());
         
-       
+        
         asteroids.removeIf(asteroide -> asteroide.isDestroyed());
         enemies.removeIf(enemigo -> enemigo.isDestroyed());
     }

@@ -15,7 +15,7 @@ public class AudioManager {
     
 
     private Map<String, List<Music>> gruposSonidos = new HashMap<>();
-    private Map<String, Music> sonidosUnicos = new HashMap<>(); // Para música y sonidos únicos
+    private Map<String, Music> musica = new HashMap<>(); // Para música 
 
     public static AudioManager getInstance() {
         if (instance == null) {
@@ -27,11 +27,6 @@ public class AudioManager {
     // Setters 
     public void setVolumenMaestro(int volumen) {
         this.volumenMaestro = Math.max(0, Math.min(100, volumen));
-        actualizarVolumenGlobal();
-    }
-
-    public void setVolumenMusica(int volumen) {
-        this.volumenMusica = Math.max(0, Math.min(100, volumen));
         actualizarVolumenGlobal();
     }
 
@@ -60,7 +55,7 @@ public class AudioManager {
             // Sonido único (para música de fondo, etc.)
             Music sonido = Gdx.audio.newMusic(Gdx.files.internal(rutaArchivo));
             sonido.setLooping(false);
-            sonidosUnicos.put(nombre, sonido);
+            musica.put(nombre, sonido);
         } else {
             // Grupo de sonidos (para explosiones, disparos, etc.)
             List<Music> grupo = new ArrayList<>();
@@ -78,7 +73,7 @@ public class AudioManager {
         float volumenFinal = getVolumenFinal();
         
         // Primero verificar si es un sonido único
-        Music sonidoUnico = sonidosUnicos.get(nombre);
+        Music sonidoUnico = musica.get(nombre);
         if (sonidoUnico != null) {
             sonidoUnico.setVolume(volumenFinal);
             if (!sonidoUnico.isPlaying()) {
@@ -123,7 +118,7 @@ public class AudioManager {
 
 
     public void reproducirEnLoop(String nombre) {
-        Music sonido = sonidosUnicos.get(nombre);
+        Music sonido = musica.get(nombre);
         if (sonido != null) {
             sonido.setLooping(true);
             sonido.setVolume(getVolumenFinal());
@@ -134,7 +129,7 @@ public class AudioManager {
 
     public void pararSonido(String nombre) {
         // Parar sonido único
-        Music sonidoUnico = sonidosUnicos.get(nombre);
+        Music sonidoUnico = musica.get(nombre);
         if (sonidoUnico != null) {
             sonidoUnico.stop();
         }
@@ -148,26 +143,14 @@ public class AudioManager {
         }
     }
 
-    public void pausarSonido(String nombre) {
-        Music sonido = sonidosUnicos.get(nombre);
-        if (sonido != null) {
-            sonido.pause();
-        }
-        
-        List<Music> grupo = gruposSonidos.get(nombre);
-        if (grupo != null) {
-            for (Music sonido1 : grupo) {
-                sonido1.pause();
-            }
-        }
-    }
+
 
     // Actualizar volúmenes en tiempo real
     private void actualizarVolumenGlobal() {
         float volumenFinal = getVolumenFinal();
         
         // Actualizar sonidos únicos
-        for (Music sonido : sonidosUnicos.values()) {
+        for (Music sonido : musica.values()) {
             if (sonido.isPlaying()) {
                 sonido.setVolume(volumenFinal);
             }
@@ -182,25 +165,13 @@ public class AudioManager {
             }
         }
     }
-
-    public void silenciarTodo() {
-        for (Music sonido : sonidosUnicos.values()) {
-            sonido.pause();
-        }
-        for (List<Music> grupo : gruposSonidos.values()) {
-            for (Music sonido : grupo) {
-                sonido.pause();
-            }
-        }
-    }
-    
     public void reanudarTodo() {
         actualizarVolumenGlobal();
       
     }
     
     public void dispose() {
-        for (Music sonido : sonidosUnicos.values()) {
+        for (Music sonido : musica.values()) {
             sonido.dispose();
         }
         for (List<Music> grupo : gruposSonidos.values()) {
@@ -208,7 +179,7 @@ public class AudioManager {
                 sonido.dispose();
             }
         }
-        sonidosUnicos.clear();
+        musica.clear();
         gruposSonidos.clear();
     }
 }

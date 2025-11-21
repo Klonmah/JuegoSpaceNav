@@ -58,6 +58,7 @@ public abstract class Asteroid implements Colisionable, Destructible {
         vida -= damage;
         if (vida <= 0) {
             this.destruido = true;
+            
         }
     }
     
