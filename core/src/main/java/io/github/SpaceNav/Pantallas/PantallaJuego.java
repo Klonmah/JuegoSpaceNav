@@ -240,6 +240,7 @@ public class PantallaJuego implements Screen, GameEventListener {
         game.getFont().draw(batch, "Bombas: " + nave.getBombs(), 10, 60);
         game.getFont().draw(batch, "Vidas: " + nave.getVidas() + " Ronda: " + ronda, 10, 30);
         game.getFont().draw(batch, "Score:" + score, 600, 30);
+        
     }
     
     public OrthographicCamera getCamera() {

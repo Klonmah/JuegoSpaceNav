@@ -20,7 +20,7 @@ public class SpaceNavigation extends Game {
 
 	public void create() {
 		
-		AudioManager.getInstance().cargarSonido("MusicaFondo", "../assets/song-loop.wav",1);
+		AudioManager.getInstance().cargarSonido("MusicaFondo", "../assets/song-loop.ogg",1);
 		AudioManager.getInstance().reproducirEnLoop("MusicaFondo");
 	
 		highScore = 0;
